@@ -143,6 +143,7 @@ trait StoreDataFromSellCartTrait
         //customer transaction statement history   
 
 
+        //$totalPaidAmount = ($this->sellCreateFormData['cash_payment_value'] ?? 0) + ($this->sellCreateFormData['advance_payment_value'] ?? 0) + ($this->sellCreateFormData['banking_payment_value'] ?? 0);
         //calculation in the customer table
         if($sellType == 1)//final sell
         {

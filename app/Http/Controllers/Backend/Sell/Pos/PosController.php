@@ -331,7 +331,6 @@ class PosController extends Controller
     public function storeDataFromSellCart(Request $request)
     {   
         DB::beginTransaction();
-
         try {
             $this->sellCreateFormData = $request;
             $this->storeSessionDataFromSellCart();   

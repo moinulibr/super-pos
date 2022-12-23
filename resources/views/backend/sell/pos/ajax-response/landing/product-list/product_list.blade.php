@@ -79,8 +79,8 @@
                             </h4>
                         </div>
                     </div>
-                    <div class="productContent" style="margin-top:0px;">
-                        <a href="#" class="productDetails"  data-id="{{$item->id}}">
+                    <div class="productContent" style="margin-top:0px;height: auto;">
+                        <a href="#" class="productDetails"  data-id="{{$item->id}}" style="overflow:initial;display: inline-flex;">
                             @php
                                 $product = $item->name;
                                 if(strlen($item->name) > 30)
@@ -95,7 +95,7 @@
                                     $product = $product ."...";
                                 }
                             @endphp
-                            {{$product}}
+                            {{$item->name}}
                         </a>
                     </div>
                 </div>
