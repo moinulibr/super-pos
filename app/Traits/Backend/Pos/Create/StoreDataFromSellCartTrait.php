@@ -87,7 +87,7 @@ trait StoreDataFromSellCartTrait
                 'main_module_invoice_id' => $sellInvoice->id,
                 'module_invoice_no' => $sellInvoice->invoice_no,
                 'module_invoice_id' => $sellInvoice->id,
-                'user_id' => $sellInvoice->customer_id,//client[customer,supplier,others staff]
+                'user_id' => $this->sellCreateFormData['customer_id'],//client[customer,supplier,others staff]
             ];
             $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
             $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($this->sellCreateFormData);// $paymentAllData;
@@ -132,7 +132,7 @@ trait StoreDataFromSellCartTrait
         $this->amount = $sellInvoice->total_payable_amount;
         
         $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp($ctsTypeModule);
-        $this->ctsCustomerId = $sellInvoice->customer_id;
+        $this->ctsCustomerId = $this->sellCreateFormData['customer_id'];
         $ttModuleInvoics = [
             'invoice_no' => $sellInvoice->invoice_no,
             'invoice_id' => $sellInvoice->id
@@ -143,7 +143,6 @@ trait StoreDataFromSellCartTrait
         //customer transaction statement history   
 
 
-        //$totalPaidAmount = ($this->sellCreateFormData['cash_payment_value'] ?? 0) + ($this->sellCreateFormData['advance_payment_value'] ?? 0) + ($this->sellCreateFormData['banking_payment_value'] ?? 0);
         //calculation in the customer table
         if($sellType == 1)//final sell
         {
@@ -154,10 +153,25 @@ trait StoreDataFromSellCartTrait
             //calculation in the customer table
             //$dbField = 33;'current_total_sell_amount';
             //$calType = 1='plus', 2='minus'
-            $this->managingCustomerCalculation($sellInvoice->customer_id,$dbField = 33 ,$calType = 1,$sellInvoice->total_payable_amount);
+            $this->managingCustomerCalculation($this->sellCreateFormData['customer_id'],$dbField = 33 ,$calType = 1,$sellInvoice->total_payable_amount);
             //calculation in the customer table
         }//calculation in the customer table
-        
+
+
+        //$totalPaidAmount = ($this->sellCreateFormData['cash_payment_value'] ?? 0) + ($this->sellCreateFormData['advance_payment_value'] ?? 0) + ($this->sellCreateFormData['banking_payment_value'] ?? 0);
+        //calculation in the customer table
+        if(($sellType == 1) && (($this->sellCreateFormData['advance_payment_value'] ?? 0) > 0))//final sell
+        {
+            //$sellAmount = $sellInvoice->total_payable_amount;
+            //$paidAmount = $sellInvoice->total_paid_amount;
+            //$dueAmount = $sellInvoice->due_amount;
+
+            //calculation in the customer table
+            //$dbField = 22;'current_paid_advance';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($this->sellCreateFormData['customer_id'],$dbField = 22 ,$calType = 1,$sellInvoice->total_payable_amount);
+            //calculation in the customer table
+        }//calculation in the customer table
         return $sellCart;
     }
 
@@ -370,19 +384,20 @@ trait StoreDataFromSellCartTrait
         $sellInvoice->payment_type	 = $payment_type;
         //payment related section
 
-        $customerId = $sellInvoiceSummeryCart['invoice_customer_id'];
+        //$customerId = $sellInvoiceSummeryCart['invoice_customer_id'];
+        $customerId = $this->sellCreateFormData['customer_id'];
         if(count($shippingCart) > 0)
         {
             $sellInvoice->customer_id = $shippingCart['customer_id'];
             $customerId = $shippingCart['customer_id'];
-            $sellInvoice->reference_id = $shippingCart['reference_id'];
+            $sellInvoice->reference_id = $this->sellCreateFormData['reference_id'];
             $sellInvoice->shipping_id = $shippingCart['customer_shipping_address_id'];
             $sellInvoice->shipping_note = $shippingCart['shipping_note'];
             $sellInvoice->sell_note = $shippingCart['sell_note'];
             $sellInvoice->receiver_details = $shippingCart['receiver_details'];
         }else{
-            $sellInvoice->customer_id = $sellInvoiceSummeryCart['invoice_customer_id'];
-            $sellInvoice->reference_id = $sellInvoiceSummeryCart['invoice_reference_id'];
+            $sellInvoice->customer_id = $this->sellCreateFormData['customer_id'];
+            $sellInvoice->reference_id = $this->sellCreateFormData['reference_id'];
         }
 
         $customer = Customer::select('customer_type_id','phone')->where('id',$customerId)->first();

@@ -1,5 +1,5 @@
 @extends('layouts.backend.app')
-@section('page_title') Sell @endsection
+@section('page_title') | Sell List @endsection
 @push('css')
 <style>
 

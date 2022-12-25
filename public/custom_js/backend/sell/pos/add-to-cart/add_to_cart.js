@@ -742,11 +742,12 @@
                 jQuery('.payment_processing_gif').fadeOut();
 
                 var customer_id = jQuery('.customer_id option:selected').val();
+                var reference_id = jQuery('.reference_id option:selected').val();
                 var totalItem = nanCheck(parseFloat(jQuery('.totalItemFromSellCartList').text()));
                 var subtotal = nanCheck(parseFloat(jQuery('.subtotalFromSellCartList').text()));
-                if(!totalItem && subtotal == 0){
+                if(!totalItem && subtotal == 0 || !customer_id){
                     jQuery('#payment-popup').modal('hide');
-                    jQuery.notify("Please select a minimum item", 'error');
+                    jQuery.notify("Please select a minimum item or customer", 'error');
                     return 0;
                 }else{
                     jQuery('#payment-popup').modal('show');
@@ -754,7 +755,7 @@
                 var url = jQuery('.paymentModalOpenUrl').val();
                 jQuery.ajax({
                     url:url,
-                    data:{customer_id:customer_id},
+                    data:{customer_id:customer_id,reference_id:reference_id},
                     beforeSend:function(){
                         jQuery('.processing').fadeIn();
                     },

@@ -116,8 +116,8 @@
                         
                         <div class="form-group row">
                             <div class="col-sm-6">
-                                <label class="col-form-label text-sm-right">AS Code</label>
-                                <input name="custom_id" type="text" class="form-control" placeholder="As Code">
+                                <label class="col-form-label text-sm-right">{{productCustomCodeLabel_hh()}}</label>
+                                <input name="custom_id" type="text" class="form-control" placeholder="{{productCustomCodeLabel_hh()}}">
                                 <strong class="custom_id_err color-red"></strong>
                                 <div class="clearfix"></div>
                             </div>

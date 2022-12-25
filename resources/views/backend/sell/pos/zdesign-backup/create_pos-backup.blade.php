@@ -935,7 +935,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <div class="form-group row mt-3 mb-0">
                                     <div class="col-md-12" style="padding-bottom:5px;">
                                         <fieldset class="form-group mb-0 d-flex barcodeselection">
-                                            <input type="text" class="form-control border-dark" id="basicInput1" autofocus placeholder="product name / as code / company code / sku"/>
+                                            <input type="text" class="form-control border-dark" id="basicInput1" autofocus placeholder="product name / ascode / company code / sku"/>
                                         </fieldset>
                                     </div>
                                     <!-- <div class="col-md-12"> -->
@@ -944,7 +944,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <select class="form-control" id="exampleFormControlSelect1" style="width: 35%;">
                                                 <option>Name</option>
                                                 <option>SKU</option>
-                                                <option>AS Code</option>
+                                                <option>ASCode</option>
                                             </select>
                                             <input type="text" class="form-control border-dark" id="basicInput1" placeholder="" />
                                         </fieldset>

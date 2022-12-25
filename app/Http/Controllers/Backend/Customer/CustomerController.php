@@ -106,9 +106,9 @@ class CustomerController extends Controller
         //customer transaction statement history
 
         //calculation in the customer table
-        //$dbField = 9;'previous_due_paid_now';
+        //$dbField = 1;'previous_due';
         //$calType = 1='plus', 2='minus'
-        $this->managingCustomerCalculation($request->customer_id,$dbField = 9 ,$calType = 1,$request->amount);
+        $this->managingCustomerCalculation($saveData->id,$dbField = 1 ,$calType = 1,$request->amount);
         //calculation in the customer table
         
         

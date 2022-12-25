@@ -1,11 +1,11 @@
-<div class="table-responsive">
+<div class="table-responsive table-responsive-index-page">
     <table class="table table-bordered mb-0">
         <thead>
             <tr>
                 <th  style="width:3%;">#</th>
                 <th>Photo</th>
                 <th>
-                    <small>AS Code</small>
+                    <small>{{productCustomCodeLabel_hh()}}</small>
                 </th>
                 <th>Name</th>
                 <th>Total Stock</th>
@@ -65,5 +65,17 @@
             @endforeach
         </tbody>
     </table>
-    {{$datas->links()}}
+
+</div>
+<input type="hidden" class="page_no" name="page" value="{{$page_no}}">
+                    
+<div class="row">
+    <div class="col-md-3">
+        Showing {{$datas->count()}} from {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() }} of {{ $datas->total() }}  entries 
+    </div>
+    <div class="col-md-9">
+        <div style="float: right">
+        {{ $datas->links() }}
+        </div>
+    </div>
 </div>

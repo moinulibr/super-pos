@@ -11,7 +11,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <head>
         <meta charset="utf-8" />
-        <title> {{ config('app.name') }}  @yield('page_title') | Sell</title>
+        <title> {{ config('app.name') }}  @yield('page_title') | Sell Create : POS</title>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="description" content="Updates and statistics" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -283,7 +283,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <span style="padding-left:1px;">Shipping Address</span> --}}
                                         </label>
                                         <select class="addedNewCustomer customer_id arabic-select" style="width: 100%;"> <!--arabic-select--->
-                                            <option value="1">walk in customer</option>
+                                            <option value="">Select a customer</option>
                                             @foreach ($customers as $item)
                                             <option value="{{$item->id}}">{{$item->name}} ({{$item->phone}})</option>
                                             @endforeach
@@ -403,6 +403,13 @@ License: You must have a valid license purchased only from themeforest(the above
                     <div class="col-xl-4 col-lg-4 col-md-12 h-100">
                         <div class="card-custom gutter-b bg-white border-0">
                             <div class="card-body mb-4">
+                                <div class="row">
+                                    <div class="col-md-5"></div>
+                                    <div class="col-md-2">
+                                        <img class="product_rendering_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:40px;display:none;background-color:#FFFCFD;border-radius: 50%;">
+                                    </div>
+                                    <div class="col-md-5"></div>
+                                </div>
                                 <div class="row" style="margin-top: 10px;">
                                     <div class="col-md-12">
                                         <div class="selectmain">
@@ -449,7 +456,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <div class="form-group row mt-3 mb-0" style="padding-bottom: 15px;">
                                     <div class="col-md-12" style="padding-bottom:5px;">
                                         <fieldset class="form-group mb-0 d-flex barcodeselection">
-                                            <input name="custom_search" type="text" class="custom_search form-control border-dark" id="basicInput1" autofocus placeholder="product name / as code / company code / sku"/>
+                                            <input name="custom_search" type="text" class="custom_search form-control border-dark" id="basicInput1" autofocus placeholder="product name / {{ strtolower( productCustomCodeLabel_hh() ) }} / company code / sku"/>
                                         </fieldset>
                                     </div>
                                 </div> 

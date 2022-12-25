@@ -2,7 +2,7 @@
             <div class="modal-dialog modal-xl">
                 <form action="{{route('admin.product.store')}}" method="POST" class="storeProductData modal-content" enctype="multipart/form-data">
                     @csrf
-                    <div class="modal-header">
+                    <div class="modal-header" style="background: #d3dbd3;">
                         <h5 class="modal-title">
                             Product 
                             <span class="font-weight-light">Information</span>
@@ -34,8 +34,8 @@
 
                     </div>
                     <!--modal body-->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <div class="modal-footer"  style="background: #d3dbd3;">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                         {{-- <input type="submit" class="btn btn-primary" role="status" value="Save"> --}}
                     </div>
                 </form>

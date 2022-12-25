@@ -48,7 +48,7 @@
                                                     <table style="width:100%;background-color:#f2f3f5;height:100%;">
                                                         <tr>
                                                             <td style="height:49%;text-align: center;background-color: #ffffff">
-                                                                AS Code : {{$product->custom_code }}
+                                                                {{productCustomCodeLabel_hh()}} : {{$product->custom_code }}
                                                             </td>
                                                         </tr>
                                                         <tr>

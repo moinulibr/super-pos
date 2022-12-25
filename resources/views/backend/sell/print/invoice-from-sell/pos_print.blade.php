@@ -158,14 +158,14 @@
     <div class="mini-invoice">
         <div id="top" style="margin-top: -10px">
             <h2 class="brand" style="margin-bottom:2px;font-size: 1.2em">
-                {{ companyName_hh() }}
+                {{ companyNameInInvoice_hh() }}
             </h2>
             <div class="info" style="font-size: 0.9em;">
-                <p>{{ AppFullAddress_hh() }} </p>
-                <p>Call: {{ companyPhone_hh() }}</p>
+                <p>{{ companyFullAddressInInvoice_hh() }} </p>
+                <p>Call: {{ companyPhone_hh() }}, {{ companyPhoneOne_hh() }}</p>
                 <b>Invoice No. #{{$data->invoice_no}}</b>
                 <p>Date: {{date('d/m/Y, h:i:s A')}}</p>
-                <p class="serve">Served by: {{Auth::guard('web')->user()->name}} </p>
+                <p class="serve">Served by: {{$data->createdBy ? $data->createdBy->name: "N/L"}} </p>
             </div>
         </div>
         <div id="mid" style="margin-bottom: 30px;">

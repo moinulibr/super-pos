@@ -142,11 +142,13 @@
                 </div>
             </div>
             <br>
-            <!-------responsive table------> 
-            <div class="productListAjaxResponseResult">
+            <!-------responsive table------>
+            <div style="background-color:#ffff;width: 100%;">
+                <div class="productListAjaxResponseResult"style="padding:2%;">
 
-                @include('backend.product.product.partial.list')
+                    @include('backend.product.product.partial.list')
 
+                </div>
             </div>
             <!-------responsive table------> 
 
@@ -296,12 +298,12 @@
                                             </div>
                                             <div class="form-group col-md-3">
                                                 <label class="form-label">Initial Stock</label>
-                                                <input type="text" class="form-control initial_stock initial_stock_${uniqueId}" data-initial_stock="${uniqueId}" name="initial_stock_${uniqueId}"  style="" placeholder="Initial Stock" />
+                                                <input type="text" readonly value="0" class="form-control initial_stock initial_stock_${uniqueId}" data-initial_stock="${uniqueId}" name="initial_stock_${uniqueId}"  style="" placeholder="Initial Stock" />
                                                 <div class="clearfix"></div>
                                             </div>
                                             <div class="form-group col-md-3">
                                                 <label class="form-label">Alert Quantity</label>
-                                                <input type="text" class="form-control alert_stock alert_stock_${uniqueId}" data-alert_stock="${uniqueId}" name="alert_stock_${uniqueId}"  style="" placeholder="Alert Quantity" />
+                                                <input type="text" readonly value="0" class="form-control alert_stock alert_stock_${uniqueId}" data-alert_stock="${uniqueId}" name="alert_stock_${uniqueId}"  style="" placeholder="Alert Quantity" />
                                                 <div class="clearfix"></div>
                                             </div>
                                         </div>
@@ -324,12 +326,12 @@
                                     </div>
                                     <!--price--->
 
-                                    <!--AS code and Company code--->
+                                    <!--AScode and Company code--->
                                     <div style="padding: 5px;margin-bottom:5px;margin-top:5px;">
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <label class="form-label">AS Code</label>
-                                                <input type="text" class="form-control custom_code custom_code_${uniqueId}" data-custom_code="${uniqueId}" name="custom_code_${uniqueId}"  placeholder="AS Code" style="" />
+                                                <label class="form-label">{{productCustomCodeLabel_hh()}}</label>
+                                                <input type="text" class="form-control custom_code custom_code_${uniqueId}" data-custom_code="${uniqueId}" name="custom_code_${uniqueId}"  placeholder="{{productCustomCodeLabel_hh()}}" style="" />
                                                 <div class="clearfix"></div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -339,7 +341,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!--AS code and Company code--->
+                                    <!--AScode and Company code--->
 
                                     <!--Image and Description--->
                                     <div style="padding: 5px;margin-bottom:5px;margin-top:5px;">

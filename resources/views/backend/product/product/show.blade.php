@@ -49,7 +49,7 @@
                                 <div style="border-bottom:1px solid rgba(24,28,33,.06);padding:5px;margin-bottom:10px;"></div>
                                 
                                 
-                                <h6 class="price"><span style="color:orange">  AS Code </span> : <span style="background-color:#e3e3f3;padding:2px;">{{ $product->custom_code }}</span></h6>
+                                <h6 class="price"><span style="color:orange">  {{productCustomCodeLabel_hh()}} </span> : <span style="background-color:#e3e3f3;padding:2px;">{{ $product->custom_code }}</span></h6>
                                 <h6 class="price"><span style="color:blue"> Company Code </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->company_code}}</span></h6>
                                 <h6 class="price"><span style="color:green"> SKU </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->sku}}</span></h6>
                                 <h6 class="price"><span style="color:blue"> Stock </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->available_base_stock??0}}</span></h6>
@@ -142,7 +142,7 @@
                                         <thead>
                                             <tr>
                                                 <th style="width:20%;border:none;">
-                                                    AS Code
+                                                    {{productCustomCodeLabel_hh()}}
                                                 </th>
                                                 <td style="width:1%;border:none;">:</td>
                                                 <th style="border:none;">

@@ -21,7 +21,7 @@
                 url:url,
                 data:{id:id},
                 beforeSend:function(){
-                    jQuery('.processing_on').fadeIn();
+                    jQuery('.product_rendering_processing_gif').fadeIn();
                 },
                 success:function(response){
                     if(response.status == true)
@@ -32,7 +32,7 @@
                     }
                 },
                 complete:function(){
-                    jQuery('.processing_on').fadeOut();
+                    jQuery('.product_rendering_processing_gif').fadeOut();
                 },
             });
         });

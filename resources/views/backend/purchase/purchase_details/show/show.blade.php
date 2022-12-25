@@ -102,7 +102,7 @@
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
-                                        <th>AS Code</th>
+                                        <th>{{productCustomCodeLabel_hh()}}</th>
                                         <th style="width:40%;">Product</th>
                                         <th>Quantity</th>
                                         <th><small>Receiving Qty & Status</small></th>

@@ -30,7 +30,7 @@
                         <address >
                             <strong style="font-size:15px;">{{companyName_hh()}}</strong>
                             <br>
-                            {{companyFullAddress()}} <br>
+                            {{companyFullAddress_hh()}} <br>
                             Mobile: {{companyPhone_hh()}} <br>
                         </address>
                     </div>

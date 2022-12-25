@@ -81,9 +81,9 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="col-sm-6">
-                                <label class="col-form-label text-sm-right">Address</label>
-                                <textarea name="address" class="form-control" placeholder="Address"></textarea>
-                                <strong class="address_err color-red"></strong>
+                                <label class="col-form-label text-sm-right">Ledger Page No</label>
+                                <input name="ledger_page_no" class="form-control" placeholder="Ledger Page No">
+                                <strong class="ledger_page_no_err color-red"></strong>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -96,9 +96,9 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="col-sm-6">
-                                <label class="col-form-label text-sm-right">Ledger Page No</label>
-                                <textarea name="ledger_page_no" class="form-control" placeholder="Ledger Page No"></textarea>
-                                <strong class="ledger_page_no_err color-red"></strong>
+                                <label class="col-form-label text-sm-right">Address</label>
+                                <textarea name="address" class="form-control" placeholder="Address"></textarea>
+                                <strong class="address_err color-red"></strong>
                                 <div class="clearfix"></div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
                     </div>
                     
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                         <input type="submit" class="btn btn-primary" role="status" value="Save">
                     </div>
                 </form>

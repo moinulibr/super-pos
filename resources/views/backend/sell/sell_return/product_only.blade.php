@@ -2,7 +2,7 @@
     <table id="example1" class="table table-bordered table-striped table-hover">
         <thead>
             <tr>
-                <th style="width:5%;">AS Code</th>
+                <th style="width:5%;">{{productCustomCodeLabel_hh()}}</th>
                 <th style="width:35%;">Product</th>
                 <th style="width:5%;"><small>Total Sell Qty</small></th>
                 <th style="width:55%;">

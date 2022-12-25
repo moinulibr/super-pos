@@ -94,12 +94,12 @@
                                                         </div>
                                                         <div class="form-group col-md-3">
                                                             <label class="form-label">Initial Stock</label>
-                                                            <input type="text" class="form-control initial_stock initial_stock_0" data-initial_stock="0" name="initial_stock_0"  style="" placeholder="Initial Stock" />
+                                                            <input type="text" readonly value="0" class="form-control initial_stock initial_stock_0" data-initial_stock="0" name="initial_stock_0"  style="" placeholder="Initial Stock" />
                                                             <div class="clearfix"></div>
                                                         </div>
                                                         <div class="form-group col-md-3">
                                                             <label class="form-label">Alert Quantity</label>
-                                                            <input type="text" class="form-control alert_stock alert_stock_0" data-alert_stock="0" name="alert_stock_0"  style="" placeholder="Alert Quantity" />
+                                                            <input type="text" readonly value="0" class="form-control alert_stock alert_stock_0" data-alert_stock="0" name="alert_stock_0"  style="" placeholder="Alert Quantity" />
                                                             <div class="clearfix"></div>
                                                         </div>
                                                     </div>
@@ -122,12 +122,12 @@
                                                 </div>
                                                 <!--price--->
             
-                                                <!--AS code and Company code--->
+                                                <!--AScode and Company code--->
                                                 <div style="padding: 5px;margin-bottom:5px;margin-top:5px;">
                                                     <div class="form-row">
                                                         <div class="form-group col-md-6">
-                                                            <label class="form-label">AS Code</label>
-                                                            <input type="text" class="form-control custom_code custom_code_0" data-custom_code="0" name="custom_code_0"  placeholder="AS Code" style="" />
+                                                            <label class="form-label">{{productCustomCodeLabel_hh()}}</label>
+                                                            <input type="text" class="form-control custom_code custom_code_0" data-custom_code="0" name="custom_code_0"  placeholder="{{productCustomCodeLabel_hh()}}" style="" />
                                                             <div class="clearfix"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
@@ -137,7 +137,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!--AS code and Company code--->
+                                                <!--AScode and Company code--->
             
                                                 <input type="hidden" value="0" name="form_data[]" class="form_data_0" data-form_data="0">
                                             </div>

@@ -7,7 +7,7 @@
                 <th>Photo</th>
                 <th>Name</th>
                 <th>
-                    <small>AS Code</small>
+                    <small>{{productCustomCodeLabel_hh()}}</small>
                 </th>
                 <th>Category</th>
                 <th>Grade</th>

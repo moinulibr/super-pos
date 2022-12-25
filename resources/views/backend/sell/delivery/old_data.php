@@ -37,7 +37,7 @@
                                     <thead style="border-top:1px solid rgba(0, 0, 0, 0.1) !important;">
                                         <tr>
                                             <th>{{ __('Sl.') }}</th>
-                                            <th>{{ __('AS Code') }}</th>
+                                            <th>{{ __('ASCode') }}</th>
                                             <th style="width:50%">{{ __('Product') }}</th>
                                             <th  style="text-align: center;">{{ __('Qty') }}</th>
                                             <th  style="text-align: center;">{{ __('Sale Price') }}</th>

@@ -62,7 +62,7 @@ class PosController extends Controller
         }
         $data['products']       = $query->select('name','id','photo','available_base_stock')
                                 ->latest()
-                                ->paginate(15);
+                                ->paginate(21);
         $view = view('backend.sell.pos.ajax-response.landing.product-list.product_list',$data)->render();
         return response()->json([
             'status'    => true,
@@ -86,7 +86,7 @@ class PosController extends Controller
         $data['allproducts']    = Product::select('name','id')->latest()->get();
         $data['products']       = Product::select('name','id','photo','available_base_stock')
                                 ->latest()
-                                ->paginate(15);
+                                ->paginate(21);
         return view('backend.sell.pos.landing.create_pos',$data);
         return view('backend.sell.pos.zdesign.design_single_product',$data);
     }
@@ -293,6 +293,7 @@ class PosController extends Controller
         $data['totalPayableAmount'] = $sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'];
         
         $data['customer'] = Customer::findOrFail($request->customer_id);
+        $data['reference'] = Reference::findOrFail($request->reference_id);
 
         $data['cashAccounts'] = cashAccounts_hh();
         $data['advanceAccounts'] = advanceAccounts_hh();

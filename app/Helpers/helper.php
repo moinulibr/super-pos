@@ -46,35 +46,55 @@ use App\Models\Backend\ProductAttribute\Unit;
         {
             return "Khan Sanitary";
         }
+        function companyNameInInvoice_hh()
+        {
+            return "মেসার্স খান সেনিটারি";
+        }
         function companyPhone_hh()
         {
+            return "01686 862056";
+        } 
+        function companyPhoneOne_hh()
+        {
+            return "01915 101091";
+        } 
+        function companyPhoneTwo_hh()
+        {
             return "01781 226972";
-        } 
-        function companyPhone1_hh()
-        {
-            return "";
-        } 
-        function companyPhone2_hh()
-        {
-            return "";
         }
-        function companyFullAddress()
+        function companyFullAddress_hh()
         {   
             return "Beside the Karim Jute Mill, Kanaipur,Faridpur";
         }
-
-        function companyAddressLine1()
+        function companyAddressLineOne_hh()
         {   
             return "Beside the Karim Jute Mill, Kanaipur";
-        }
-        function companyAddressLine2()
+        } 
+        function companyAddressLineTwo_hh()
         {   
             return "Faridpur";
         }
+        function companyFullAddressInInvoice_hh()
+        {   
+            return "করিম জুট মিলের সাথে, কানাইপুর, ফরিদপুর";
+        }
+        function companyAddressLineOneInInvoice_hh()
+        {   
+            return "করিম জুট মিলের সাথে, কানাইপুর,";
+        }
+        function companyAddressLineTwoInInvoice_hh()
+        {   
+            return "ফরিদপুর";
+        }
+       
         function currencySymbol_hh()
         {
             return " ৳";
         }    
+        function productCustomCodeLabel_hh()
+        {
+            return "KS Code";
+        }
     /*
     |--------------------------------------------------------------------------
     | Setting, App Name, App Address, Phone, and others

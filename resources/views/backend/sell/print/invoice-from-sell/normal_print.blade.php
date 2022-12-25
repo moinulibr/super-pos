@@ -60,10 +60,10 @@ html {
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
                     <div class="invoice__orderDetails" style="text-align: center;font-size: 14px">
-                        <strong style="font-size: 19px">{{ companyName_hh() }}</strong><br>
-                        <span>{{ companyAddressLine1() }}</span> 
-                        {{ companyAddressLine2() }}<br>
-                        <span><strong>Call:  {{ companyPhone_hh() }}</strong> </span><br>
+                        <strong style="font-size: 19px">{{ companyNameInInvoice_hh() }}</strong><br>
+                        <span>{{ companyAddressLineOneInInvoice_hh() }}</span> 
+                        {{ companyAddressLineTwoInInvoice_hh() }}<br>
+                        <span><strong>Call:  {{ companyPhone_hh() }}, {{ companyPhoneOne_hh() }}, {{ companyPhoneTwo_hh() }}</strong> </span><br>
                     </div>
                 </div>
                 <div class="col-lg-3"></div>
@@ -108,7 +108,7 @@ html {
                                     <thead style="border-top:1px solid rgba(0, 0, 0, 0.1) !important;">
                                         <tr>
                                             <th>{{ __('Sl.') }}</th>
-                                            <th>{{ __('AS Code') }}</th>
+                                            <th>{{ productCustomCodeLabel_hh() }}</th>
                                             <th style="width:50%">{{ __('Product') }}</th>
                                             <th  style="text-align: center;">{{ __('Qty') }}</th>
                                             <th  style="text-align: center;">{{ __('Sale Price') }}</th>
@@ -186,13 +186,13 @@ html {
                                                     Current Due :  {{ $data->due_amount ?? 0.00 }},     
                                                 </span>    
                                                 <span style="margin-left:5px;margin-right:5px;">
-                                                    Previous Due :  {{$data->others_cost}},     
+                                                    Previous Due :  {{$data->customer ? $data->customer->current_total_due : 0.0}},     
                                                 </span>  
                                             </th>
                                             <th colspan="2" style="text-align: right;">
                                                 Total Due Amount
                                             </th>
-                                            <th style="text-align: right;">{{$data->subtotal}}</th>
+                                            <th style="text-align: right;">{{ $data->customer ? $data->customer->total_due : 0.0 }}</th>
                                         </tr>
                                     </tbody>
                                 </table>

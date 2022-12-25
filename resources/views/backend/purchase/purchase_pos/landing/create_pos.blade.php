@@ -394,7 +394,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <div class="form-group row mt-3 mb-0" style="padding-bottom: 15px;">
                                     <div class="col-md-12" style="padding-bottom:5px;">
                                         <fieldset class="form-group mb-0 d-flex barcodeselection">
-                                            <input name="custom_search" type="text" class="custom_search form-control border-dark" id="basicInput1" autofocus placeholder="product name / as code / company code / sku"/>
+                                            <input name="custom_search" type="text" class="custom_search form-control border-dark" id="basicInput1" autofocus placeholder="product name / {{ strtolower( productCustomCodeLabel_hh() ) }} / company code / sku"/>
                                         </fieldset>
                                     </div>
                                 </div> 

@@ -81,9 +81,9 @@
                     <div class="clearfix"></div>
                 </div>
                 <div class="col-sm-6">
-                    <label class="col-form-label text-sm-right">Address</label>
-                    <textarea name="address" class="form-control" placeholder="Address">{{$customer->address}}</textarea>
-                    <strong class="address_err color-red"></strong>
+                    <label class="col-form-label text-sm-right">Ledger Page No</label>
+                    <input name="ledger_page_no" value="{{$customer->ledger_page_no}}" class="form-control" placeholder="Ledger Page No">
+                    <strong class="ledger_page_no_err color-red"></strong>
                     <div class="clearfix"></div>
                 </div>
             </div>
@@ -93,6 +93,12 @@
                     <label class="col-form-label text-sm-right">Note</label>
                     <textarea name="note" class="form-control" placeholder="Note">{{$customer->note}}</textarea>
                     <strong class="note_err color-red"></strong>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-sm-6">
+                    <label class="col-form-label text-sm-right">Address</label>
+                    <textarea name="address" class="form-control" placeholder="Address">{{$customer->address}}</textarea>
+                    <strong class="address_err color-red"></strong>
                     <div class="clearfix"></div>
                 </div>
             </div>

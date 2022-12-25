@@ -87,7 +87,7 @@
             <th>Opening Due</th>
             <th>Total Due</th>
             <th>Advance</th>
-            <th>AS Code Serial </th>
+            <th>{{productCustomCodeLabel_hh()}} Serial </th>
             <th>Avail. Stock</th>
             <th>Used</th>
 

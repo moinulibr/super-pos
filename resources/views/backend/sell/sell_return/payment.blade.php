@@ -134,7 +134,7 @@
                                         </label> 
                                     </div>
                                     <div style="float:right;width:70%;">
-                                        <input disabled type="text" style="color:yellow!important;" class="form-control total_invoice_amount_for_calculator_for_sell_return"  value=""  placeholder="Invoice Amount">
+                                        <input disabled type="text" style="color:black !important;" class="form-control total_invoice_amount_for_calculator_for_sell_return"  value=""  placeholder="Invoice Amount">
                                     </div> 
                                 </div> 
                             </td>
@@ -146,7 +146,7 @@
                                         </label> 
                                     </div>
                                     <div style="float:right;width:70%;">
-                                        <input type="text" style="color:yellow!important;" class="total_paying_amount_for_calculator_for_sell_return form-control invoice_paying_amount_for_sell_return" disabled placeholder=" Paying Amount">
+                                        <input type="text" style="color:black !important;" class="total_paying_amount_for_calculator_for_sell_return form-control invoice_paying_amount_for_sell_return" disabled placeholder=" Paying Amount">
                                     </div> 
                                 </div> 
                             </td>
