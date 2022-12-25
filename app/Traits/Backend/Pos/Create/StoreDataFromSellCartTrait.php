@@ -146,10 +146,6 @@ trait StoreDataFromSellCartTrait
         //calculation in the customer table
         if($sellType == 1)//final sell
         {
-            //$sellAmount = $sellInvoice->total_payable_amount;
-            //$paidAmount = $sellInvoice->total_paid_amount;
-            //$dueAmount = $sellInvoice->due_amount;
-
             //calculation in the customer table
             //$dbField = 33;'current_total_sell_amount';
             //$calType = 1='plus', 2='minus'
@@ -170,6 +166,20 @@ trait StoreDataFromSellCartTrait
             //$dbField = 22;'current_paid_advance';
             //$calType = 1='plus', 2='minus'
             $this->managingCustomerCalculation($this->sellCreateFormData['customer_id'],$dbField = 22 ,$calType = 1,$sellInvoice->total_payable_amount);
+            //calculation in the customer table
+        }//calculation in the customer table
+
+        //calculation in the customer table
+        if(($sellType == 1))//final sell
+        {
+            //$sellAmount = $sellInvoice->total_payable_amount;
+            //$paidAmount = $sellInvoice->total_paid_amount;
+            //$dueAmount = $sellInvoice->due_amount;
+
+            //calculation in the customer table
+            //$dbField = 17;'current_due';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($this->sellCreateFormData['customer_id'],$dbField = 17 ,$calType = 1,$sellInvoice->due_amount);
             //calculation in the customer table
         }//calculation in the customer table
         return $sellCart;

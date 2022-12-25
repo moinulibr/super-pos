@@ -293,7 +293,7 @@ class PosController extends Controller
         $data['totalPayableAmount'] = $sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'];
         
         $data['customer'] = Customer::findOrFail($request->customer_id);
-        $data['reference'] = Reference::findOrFail($request->reference_id);
+        $data['reference'] = $request->reference_id;
 
         $data['cashAccounts'] = cashAccounts_hh();
         $data['advanceAccounts'] = advanceAccounts_hh();

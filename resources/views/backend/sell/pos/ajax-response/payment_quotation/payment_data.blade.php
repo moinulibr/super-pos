@@ -7,7 +7,7 @@
                     </tr>
                     <tr>
                         <input type="hidden" name="customer_id" value="{{$customer->id}}">
-                        <input type="hidden" name="reference_id" value="{{$reference->id}}">
+                        <input type="hidden" name="reference_id" value="{{$reference}}">
                         <td style="width:17%">Customer Name</td>
                         <td style="width:1%">:</td>
                         <td style="width:50%">{{$customer->name}}</td>
