@@ -104,4 +104,68 @@ class StockController extends Controller
     }
 
 
+    public function addInitialStock()
+    {
+        $data['stocks'] = Stock::where('status',1)
+        ->where('branch_id',authBranch_hh())
+        ->whereNull('deleted_at')
+        ->select('id','name','label','branch_id','deleted_at')
+        ->orderBy('custom_serial','ASC')
+        ->get();
+        $data['productId'] = 0;
+        return view('backend.stock.initialStock.initial',$data);
+    } 
+    
+    public function renderSingleProductDetial(Request $request)
+    {
+        $data['stocks'] = Stock::where('status',1)
+        ->where('branch_id',authBranch_hh())
+        ->whereNull('deleted_at')
+        ->select('id','name','label','branch_id','deleted_at')
+        ->orderBy('custom_serial','ASC')
+        ->get();
+        $data['productId'] = 0;
+        $form = view('backend.stock.initialStock.stockForm',$data)->render();
+        $search     = $request->search ?? NULL;
+        if($request->ajax())
+        {
+            if($request->search)
+            {
+                $product  = Product::where('name','like','%'.$search.'%')
+                        ->orWhere('sku','like','%'.$search.'%')
+                        ->orWhere('bacode','like','%'.$search.'%')
+                        ->orWhere('custom_code','like','%'.$search.'%')
+                        ->orWhere('company_code','like','%'.$search.'%')
+                        ->first();
+                if($product)
+                {
+                    $data['product'] = $product;
+                    $data['productId'] = 1;
+                    $html = view('backend.stock.initialStock.addStock',$data)->render();
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'product found',
+                        'type' => 'success',
+                        'html' => $html,
+                        'form' => $form,
+                    ]);
+                }else{
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Product not found!',
+                        'type' => 'error',
+                        'html' => '',
+                        'form' => $form
+                    ]);
+                }
+            } 
+        }
+        return response()->json([
+            'status' => false,
+            'message' => 'Not Searching..',
+            'type' => 'error',
+            'html' => '',
+            'form' => $form
+        ]);
+    }
 }

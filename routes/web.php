@@ -539,6 +539,9 @@ Route::group(['middleware' => ['auth']], function ()
         Route::group(['prefix'=>'admin/product/stock','as'=> 'admin.product.stock.', 'namespace'=>'Backend\Stock'],function(){
             Route::get('list','StockController@index')->name('index');
             Route::get('list/by/ajr','StockController@stockListByAjaxResponse')->name('list.ajaxresponse');
+            
+            Route::get('add/initial/stock','StockController@addInitialStock')->name('add.initial.stock');
+            Route::get('render/single/product/details','StockController@renderSingleProductDetial')->name('render.single.product.details');
         });
     /*
     |-----------------------------------

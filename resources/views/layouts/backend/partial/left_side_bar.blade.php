@@ -318,11 +318,26 @@
             <!---Expense--->
 
             <!---Stock--->
-            <li class="sidenav-item">
-                <a href="{{route('admin.product.stock.index')}}" class="sidenav-link">
-                <i class="sidenav-icon feather icon-type"></i>
-                <div>Stock</div>
+            <li class="sidenav-item   @if(request()->is('admin/stock/*')) open active @endif ">
+                <a href="javascript:" class="sidenav-link sidenav-toggle">
+                    <i class="sidenav-icon feather icon-home"></i>
+                    <div>Stock</div>
+                    <div class="pl-1 ml-auto">
+                        <!-- <div class="badge badge-danger">Hot</div> -->
+                    </div>
                 </a>
+                <ul class="sidenav-menu">
+                    <li class="sidenav-item   @if(request()->is('admin/stock/*')) active @endif ">
+                        <a href="{{route('admin.product.stock.index')}}" class="sidenav-link">
+                            <div>Stock List</div>
+                        </a>
+                    </li> 
+                    <li class="sidenav-item   @if(request()->is('admin/stock/*')) active @endif ">
+                        <a href="{{route('admin.product.stock.add.initial.stock')}}" class="sidenav-link">
+                            <div>Add Initial Stock</div>
+                        </a>
+                    </li> 
+                </ul>
             </li>
             <!---Stock--->
 

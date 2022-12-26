@@ -28,7 +28,7 @@ trait CustomerValidationTrait
             'phone' => "$req|max:15|unique:customers,phone",
             'phone_2' => 'nullable|max:15|unique:customers,phone_2',
             'unique_id_no' => 'nullable|max:30|unique:customers,unique_id_no',
-            'previous_due' => 'nullable|numeric', //'required|numeric|between:0,99.99',
+            'previous_due' => 'required', //'required|numeric|between:0,99.99',
             'previous_due_date' => 'nullable|date_format:Y-m-d', //'date_format:m/d/Y',
             'next_payment_date' => 'nullable|date_format:Y-m-d', //'date_format:m/d/Y',
             //$request->newpasswordconfirm === 'yes' ? 'required': 'nullable',
