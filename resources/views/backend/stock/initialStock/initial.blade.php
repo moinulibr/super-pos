@@ -213,12 +213,23 @@
             if (String.fromCharCode(e.keyCode).match(/[^0-9\.]/g)) return false;
         });
         
+        $(document).on('click','.cancelInsertStock',function(e){
+            $('.search').val('');
+            searchFunctional(e);
+        });
         //search 
         var ctrlDown = false,ctrlKey = 17,cmdKey = 91,vKey = 86,cKey = 67;xKey = 88;
         $(document).on('keypress keyup','.search',function(e){
+            searchFunctional(e);
+        });
+
+        function searchFunctional(e)
+        {
+            $('.addButton').attr('disabled',true);
+            $('.disabledAllInputField').attr('disabled',true);
             if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
             if (ctrlDown && (e.keyCode == vKey || e.keyCode == cKey || e.keyCode == xKey)) return false;
-            var search = $(this).val();
+            var search = $('.search').val();
             var url = $('.renderSingleProductDetialsUrl').val();
             $.ajax({
                 url: url,
@@ -228,17 +239,25 @@
                 type: "GET",
                 datatype:"HTML",
                 success: function(response){
-                    $.notify(response.message, response.type);
                     if(response.status == true)
                     {
+                        //$.notify(response.message, response.type);
                         $('.renderHereSingleProductDetailsForAddingStock').html(response.html);
                     }else{
                         $.notify(response.message, response.type);
                         $('.renderHereSingleProductDetailsForAddingStock').html(response.form);
                     }
+                    if(response.action == true)
+                    {
+                        $('.addButton').removeAttr('disabled');
+                        $('.disabledAllInputField').removeAttr('disabled');
+                    }else{
+                        $('.addButton').attr('disabled',true);
+                        $('.disabledAllInputField').attr('disabled',true);
+                    }
                 },
             });
-        });
+        }
         //-----------------------------------------------------------------------
         
         $(document).on("submit",'.storeProductData',function(e){

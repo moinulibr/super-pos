@@ -124,7 +124,7 @@ class StockController extends Controller
         ->select('id','name','label','branch_id','deleted_at')
         ->orderBy('custom_serial','ASC')
         ->get();
-        $data['productId'] = 0;
+        
         $form = view('backend.stock.initialStock.stockForm',$data)->render();
         $search     = $request->search ?? NULL;
         if($request->ajax())
@@ -140,22 +140,35 @@ class StockController extends Controller
                 if($product)
                 {
                     $data['product'] = $product;
-                    $data['productId'] = 1;
                     $html = view('backend.stock.initialStock.addStock',$data)->render();
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'product found',
-                        'type' => 'success',
-                        'html' => $html,
-                        'form' => $form,
-                    ]);
+                    if($product->initial_stock > 0)
+                    {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Already added  initial stock of this product',
+                            'type' => 'success',
+                            'html' => '',
+                            'form' => $form,
+                            'action' => false,
+                        ]);
+                    }else{
+                        return response()->json([
+                            'status' => true,
+                            'message' => 'Product found',
+                            'type' => 'success',
+                            'html' => $html,
+                            'form' => $form,
+                            'action' => true,
+                        ]);
+                    }
                 }else{
                     return response()->json([
                         'status' => false,
                         'message' => 'Product not found!',
                         'type' => 'error',
                         'html' => '',
-                        'form' => $form
+                        'form' => $form,
+                        'action' => false,
                     ]);
                 }
             } 
@@ -165,7 +178,8 @@ class StockController extends Controller
             'message' => 'Not Searching..',
             'type' => 'error',
             'html' => '',
-            'form' => $form
+            'form' => $form,
+            'action' => false,
         ]);
     }
 }

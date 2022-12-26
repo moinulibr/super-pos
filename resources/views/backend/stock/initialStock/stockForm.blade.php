@@ -13,7 +13,8 @@
                 <th>Stock Quantity</th>
                 @foreach ($stocks as $item)
                     <td>
-                        <input  class="from-control inputFieldValidatedOnlyNumeric" name="" type="text" step="any" style="width:95%;">
+                        <input type="hidden" name="stock_id[]" value="{{$item->id}}">
+                        <input name="stock_id_{{$item->id}}" class="from-control inputFieldValidatedOnlyNumeric disabledAllInputField" disabled  type="text" step="any" style="width:95%;">
                     </td>
                 @endforeach
             </tr>
@@ -21,7 +22,7 @@
                 <th>Alert Quantity</th>
                 @foreach ($stocks as $item)
                     <td>
-                        <input  class="from-control inputFieldValidatedOnlyNumeric" name="" type="text" step="any" style="width:95%;">
+                        <input name="alert_stock_id_{{$item->id}}" class="from-control inputFieldValidatedOnlyNumeric disabledAllInputField" disabled  type="text" step="any" style="width:95%;">
                     </td>
                 @endforeach
             </tr>
@@ -31,7 +32,7 @@
                 <td colspan="{{count($stocks)}}"></td>
                 <td>
                     <button type="button" class="btn btn-danger cancelInsertStock">Cancel</button>
-                    <input type="submit" class="btn btn-primary" disabled value="Add Inital Stock">
+                    <input type="submit" class="btn btn-primary addButton" disabled value="Add Inital Stock">
                 </td>
             </tr>
         </tfoot>
