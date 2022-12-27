@@ -29,6 +29,7 @@ class CreateProductStocksTable extends Migration
 
                 $table->tinyInteger('stock_lock_applicable')->default(0)->comment('0 = is regular process, 1= activate, never transfer or sell from this stock');
                 $table->decimal('stock_lock_quantity',20,3)->nullable();
+                $table->decimal('alert_quantity',20,3)->default(0);
 
                 $table->string('verified',25)->nullable();
                 $table->integer('verified_by')->nullable();

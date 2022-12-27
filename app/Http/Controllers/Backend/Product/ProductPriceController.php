@@ -72,7 +72,6 @@ class ProductPriceController extends Controller
                     $nps->available_base_stock = 0;
                     $nps->used_stock        = 0;
                     $nps->used_base_stock   = 0;
-                    $nps->used_base_stock   = 0;
                     $nps->save();
                     $newProductStockId = $nps->id;
                 } 

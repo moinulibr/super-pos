@@ -1,4 +1,4 @@
-<form action="{{route('admin.product.price.store')}}" method="POST" class="updateAllProductPrice">
+<form action="{{route('admin.product.stock.store.initial.stock')}}" method="POST" class="storeInitialProductStock">
     @csrf
     <div class="card" style="margin-top:0px;margin-bottom:0px;padding: 10px;">
         <div class="container-fliud">
@@ -51,7 +51,8 @@
             <div class="wrapper row">
                 
                 <div class="col-md-12">
-                   
+                   <input type="hidden" name="product_id" value="{{$product->id}}">
+                   <input type="hidden" name="unit_id" value="{{$product->unit_id}}">
                     @include('backend.stock.initialStock.stockForm')
                     
                 </div>

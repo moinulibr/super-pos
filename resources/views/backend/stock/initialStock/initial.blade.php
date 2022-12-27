@@ -215,6 +215,7 @@
         
         $(document).on('click','.cancelInsertStock',function(e){
             $('.search').val('');
+            $('.search').focus();
             searchFunctional(e);
         });
         //search 
@@ -260,18 +261,11 @@
         }
         //-----------------------------------------------------------------------
         
-        $(document).on("submit",'.storeProductData',function(e){
+        $(document).on("submit",'.storeInitialProductStock',function(e){
             e.preventDefault();
             var form = $(this);
-            /* var url = form.attr("action");
-            var type = form.attr("method");
-            var data = form.serialize(); */
             $('.color-red').text('');
             $.ajax({
-                /*url: url,
-                data: data,
-                type: type,
-                datatype:"JSON", */
                 url: $(this).attr('action'),
                 type: 'POST',
                 enctype: 'multipart/form-data',
@@ -293,19 +287,15 @@
                     else if(response.status == true)
                     {
                         form[0].reset();
-                        //$('.alert_success_message_div').show();
-                        //$('.success_message_text').text(response.message);
                         $.notify(response.message, response.type);
-                        //$('#addProductModal').html(response).modal('hide');
-                        setTimeout(function(){
+                        /* setTimeout(function(){
                             $('#addProductModal').modal('hide');//hide modal
                             productList();
                             //window.location = redirectUrl;
-                        },1000);
-                        
-                        /*setTimeout(function () {
-                            window.location = redirectUrl;
-                        }, 1000);*/
+                        },200); */
+                        $('.search').val('');
+                        $('.search').focus();
+                        searchFunctional(e);
                     }
                 },
                 complete:function(){
@@ -321,7 +311,6 @@
                 });
             }
         });
-
         //-----------------------------------------------------------------------
 
 

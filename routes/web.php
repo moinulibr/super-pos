@@ -542,6 +542,7 @@ Route::group(['middleware' => ['auth']], function ()
             
             Route::get('add/initial/stock','StockController@addInitialStock')->name('add.initial.stock');
             Route::get('render/single/product/details','StockController@renderSingleProductDetial')->name('render.single.product.details');
+            Route::post('store/initial/stock','StockController@storeInitialStock')->name('store.initial.stock');
         });
     /*
     |-----------------------------------

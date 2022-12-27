@@ -10,6 +10,8 @@ use App\Models\Backend\Stock\Stock;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Product\Product;
 use App\Models\Backend\Supplier\Supplier;
+use App\Models\Backend\Stock\ProductStock;
+use App\Models\Backend\Stock\StockHistory;
 use App\Models\Backend\ProductAttribute\Brand;
 use App\Models\Backend\Supplier\SupplierGroup;
 use App\Models\Backend\ProductAttribute\Category;
@@ -104,6 +106,8 @@ class StockController extends Controller
     }
 
 
+
+    //add initial stock 
     public function addInitialStock()
     {
         $data['stocks'] = Stock::where('status',1)
@@ -112,10 +116,10 @@ class StockController extends Controller
         ->select('id','name','label','branch_id','deleted_at')
         ->orderBy('custom_serial','ASC')
         ->get();
-        $data['productId'] = 0;
         return view('backend.stock.initialStock.initial',$data);
     } 
     
+    //render single product details
     public function renderSingleProductDetial(Request $request)
     {
         $data['stocks'] = Stock::where('status',1)
@@ -182,4 +186,88 @@ class StockController extends Controller
             'action' => false,
         ]);
     }
+
+    //store initial stock
+    public function storeInitialStock(Request $request)
+    {
+        $totalInititalStock = 0;
+        $totalAlertStock = 0;
+        foreach($request->stock_id as $stockId)
+        {
+            $totalInititalStock += $request->input('quantity_stock_id_'.$stockId) ?? 0;
+            $totalAlertStock += $request->input('alert_stock_id_'.$stockId) ?? 0;
+            //check product stock is exist or not,
+                //if not exist, then add in the product stock table 
+            $podctStock = ProductStock::where('stock_id',$stockId)   
+                ->where('product_id',$request->product_id)
+                ->where('branch_id',authBranch_hh()) 
+                ->where('status',1)
+                ->first();
+            if(!$podctStock)
+            {
+                $nps = new ProductStock();
+                $nps->product_id        = $request->product_id;
+                $nps->branch_id         = authBranch_hh();
+                $nps->stock_id          = $stockId;
+                $nps->status            = 1;
+                $nps->available_base_stock = $request->input('quantity_stock_id_'.$stockId) ?? 0;
+                $nps->alert_quantity = $request->input('alert_stock_id_'.$stockId) ?? 0;
+                $nps->used_stock        = 0;
+                $nps->used_base_stock   = 0;
+                $nps->save();
+                $this->storeProductStockHistoryWhenInitialStockIsAdded($stockId,$nps->id,$request->product_id, $request->input('quantity_stock_id_'.$stockId) ?? 0);
+            }else{
+                $podctStock->available_base_stock = $request->input('quantity_stock_id_'.$stockId) ?? 0;
+                $podctStock->alert_quantity = $request->input('alert_stock_id_'.$stockId) ?? 0;
+                $podctStock->save();
+                $this->storeProductStockHistoryWhenInitialStockIsAdded($stockId,$podctStock->id,$request->product_id,$request->input('quantity_stock_id_'.$stockId) ?? 0);
+            }
+        }//end foreach
+
+        $product = Product::select('id','initial_stock','alert_stock','available_base_stock')->where('id',$request->product_id)->first();
+        if($product)
+        {
+            $product->initial_stock = $totalInititalStock;
+            $product->alert_stock = $totalAlertStock;
+            $product->available_base_stock = $totalInititalStock;
+            $product->save();
+        }
+        return response()->json([
+            'status' => true,
+            'type' => 'success',
+            'message' => "Initial Stock Added successfully"
+        ]);
+    }
+
+
+    /**
+     * //its from initialStockTypeIncrement trait.....
+     * add stock history
+     * when changing stock (product_stocks), then store in as history
+     */
+    private function storeProductStockHistoryWhenInitialStockIsAdded($stockId,$productStockId,$productId, $quantity)
+    {   
+        $stock = new StockHistory();
+        $stock->stock_id                = $stockId;
+        $stock->product_stock_id        = $productStockId;
+        $stock->product_id              = $productId;
+        $stock->stock_changing_type_id  = 1;
+        $stock->stock_changing_sign     = '+';
+        $stock->stock_changing_history  = json_encode(['']);
+        $stock->stock                   = $quantity;
+        $stock->status                  = 1;
+        $stock->branch_id               = authBranch_hh();
+        $stock->created_by              = authId_hh();
+        $stock->save();
+        return $stock;
+        /* $this->product_stock_id_FSCT;//for history
+        $this->stock_changing_type_id_FSCT = 1;//for history
+        $this->stock_changing_sign_FSCT    = '+';//for history
+        $this->stock_changing_history_FSCT = [];//for history */
+    }
+
+
+
+
+
 }

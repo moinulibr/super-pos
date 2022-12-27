@@ -14,7 +14,7 @@
                 @foreach ($stocks as $item)
                     <td>
                         <input type="hidden" name="stock_id[]" value="{{$item->id}}">
-                        <input name="stock_id_{{$item->id}}" class="from-control inputFieldValidatedOnlyNumeric disabledAllInputField" disabled  type="text" step="any" style="width:95%;">
+                        <input name="quantity_stock_id_{{$item->id}}" class="from-control inputFieldValidatedOnlyNumeric disabledAllInputField" disabled  type="text" step="any" style="width:95%;">
                     </td>
                 @endforeach
             </tr>
