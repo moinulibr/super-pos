@@ -693,6 +693,7 @@
     */
         jQuery('#quotation-popup').css('overflow-y', 'auto');
         jQuery(document).on('click','.quotationModalOpen',function(){
+            normalPrintAfterSellIsDisabled();   
             var customer_id = jQuery('.customer_id option:selected').val();
             var totalItem = nanCheck(parseFloat(jQuery('.totalItemFromSellCartList').text()));
             if(!totalItem){
@@ -714,6 +715,9 @@
                     if(response.status == true)
                     {
                         jQuery('.quotation_data_response').html(response.list);
+                        
+                        normalPrintAfterSellIsEnabled();
+                        jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
                     }
                 },
                 complete:function(){
@@ -736,6 +740,7 @@
     */
         jQuery('#payment-popup').css('overflow-y', 'auto');
         jQuery(document).on('click','.paymentModalOpen',function(){
+            normalPrintAfterSellIsDisabled();   
             jQuery('.payment_processing_gif').fadeIn();
             setTimeout(function() 
             {   
@@ -1237,7 +1242,19 @@
 
 
 
-    
+        function normalPrintAfterSellIsDisabled()
+        {
+            jQuery('.normalPriceFromSellList').removeAttr('href');
+            jQuery('.normalPriceFromSellList').css({
+                'cursor':'not-allowed !important'
+            });
+        } 
+        function normalPrintAfterSellIsEnabled()
+        {
+            jQuery('.normalPriceFromSellList').css({
+                'cursor':'pointer !important'
+            });
+        }
     /*
     |-----------------------------------------------
     | finally submit sell (final sell and quotation)
@@ -1245,6 +1262,7 @@
     */ 
         jQuery(document).on("submit",'.storeDataFromSellCart',function(e){
             e.preventDefault();
+            normalPrintAfterSellIsDisabled();              
             var form = jQuery(this);
             var url = form.attr("action");
             var type = form.attr("method");
@@ -1264,11 +1282,14 @@
                         jQuery('.display_added_to_cart_list').html(response.list);
                         jQuery('#payment-popup').modal('hide');
                         jQuery('#quotation-popup').modal('hide');
-
+                        
                         makingEmptyshippingRelatedInformation();
                         makingZeroInShippingCostOtherCostDiscountAndVat();
                         finalCalculationForThisInvoice();
                         jQuery.notify(response.message, response.type);
+
+                        normalPrintAfterSellIsEnabled();
+                        jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
                     }
                 },
                 complete:function(){

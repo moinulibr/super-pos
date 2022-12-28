@@ -182,7 +182,7 @@ trait StoreDataFromSellCartTrait
             $this->managingCustomerCalculation($this->sellCreateFormData['customer_id'],$dbField = 17 ,$calType = 1,$sellInvoice->due_amount);
             //calculation in the customer table
         }//calculation in the customer table
-        return $sellCart;
+        return $sellInvoice->id;
     }
 
 

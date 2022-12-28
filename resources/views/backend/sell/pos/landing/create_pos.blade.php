@@ -201,6 +201,22 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </div>
                             </div>
                             <!--session-->
+                            
+                            <!--Last Sell List-->
+                            <div class="topbar-item">
+                                <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#LastsellList">
+                                    <span class="symbol symbol-35 symbol-light-success">
+                                        <span class="symbol-label bg-success font-size-h5">
+                                            <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" fill="#ffff" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M9.828 3h3.982a2 2 0 0 1 1.992 2.181l-.637 7A2 2 0 0 1 13.174 14H2.826a2 2 0 0 1-1.991-1.819l-.637-7a1.99 1.99 0 0 1 .342-1.31L.5 3a2 2 0 0 1 2-2h3.672a2 2 0 0 1 1.414.586l.828.828A2 2 0 0 0 9.828 3zm-8.322.12C1.72 3.042 1.95 3 2.19 3h5.396l-.707-.707A1 1 0 0 0 6.172 2H2.5a1 1 0 0 0-1 .981l.006.139z"
+                                                ></path>
+                                            </svg>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <!--Last Sell List-->
 
                             <!--logout-->
                             <div class="dropdown">
@@ -383,9 +399,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <a href="{{ route('admin.sell.regular.pos.pos.print.from.direct.sell.cart') }}" class="print normal_print_direct_from_sell_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;" target="_blank">
                                                 POS Print
                                             </a>
-                                            <a class="pos_print_direct_from_sell_cart btn btn-primary btnFullWidth white" style="cursor:not-allowed !important;margin-top:1%;color:#d1cdcd;" data-href="{{ route('admin.sell.regular.pos.normal.print.from.direct.sell.cart') }}">
+                                            <a class="normalPriceFromSellList pos_print_direct_from_sell_cart btn btn-primary btnFullWidth white" target="_blank" style="cursor:not-allowed !important;margin-top:1%;color:#d1cdcd;">
                                                 Print
                                             </a>
+                                            {{-- data-href="{{ route('admin.sell.regular.pos.normal.print.from.direct.sell.cart') }}"--}}
                                         </div>
 
                                         <div class="col-8">

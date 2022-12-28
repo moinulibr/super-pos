@@ -334,7 +334,8 @@ class PosController extends Controller
         DB::beginTransaction();
         try {
             $this->sellCreateFormData = $request;
-            $this->storeSessionDataFromSellCart();   
+            $sellLastId = $this->storeSessionDataFromSellCart();  
+            $sellNormalPrintUrl = route('admin.sell.regular.normal.print.from.sell.list',$sellLastId); 
             DB::commit();
             
             session([sellCreateCartSessionName_hh() => []]);
@@ -344,6 +345,7 @@ class PosController extends Controller
             return response()->json([
                 'status'    => true,
                 'list'      => $list,
+                'normalPrintUrl'=> $sellNormalPrintUrl,
                 'message'   => "Action submited successfully!",
                 'type'      => 'success'
             ]);
