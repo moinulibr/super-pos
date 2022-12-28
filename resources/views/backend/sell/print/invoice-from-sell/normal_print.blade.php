@@ -145,10 +145,10 @@ html {
                                             <td style="text-align: center;">{{$item->sold_price}}</th>
                                             <td style="text-align: right;"> 
                                                 {{$item->total_sold_price}}
-                                                @if ($item->total_discount > 0)
+                                                {{--- @if ($item->total_discount > 0)
                                                     <br/>
                                                     (Less : {{ $item->total_discount }})
-                                                @endif 
+                                                @endif ---}}
                                             </th>
                                         </tr> 
                                         @endforeach
@@ -183,16 +183,16 @@ html {
                                             </th>
                                             <th style="text-align: center;">
                                                 <span style="margin-right:5px;">
-                                                    Current Due :  {{ $data->due_amount ?? 0.00 }},     
+                                                  <small> Invoice Current Due </small> :  {{ $data->due_amount ?? 0.00 }},     
                                                 </span>    
                                                 <span style="margin-left:5px;margin-right:5px;">
-                                                    Previous Due :  {{$data->customer ? $data->customer->current_total_due : 0.0}},     
+                                                   <small> Previous Invoice Due </small> :  {{$data->customer ? $data->customer->current_total_due : 0.0}}    
                                                 </span>  
                                             </th>
                                             <th colspan="2" style="text-align: right;">
                                                 Total Due Amount
                                             </th>
-                                            <th style="text-align: right;">{{ $data->customer ? $data->customer->total_due : 0.0 }}</th>
+                                            <th style="text-align: right;">{{ $data->customer ? $data->customer->totalDueAmount() : 0.0 }}</th>
                                         </tr>
                                     </tbody>
                                 </table>

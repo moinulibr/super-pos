@@ -26,7 +26,8 @@
                         </td>
                         <td style="width:1%">:</td>
                         <td style="width:18%;background-color:#b72323;color:#ffff;">
-                            {{$customer->total_due}}
+                            {{$customer->totalDueAmount()}}
+                           {{--  {{ number_format($customer->total_due + $customer->total_loan,2,'.','') }} --}}
                         </td>
                     <tr>
                         <td style="width:17%">Address</td>

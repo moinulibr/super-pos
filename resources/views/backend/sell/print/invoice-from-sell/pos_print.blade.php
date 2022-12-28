@@ -226,10 +226,10 @@
                 <td class="tableitem item-total" style="padding-bottom:1px;padding-top:3px;border-bottom: 0.10px dotted #c3c3c3;text-align:right;padding-bottom:2px;font-size: 10px !important;">
                     <span style="">
                         {{$item->total_sold_price}} 
-                        @if ($item->total_discount > 0)
+                       {{--- @if ($item->total_discount > 0)
                             <br/>
                             (Less : {{ $item->total_discount }})
-                        @endif
+                        @endif ---}}
                     </span>
                 </td>
             </tr>

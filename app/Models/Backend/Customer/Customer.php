@@ -44,4 +44,9 @@ class Customer extends Model
     {
         return $this->hasMany(CustomerTransactionHistory::class,'user_id','id');
     }
+
+    public function totalDueAmount()
+    {
+        return number_format($this->total_due + $this->total_loan,2,'.','');
+    }
 }

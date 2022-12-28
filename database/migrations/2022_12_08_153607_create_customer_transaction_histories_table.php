@@ -17,7 +17,7 @@ class CreateCustomerTransactionHistoriesTable extends Migration
             Schema::create('customer_transaction_histories', function (Blueprint $table) {
                 $table->id();
                 $table->integer('branch_id')->nullable();
-                $table->integer('ledger_page_no')->nullable()->comment('ledger_page_no = manual ledger page no');
+                $table->string('ledger_page_no',30)->nullable()->comment('ledger_page_no = manual ledger page no');
                 $table->string('next_payment_date',30)->nullable();
                 $table->string('created_date',30)->nullable();
                 //customer transaction statement (cts)
