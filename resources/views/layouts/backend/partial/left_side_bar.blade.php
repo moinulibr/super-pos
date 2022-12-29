@@ -17,7 +17,7 @@
             <!---sales--->
             <li class="sidenav-item "> {{---<li class="sidenav-item open active">---}}
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
-                    <i class="sidenav-icon feather icon-home"></i>
+                    <i class="sidenav-icon feather icon-shopping-cart"></i>
                     <div>Sales</div>
                     <div class="pl-1 ml-auto">
                         <!-- <div class="badge badge-danger">Hot</div> -->
@@ -60,9 +60,9 @@
             <!---purchase--->
             <li class="sidenav-item">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
-                    <i class="sidenav-icon feather icon-home"></i>
+                    <i class="sidenav-icon feather icon-shopping-cart"></i>
                     <div>Purchase</div>
-                    <div class="pl-1 ml-auto">
+                    <div class="pl-1 ml-auto"> 
                         <!-- <div class="badge badge-danger">New</div> -->
                     </div>
                 </a>
@@ -135,7 +135,7 @@
             <!---Supplier--->
             <li class="sidenav-item @if(request()->is('admin/supplier/*')) active @endif ">
                 <a href="{{route('admin.supplier.index')}}" class="sidenav-link">
-                <i class="sidenav-icon feather icon-type"></i>
+                <i class="sidenav-icon feather icon-users"></i>
                 <div>Supplier</div>
                 </a>
             </li>
@@ -144,7 +144,7 @@
             <!---Customers--->
             <li class="sidenav-item   @if(request()->is('admin/customer/*')) open active @endif ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
-                    <i class="sidenav-icon feather icon-home"></i>
+                    <i class="sidenav-icon feather icon-user-check"></i>
                     <div>Customers</div>
                     <div class="pl-1 ml-auto">
                         <!-- <div class="badge badge-danger">Hot</div> -->
@@ -220,7 +220,7 @@
                 || request()->is('admin/product/view')
                 )active @endif">
                 <a href="{{route('admin.product.index')}}" class="sidenav-link">
-                <i class="sidenav-icon feather icon-type"></i>
+                <i class="sidenav-icon feather icon-layers"></i>
                 <div>Products</div>
                 </a>
             </li>
@@ -230,7 +230,7 @@
             <!---Reference--->
             <li class="sidenav-item   @if(request()->is('admin/reference/*')) open active @endif ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
-                    <i class="sidenav-icon feather icon-home"></i>
+                    <i class="sidenav-icon feather icon-user"></i>
                     <div>Reference</div>
                     <div class="pl-1 ml-auto">
                         <!-- <div class="badge badge-danger">Hot</div> -->
@@ -320,7 +320,7 @@
             <!---Stock--->
             <li class="sidenav-item   @if(request()->is('admin/stock/*')) open active @endif ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
-                    <i class="sidenav-icon feather icon-home"></i>
+                    <i class="sidenav-icon feather icon-codepen"></i>
                     <div>Stock</div>
                     <div class="pl-1 ml-auto">
                         <!-- <div class="badge badge-danger">Hot</div> -->
@@ -464,7 +464,7 @@
                 ) open active @endif
              ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
-                    <i class="sidenav-icon feather icon-home"></i>
+                    <i class="sidenav-icon feather icon-tag"></i>
                     <div>Prouct Attribute</div>
                     <div class="pl-1 ml-auto">
                        {{--  <div class="badge badge-danger">Hot</div> --}}

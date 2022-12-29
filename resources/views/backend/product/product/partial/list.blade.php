@@ -27,8 +27,7 @@
                     <td style="width:3%;">
                         <div class="btn-group btnGroupForMoreAction">
                             <button type="button" class="btn btn-sm btn-see-more-action" data-toggle="dropdown" aria-expanded="true">
-                                <i class="fas fa-ellipsis-h"></i>
-                                {{-- <i class="fas fa-cogs"></i> --}}
+                                <i class="fas fa-cog"></i>
                             </button>
                             <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
                                 <a class="dropdown-item singleShowModal" data-id="{{$item->id}}"  href="javascript:void(0)">View</a>

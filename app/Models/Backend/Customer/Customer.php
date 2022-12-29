@@ -47,6 +47,7 @@ class Customer extends Model
 
     public function totalDueAmount()
     {
-        return number_format($this->total_due + $this->total_loan,2,'.','');
+        return number_format((($this->total_due + $this->total_loan) - ($this->total_return + $this->total_advance) ),2,'.','');
     }
+
 }
