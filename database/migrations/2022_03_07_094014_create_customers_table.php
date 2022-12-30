@@ -18,6 +18,7 @@ class CreateCustomersTable extends Migration
                 $table->id();
                 $table->integer('branch_id')->nullable();
                 $table->integer('customer_type_id')->nullable();
+                $table->string('ledger_page_no')->nullable();
                 $table->string('custom_id',30)->nullable();
                 $table->string('name',150)->nullable();
                 $table->string('email')->nullable();

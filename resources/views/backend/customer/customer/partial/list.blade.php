@@ -7,7 +7,7 @@
                 <th  style="width:3%;">C.ID</th>
                 <th>Name</th>
                 <th>
-                    <small>Customer Type</small>
+                    <small>Ledger Page No</small>
                 </th>
                 <th>Phone</th>
                {{--  <th>Email</th> --}}
@@ -52,9 +52,10 @@
                         {{$item->name}}
                     </td> 
                     <td>
-                        <small>
+                        {{$item->ledger_page_no}}
+                        {{-- <small>
                             {{$item->customerTypies ? $item->customerTypies->name : ""}}
-                        </small>
+                        </small> --}}
                     </td> 
                     <td>
                         {{$item->phone}}
