@@ -102,11 +102,11 @@
                                     <tr>
                                         <th>{{productCustomCodeLabel_hh()}}</th>
                                         <th style="width:30%;">Product</th>
-                                        <th><small>Delivery qty</small></th>
+                                        <th><small>Unit</small></th>
+                                        <th><small>Delivered qty</small></th>
                                         <th><small>Sell Quantity</small></th>
                                         <th>Sell Price</th>
-                                        <th>Qty Price</th>
-                                        <th  style="text-align:left;">SubTotal</th>
+                                        <th style="text-align:left;">SubTotal</th>
                                         <th style="background-color:#c19696;color:#ffff;"><small>Return Qty</small></th>
                                         <th style="background-color:#c19696;color:#ffff;"><small>Return Amount</small></th>
                                         <th style="text-align:left;background-color:#7ab57a;color:#ffff;">Line Total</th>
@@ -127,15 +127,17 @@
                                             @endif
                                         </td>
                                         <td>
-                                            -
-                                        </td>
-                                        <td style="text-align: center">
-                                            {{$item->quantity}}
-                                            {{-- @if (array_key_exists('unitName',$cats))
+                                            @if (array_key_exists('unitName',$cats))
                                                 <small>{{$cats['unitName']}}</small>
                                                 @else
                                                 NULL
-                                            @endif --}}
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{$item->delivered_qty}}
+                                        </td>
+                                        <td style="text-align: center">
+                                            {{$item->quantity}}
                                         </td>
                                         <td style="text-align: center;">
                                             {{$item->sold_price}}
@@ -143,17 +145,17 @@
                                         <td style="text-align: center;">
                                             {{ number_format(($item->sold_price * $item->quantity),2,'.', '')}}
                                         </td>
-                                        <td style="text-align: center;">
-                                            {{$item->total_sold_price}}   
+                                        {{-- <td style="text-align: center;">
+                                            {{$item->total_selling_amount}}   
+                                        </td> --}}
+                                        <td style="text-align: center;background-color:#c19696;color:#ffff;">
+                                            {{$item->total_refunded_qty}} 
                                         </td>
                                         <td style="text-align: center;background-color:#c19696;color:#ffff;">
-                                            0
-                                        </td>
-                                        <td style="text-align: center;background-color:#c19696;color:#ffff;">
-                                           0
+                                            {{$item->total_refunded_amount}} 
                                         </td>
                                         <td style="text-align: center;background-color:#7ab57a;color:#ffff;">
-                                            {{$item->total_sold_price}}
+                                            {{$item->total_sold_amount}}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -279,7 +281,7 @@
                                         </td>
                                         <td></td>
                                         <td style="text-align:right;background-color: #c19696;color:#ffff;">
-                                            0
+                                            {{$data->total_refunded_amount}}
                                         </td>
                                     </tr>
                                     <tr>

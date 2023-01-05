@@ -71,8 +71,13 @@ trait StoreDataFromSellCartTrait
             }
         }//end foreach
         
+        $sellInvoice->total_selling_purchase_amount = $this->totalPurchasePriceOfAllQuantityOfThisInvoice;
         $sellInvoice->total_purchase_amount = $this->totalPurchasePriceOfAllQuantityOfThisInvoice;
-        $sellInvoice->total_invoice_profit = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
+        
+        $sellInvoice->total_selling_profit = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
+        $sellInvoice->total_profit_from_product = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
+        $sellInvoice->total_profit = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
+        
         $sellInvoice->save();
 
         //general statement- ledger 
@@ -197,6 +202,7 @@ trait StoreDataFromSellCartTrait
 
         $productStock->product_id = $cart['product_id'];
         
+        $productStock->total_sell_qty = $qty;
         $productStock->total_quantity = $qty;
 
         $totalPurchasePrice = $cart['purchase_price'] * $qty;
@@ -204,9 +210,15 @@ trait StoreDataFromSellCartTrait
         $productStock->mrp_price = $cart['mrp_price'];
         $productStock->regular_sell_price = $cart['sell_price'];
         $productStock->sold_price = $cart['final_sell_price'];
-        $productStock->total_sold_price = $totalSoldPrice;//$cart['selling_final_amount'];
+
+        $productStock->total_selling_amount = $totalSoldPrice;//$cart['selling_final_amount'];
+        $productStock->total_sold_amount = $totalSoldPrice;//$cart['selling_final_amount'];
         $productStock->purchase_price = $cart['purchase_price'];
-        $productStock->total_purchase_price = $totalPurchasePrice;//$cart['total_purchase_price_of_all_quantity'];
+        $productStock->total_purchase_amount = $totalPurchasePrice;//$cart['total_purchase_price_of_all_quantity'];
+        $productStock->total_selling_purchase_amount = $totalPurchasePrice;//$cart['total_purchase_price_of_all_quantity'];
+        
+        $productStock->total_selling_profit = $totalSoldPrice - $totalPurchasePrice;
+        $productStock->total_profit_from_product = $totalSoldPrice - $totalPurchasePrice;
         $productStock->total_profit = $totalSoldPrice - $totalPurchasePrice;
 
         
@@ -290,14 +302,23 @@ trait StoreDataFromSellCartTrait
         $productStock->main_product_stock_id = $cart['selling_main_product_stock_id'];
         $productStock->product_stock_type = $cart['total_qty_from_others_product_stock'] == 0 ? 1 : 2;
         $productStock->custom_code = $cart['custom_code'];
+
         $productStock->quantity = $cart['final_sell_quantity'];
+        $productStock->total_quantity = $cart['final_sell_quantity'];
+
         $productStock->sold_price = $cart['final_sell_price'];
         $productStock->discount_amount = $cart['discount_amount'];
         $productStock->discount_type = $cart['discount_type'];
         $productStock->total_discount = $cart['total_discount_amount'];
         $productStock->reference_commission = 0;//$cart[''];
-        $productStock->total_sold_price = $cart['selling_final_amount'];
-        $productStock->total_purchase_price = $cart['total_purchase_price_of_all_quantity'];
+
+        $productStock->total_selling_amount = $cart['selling_final_amount'];
+        $productStock->total_sold_amount = $cart['selling_final_amount'];
+        $productStock->total_selling_purchase_amount = $cart['total_purchase_price_of_all_quantity'];
+        $productStock->total_purchase_amount = $cart['total_purchase_price_of_all_quantity'];
+
+        $productStock->total_selling_profit = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
+        $productStock->total_profit_from_product = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
         $productStock->total_profit = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
         
         $this->totalPurchasePriceOfAllQuantityOfThisInvoice += $cart['total_purchase_price_of_all_quantity'];
@@ -342,8 +363,12 @@ trait StoreDataFromSellCartTrait
         $makeInvoice = date("iHsymd").$rand;
         $sellInvoice->invoice_no = $makeInvoice;
         $sellInvoice->total_item = $sellInvoiceSummeryCart['totalItem'];
+        $sellInvoice->sell_quantity = $sellInvoiceSummeryCart['totalQuantity'];
         $sellInvoice->total_quantity = $sellInvoiceSummeryCart['totalQuantity'];
         $sellInvoice->subtotal = $sellInvoiceSummeryCart['lineInvoiceSubTotal'];
+        $sellInvoice->total_selling_amount = $sellInvoiceSummeryCart['lineInvoiceSubTotal'];
+        $sellInvoice->total_sold_amount = $sellInvoiceSummeryCart['lineInvoiceSubTotal'];
+
         $sellInvoice->discount_amount = $sellInvoiceSummeryCart['invoiceDiscountAmount'];
         $sellInvoice->discount_type = $sellInvoiceSummeryCart['invoiceDiscountType'];
         $sellInvoice->total_discount = $sellInvoiceSummeryCart['totalInvoiceDiscountAmount'];
