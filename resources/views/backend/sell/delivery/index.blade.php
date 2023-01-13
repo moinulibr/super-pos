@@ -47,7 +47,7 @@
                             <div class="mb-2">
                                 <label>
                                     <strong>Payment Status: </strong>
-                                    {{paymentStatus_hh($data->total_payable_amount,$data->total_paid_amount)}}
+                                    {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefund(),$data->total_paid_amount)}}
                                 </label>
                             </div>
                         </div>
@@ -92,7 +92,8 @@
                             </div>
                         </div>
                     </div>
-                    
+                    <hr>
+                    <h3 style="text-align:center;"><span style="margin-bottom:10px;border-bottom:1px solid rgba(24,28,33,.04);">Product Delivery Section</span></h3>
                     <div class="row">
                         <div class="col-md-3"></div>
                         <div class="col-md-6">

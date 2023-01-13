@@ -19,7 +19,9 @@ class CreateSellInvoicesTable extends Migration
                 $table->integer('branch_id')->nullable();
                 $table->tinyInteger('sell_type')->nullable()->comment('1=final sell, 2=quatation , 3=draft, 4=others');
                 $table->string('invoice_no',50)->nullable();
-                $table->decimal('total_item',20,2)->nullable();
+                $table->decimal('total_sell_item',20,2)->default(0)->comment('sell creating time, total sell item');
+                $table->decimal('total_refunded_item',20,2)->default(0)->comment('sell refunded time, total refunded item');
+                $table->decimal('total_item',20,2)->default(0)->comment('total_sell_item - total_refunded_item');
                 $table->decimal('sell_quantity',20,2)->default(0);
                 $table->decimal('subtotal',20,2)->default(0)->comment('only total product sell price, before discount and others cost');
                 $table->decimal('discount_amount',20,2)->default(0);
@@ -32,14 +34,15 @@ class CreateSellInvoicesTable extends Migration
                 $table->decimal('round_amount',20,2)->default(0);
                 $table->string('round_type',2)->nullable()->comment('plus(+), minus(-)');
                 $table->decimal('total_payable_amount',20,2)->default(0)->comment('(subtotal + total_vat) - (discount + shipping_cost + others_cost +- round_amount)');
-                $table->decimal('paid_amount',20,2)->default(0);
-                $table->decimal('due_amount',20,2)->default(0);
+                $table->decimal('paid_amount',20,2)->default(0)->comment('total paid amount before refunded');
+                $table->decimal('due_amount',20,2)->default(0)->comment('total due amount before refunded');
                 $table->string('adjustment_type',2)->nullable()->comment('plus(+), minus(-)');
                 $table->decimal('adjustment_amount',20,2)->default(0)->comment('invoice final less from customer');
                 //$table->decimal('refunded_amount',20,2)->nullable();
                 
                 $table->decimal('refund_charge',20,2)->default(0)->comment('take from customer(company profit)');
-                $table->decimal('total_paid_amount',20,2)->default(0);
+                $table->decimal('total_paid_amount',20,2)->default(0)->comment('total paid amount after refunded');
+                $table->decimal('total_due_amount',20,2)->default(0)->comment('total due amount after refunded');
                 $table->decimal('reference_amount',20,2)->default(0);
                 //$table->decimal('total_purchase_amount',20,2)->nullable();
                 
@@ -78,6 +81,10 @@ class CreateSellInvoicesTable extends Migration
                 $table->string('sell_date',25)->nullable();
                 //$table->tinyInteger('product_stock_type')->nullable()->comment('1=single, 2=multiple');
             
+                $table->tinyInteger('total_edit_count')->default(0);
+                $table->tinyInteger('total_return_count')->default(0);
+                $table->tinyInteger('total_delivered_count')->default(0);
+
                 $table->tinyInteger('status')->nullable();
                 $table->tinyInteger('delivery_status')->nullable();
 

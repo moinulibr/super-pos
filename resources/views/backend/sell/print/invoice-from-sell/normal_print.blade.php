@@ -135,7 +135,7 @@ html {
                                                 @endif    
                                             </th>
                                             <td style="text-align: center;">
-                                                {{$item->quantity}}
+                                                {{$item->total_quantity}}
                                                 {{-- @if (array_key_exists('unitName',$cats))
                                                     <small>{{$cats['unitName']}}</small>
                                                     @else
@@ -144,7 +144,7 @@ html {
                                             </th>
                                             <td style="text-align: center;">{{$item->sold_price}}</th>
                                             <td style="text-align: right;"> 
-                                                {{$item->total_sold_price}}
+                                                {{$item->total_sold_amount}}
                                                 {{--- @if ($item->total_discount > 0)
                                                     <br/>
                                                     (Less : {{ $item->total_discount }})
@@ -166,13 +166,13 @@ html {
                                                     Other :  {{$data->others_cost}},     
                                                 </span>  
                                                 <span style="margin-left:8px;margin-right:2px;">
-                                                    Total :  {{$data->total_payable_amount}}     
+                                                    Total :  {{$data->totalInvoicePayableAmountAfterRefund()}}     
                                                 </span> 
                                             </th>
                                             <th colspan="2" style="text-align: right;">
                                                 Subtotal
                                             </th>
-                                            <th style="text-align: right;">{{$data->subtotal}}</th>
+                                            <th style="text-align: right;">{{$data->totalInvoicePayableAmountAfterRefund()}}</th>
                                         </tr>
                                         <tr>
                                             <th colspan="2">
@@ -183,7 +183,7 @@ html {
                                             </th>
                                             <th style="text-align: center;">
                                                 <span style="margin-right:5px;">
-                                                  <small> Invoice Current Due </small> :  {{ $data->due_amount ?? 0.00 }},     
+                                                  <small> Invoice Current Due </small> :  {{ $data->total_due_amount ?? 0.00 }},     
                                                 </span>    
                                                 <span style="margin-left:5px;margin-right:5px;">
                                                    <small> Previous Invoice Due </small> :  {{$data->customer ? $data->customer->current_total_due : 0.0}}    

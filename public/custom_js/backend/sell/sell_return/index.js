@@ -8,6 +8,7 @@
         });
 
 
+    //view sell invoice return modal
     //-----------------------------------------------------------------------
         $(document).on('click','.singleSellInvoiceReturnModalView',function(e){
             e.preventDefault();
@@ -29,6 +30,7 @@
     //-----------------------------------------------------------------------
 
 
+    //
     $(document).on('keyup','.returning_qty',function(){
         var rID = $(this).data('id');
         var pressingReturnVal = $(this).val();
@@ -149,6 +151,7 @@
     });
     //check single order list
 
+    //check and uncheck item quantity for return
     function checkAndUncheckItemQuantityForReturn(rID)
     {
         var pressingQtyForReturn = parseFloat($('.returning_qty_'+rID).val());
@@ -195,8 +198,11 @@
         {
             subtotal += nanCheck(parseFloat($(this).val()));
         });
+        subtotal = subtotal.toFixed(2);
         $('.subtotal_before_discount_for_return').text(subtotal);
         $('.subtotal_before_discount_for_return_val').val(subtotal);
+        
+        //if use it, then subtotal, total amount, payable amount always double shown
         discountCalculationBasedOnSubtotal();
         return subtotal;
     }
@@ -232,18 +238,21 @@
     //making invoice discount
     function discountCalculationBasedOnSubtotal()
     {
-        var invoiceDiscountAmount   = jQuery('.return_invoice_discount_amount').val();
+        var invoiceDiscountAmount = jQuery('.return_invoice_discount_amount').val();
         var invoiceDiscountType = jQuery('.return_invoice_discount_type option:selected').val();
         var subtotalBeforeDiscount  = nanCheck(parseFloat(jQuery('.subtotal_before_discount_for_return').text())); 
         
         var totalInvoiceDiscountAmount  = 0; 
-        if(invoiceDiscountType == 'fixed'){
-            totalInvoiceDiscountAmount  = invoiceDiscountAmount;
-        }
-        else if(invoiceDiscountType == 'percentage'){
-            totalInvoiceDiscountAmount = ((((invoiceDiscountAmount * subtotalBeforeDiscount) / 100)).toFixed(2));
-        }else{
-            totalInvoiceDiscountAmount  = 0; 
+        if(subtotalBeforeDiscount > 0)
+        {
+            if(invoiceDiscountType == 'fixed'){
+                totalInvoiceDiscountAmount  = invoiceDiscountAmount;
+            }
+            else if(invoiceDiscountType == 'percentage'){
+                totalInvoiceDiscountAmount = ((((invoiceDiscountAmount * subtotalBeforeDiscount) / 100)).toFixed(2));
+            }else{
+                totalInvoiceDiscountAmount  = 0; 
+            }
         }
 
         $('.return_invoice_total_discount_amount').val(totalInvoiceDiscountAmount);
@@ -264,6 +273,7 @@
     }
 
 
+    //submit return data
     jQuery(document).on("submit",'.storeReturnDataFromReturnOption',function(e){
         e.preventDefault();
         $('.alert_success_message_div').hide();
@@ -286,6 +296,7 @@
             success: function(response){
                 if(response.status == true)
                 {
+                    jQuery.notify(response.message, response.type);
                     $('.product_related_response_here').html(response.product);
                     $('.sell_return_payment_options_render').html(response.payment);
                     $('.alert_success_message_div').show();
@@ -294,6 +305,7 @@
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);
+                    jQuery.notify(response.message, response.type);
                 }
             },
             complete:function(){

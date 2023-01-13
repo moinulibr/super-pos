@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Sell\SellInvoice;
-use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
+use App\Models\Backend\Sell\SellProduct;
 use App\Traits\Backend\Payment\PaymentProcessTrait;
+use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
 use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
 
 class SellController extends Controller
@@ -239,7 +240,6 @@ class SellController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**

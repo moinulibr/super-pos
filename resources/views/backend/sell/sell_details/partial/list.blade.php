@@ -33,9 +33,9 @@
                                 <a class="dropdown-item singleSellView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
                                 <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.normal.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print</a>
                                 <a class="dropdown-item print"  target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.pos.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print (POS)</a>
-                                <a class="dropdown-item singleSellInvoiceWiseDelivery" data-id="{{$item->id}}" style="cursor: pointer">Delivery</a>
+                                <a class="dropdown-item singleSellInvoiceWiseDelivery" data-id="{{$item->id}}" style="cursor: pointer">Delivery Product</a>
                                 <a class="dropdown-item singleSellInvoiceProfitLossView" data-id="{{$item->id}}" style="cursor: pointer">View Profit/Loss</a>
-                                <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Product Return</a>
+                                <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Return Product</a>
                                 <a class="dropdown-item singleSellInvoiceReceivePaymentModalView" data-id="{{$item->id}}" style="cursor: pointer">Make Payment</a>
                                 <a class="dropdown-item singleViewSellInvoiceWisePaymentDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
                                 {{-- <a class="dropdown-item singleEditModal" data-id="{{$item->id}}" href="javascript:void(0)">Edit</a>
@@ -52,13 +52,13 @@
                         </a>
                     </td>
                     <td>{{$item->customer?$item->customer->name:NULL}}</td>
-                    <td>{{$item->total_payable_amount}}</td>
-                    <td>{{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}}</td>
+                    <td>{{$item->totalInvoicePayableAmountAfterRefund()}}</td>
+                    <td>{{paymentStatus_hh($item->totalInvoicePayableAmountAfterRefund(),$item->total_paid_amount)}}</td>
                     <td>{{$item->total_paid_amount}}</td>
-                    <td>{{$item->due_amount}}</td>
+                    <td>{{$item->total_due_amount}}</td>
                     <td>{{$item->total_discount}}</td>
                     <td>{{$item->createdBy?$item->createdBy->name:NULL}}</td>
-                    <td>{{$item->total_item}}</td>
+                    <td>{{$item->totalSellItemAfterRefund()}}</td>
                     <td>{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
                 </tr>
             @endforeach

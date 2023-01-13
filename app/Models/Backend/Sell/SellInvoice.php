@@ -42,4 +42,19 @@ class SellInvoice extends Model
     {
         return $this->hasMany(AccountPayment::class,'module_invoice_id','id')->where('module_id',getModuleIdBySingleModuleLebel_hh("Sell"));
     }
+
+    //after refunded amount
+    public function totalInvoicePayableAmountAfterRefund()
+    {
+        return number_format($this->total_payable_amount - $this->total_refunded_amount,2,'.','');
+    }
+
+    //total item after refunded item.
+    public function totalSellItemAfterRefund()
+    {
+        return $this->hasMany(SellProduct::class,'sell_invoice_id','id')->select('id','total_quantity')->where('total_quantity','>',0)->count();
+    }
+
+
+
 }

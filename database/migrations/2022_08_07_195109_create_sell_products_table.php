@@ -28,7 +28,7 @@ class CreateSellProductsTable extends Migration
                 //$table->text('product_stocks')->nullable()->comment('json:all product stock ids,others stock related information');
                 
                 $table->string('custom_code',50)->nullable()->comment('product custom_code');
-                $table->decimal('quantity',20,3)->default(0)->comment('creating time sell quantity');
+                $table->decimal('total_sell_qty',20,3)->default(0)->comment('creating time sell quantity');
 
                 //$table->decimal('mrp_price',20,2)->nullable();
                 //$table->decimal('regular_sell_price',20,2)->nullable();

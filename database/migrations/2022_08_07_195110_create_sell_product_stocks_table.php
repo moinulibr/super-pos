@@ -49,45 +49,23 @@ class CreateSellProductStocksTable extends Migration
                 $table->decimal('total_profit_from_product',20,2)->default(0)->comment('total profit : total_selling_profit - refunded_reduced_profit');
                 $table->decimal('total_profit',20,2)->default(0)->comment('total profit : total_selling_profit - refunded_reduced_profit  (should be- without extra all cost)');
                 
-
-                
-
-
-                $table->decimal('ict_total_delivered_qty',20,3)->default(0)->comment('invoice creating time');
-                $table->decimal('ict_remaining_delivery_qty',20,3)->default(0)->comment('invoice creating time');
-                
+                $table->decimal('delivered_total_qty',20,3)->default(0)->comment('total delivered qty, where ever return/refund or not.. ');
                 $table->decimal('remaining_delivery_qty',20,3)->default(0);
                 $table->decimal('total_delivered_qty',20,3)->default(0);
+
+                $table->decimal('reduced_base_stock_remaining_delivery',20,3)->default(0)->comment('reduced_base_stock_remaining_delivery :- reduced base stock , but not delivery this stock. (remaining delivery)');
+                $table->decimal('reduceable_delivered_qty',20,3)->default(0)->comment('delivered qty, which is ready to reduce from main stock qty when we return/refund qty.. this field is basically used for return/refunded time, increment stock qty in the main product_stocks table qty');
+                $table->string('total_reduceable_qty',0)->default(0)->comment('Its a vartual field. It will be deleted after a certain time.... There are two action of this field... first one is: when delivery this product, reduced_base_stock_remaining_delivery will be minus until zero, and reduceable_delivered_qty field will be plus.. Second one is: when return this product, quantity of this field will be reduce/decrease/minus same as return quantity ------------------');
+                $table->string('remaining_delivery_unreduced_qty',30)->nullable()->comment('remaining delivery unreduced qty : unreduced from main stock.. due to have not stock availabe');
+                $table->string('remaining_delivery_unreduced_qty_date',30)->nullable()->comment('remaining delivery qty date : unreduced from main stock.. due to have not stock availabe');
 
 
                 $table->tinyInteger('status')->nullable();
                 $table->tinyInteger('delivery_status')->nullable();
-
-                $table->decimal('delivered_qty',20,3)->default(0)->comment('creating time');
-      
-                //ict_isp_qty ->comment('instantly processed quantity for delivery. Meaning thant, this quantity is ready to delivery');
-                $table->decimal('stock_process_instantly_qty',20,3)->default(0)->comment('stock processed instantly quantity');
-                $table->decimal('stock_process_instantly_qty_reduced',20,3)->default(0)->default(0)->comment('stock_process_instantly_qty_reduce_status :- this field depend on reduced_base_stock_remaining_delivery field of product_stocks table.');
-                $table->decimal('stock_process_later_qty',20,3)->default(0)->comment('stock processe latter quantity');
-                $table->string('stock_process_later_date')->nullable();
-                $table->decimal('total_stock_remaining_process_qty',20,3)->default(0)->comment('stock processe latter quantity');
-                $table->decimal('total_stock_processed_qty',20,3)->default(0)->comment('stock processe latter quantity');
-
-
                 //have to check
-                $table->text('ict_stock_process_cart')->nullable()->comment('json: (invoice creating time) ict_stock_process_instantly_qty,ict_stock_process_instantly_qty_reduced,ict_stock_process_later_qty,ict_stock_process_later_date,ict_total_stock_remaining_process_qty,ict_total_stock_processed_qty');
-                /* $table->decimal('ict_stock_process_instantly_qty',20,3)->default(0)->comment('(invoice creating time) stock processed instantly quantity');
-                $table->decimal('ict_stock_process_instantly_qty_reduced',20,3)->default(0)->default(0)->comment('(invoice creating time) stock_process_instantly_qty_reduce_status :- this field depend on reduced_base_stock_remaining_delivery field of product_stocks table.');
-                
-                $table->decimal('ict_stock_process_later_qty',20,3)->default(0)->comment('(invoice creating time) stock processe latter quantity');
-                $table->string('ict_stock_process_later_date')->nullable();
-                $table->decimal('ict_total_stock_remaining_process_qty',20,3)->default(0)->comment('(invoice creating time) stock processe latter quantity');
-                $table->decimal('ict_total_stock_processed_qty',20,3)->default(0)->comment('(invoice creating time) stock processe latter quantity'); */
-                //have to check
-
-
+                $table->text('sell_cart')->nullable()->comment('json: (invoice creating time) all field');
+              
                 $table->integer('created_by')->nullable();
-
                 $table->softDeletes();
                 $table->timestamps();
             });

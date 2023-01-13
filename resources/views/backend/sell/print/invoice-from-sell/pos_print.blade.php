@@ -215,7 +215,7 @@
                 </td>
                 <td class="tableitem item-qty" style="padding-bottom:1px;padding-top:3px;border-bottom: 0.10px dotted #c3c3c3;padding-bottom:2px;font-size: 10px !important;">
                     <span style="">
-                        {{$item->quantity}}
+                        {{$item->total_quantity}}
                         {{-- @if (array_key_exists('unitName',$cats))
                             <small>{{$cats['unitName']}}</small>
                             @else
@@ -225,7 +225,7 @@
                 </td>
                 <td class="tableitem item-total" style="padding-bottom:1px;padding-top:3px;border-bottom: 0.10px dotted #c3c3c3;text-align:right;padding-bottom:2px;font-size: 10px !important;">
                     <span style="">
-                        {{$item->total_sold_price}} 
+                        {{$item->total_sold_amount}} 
                        {{--- @if ($item->total_discount > 0)
                             <br/>
                             (Less : {{ $item->total_discount }})
@@ -247,7 +247,7 @@
                 </td>
                 <td class="Rate grand-total-title"style="padding-top:5px;padding-bottom:5px;">:</td>
                 <td class="payment sub-total-amount" style="text-align:right;padding-top:5px;padding-bottom:5px;" colspan="2">
-                    {{$data->subtotal}}
+                    {{$data->totalInvoicePayableAmountAfterRefund()}}
                 </td>
             </tr>
             <tr class="tabletitle">
@@ -268,7 +268,7 @@
             <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                   {{ $data->subtotal - $data->total_discount }}
+                   {{ $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount }}
                 </td>
             </tr>
             <!-- -->
@@ -289,7 +289,7 @@
              <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                    {{ number_format((( $data->subtotal - $data->total_discount ) + $data->total_vat),2,'.', '') }} 
+                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount ) + $data->total_vat),2,'.', '') }} 
                 </td>
             </tr>
             <!-- -->
@@ -311,7 +311,7 @@
             <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                    {{ number_format((( $data->subtotal - $data->total_discount ) + $data->total_vat + $data->shipping_cost),2,'.', '') }} 
+                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount ) + $data->total_vat + $data->shipping_cost),2,'.', '') }} 
                 </td>
             </tr>
             <!-- -->
@@ -333,7 +333,7 @@
              <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                    {{ number_format((( $data->subtotal - $data->total_discount ) + $data->total_vat + $data->shipping_cost + $data->others_cost ),2,'.', '') }} 
+                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount ) + $data->total_vat + $data->shipping_cost + $data->others_cost ),2,'.', '') }} 
                 </td>
             </tr>
             <!-- -->
@@ -361,7 +361,7 @@
                 <td class="Rate grand-total-title" style="padding-top:15px">:</td>
                 <td class="payment grand-total-amount" style="text-align:right;padding-top:15px" colspan="2">
                     <strong style="font-size:14px;">
-                        {{ $data->total_payable_amount }}
+                        {{ $data->totalInvoicePayableAmountAfterRefund() }}
                     </strong>
                 </td>
             </tr>

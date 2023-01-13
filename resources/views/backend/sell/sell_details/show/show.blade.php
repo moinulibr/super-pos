@@ -45,7 +45,7 @@
                         <div class="mb-2">
                             <label>
                                 <strong>Payment Status: </strong>
-                                {{paymentStatus_hh($data->total_payable_amount,$data->total_paid_amount)}}
+                                {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefund(),$data->total_paid_amount)}}
                             </label>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
                                             {{$item->delivered_qty}}
                                         </td>
                                         <td style="text-align: center">
-                                            {{$item->quantity}}
+                                            {{$item->total_sell_qty}}
                                         </td>
                                         <td style="text-align: center;">
                                             {{$item->sold_price}}
@@ -216,7 +216,7 @@
                                         <td colspan="2">
                                             <strong>Sub Total</strong>
                                         </td>
-                                        <td></td>
+                                        <td><small>(before return)</small></td>
                                         <td style="text-align:right;">
                                             <span style="font-size:14px;"> {{$data->subtotal}}</span>
                                         </td>
@@ -270,7 +270,7 @@
                                         <td colspan="2">
                                             <strong>Total Payable</strong>
                                         </td>
-                                        <td></td>
+                                        <td><small style="color:rgb(113, 22, 22)">(before return)</small></td>
                                         <td style="text-align:right;">
                                             {{$data->total_payable_amount}}
                                         </td>
@@ -282,6 +282,16 @@
                                         <td></td>
                                         <td style="text-align:right;background-color: #c19696;color:#ffff;">
                                             {{$data->total_refunded_amount}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="background-color:#7ab57a;color:#ffff;">
+                                            <strong>Total Payable</strong>
+                                        </td>
+                                        <td><small style="color:green">(after return)</small></td>
+                                        <td style="text-align:right;right;background-color:#7ab57a;color:#ffff;">
+                                            {{-- {{ number_format($data->total_payable_amount - $data->total_refunded_amount,2,'.','') }} --}}
+                                            {{$data->totalInvoicePayableAmountAfterRefund()}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -299,7 +309,7 @@
                                         </td>
                                         <td></td>
                                         <td style="text-align:right;">
-                                            {{$data->due_amount}}
+                                            {{$data->total_due_amount}}
                                         </td>
                                     </tr>
                                 </tbody>

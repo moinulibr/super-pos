@@ -259,8 +259,7 @@ trait StoreDataFromSellCartTrait
 
         $sellType = $this->sellCreateFormData['sell_type'];
         //if sell_type==1, then reduce stock from product stocks table 
-        if($sellType  == 1 && $instantlyProcessedQty > 0)
-        {
+        if($sellType  == 1 && $instantlyProcessedQty > 0){
             $this->stock_id_FSCT = $stockId;
             $this->product_id_FSCT = $cart['product_id'];
             $this->stock_quantity_FSCT = $instantlyProcessedQty;
@@ -273,19 +272,41 @@ trait StoreDataFromSellCartTrait
                 $pStock->save();
             }
         }
+
         //delivery quantity
         $totalDeliverdQty = 0;
         $productStock->total_delivered_qty = $totalDeliverdQty;
         $productStock->remaining_delivery_qty = $qty - $totalDeliverdQty;
 
-        $productStock->stock_process_instantly_qty = $instantlyProcessedQty;
-        $productStock->stock_process_later_qty = $stockProcessLaterQty;
-        $productStock->stock_process_later_date = $stockProcessLaterDate;
-        $productStock->total_stock_remaining_process_qty = $stockProcessLaterQty;
-        $productStock->total_stock_processed_qty = $instantlyProcessedQty;
+        //$productStock->reduceable_delivered_qty = 0;//new field
+        $productStock->reduced_base_stock_remaining_delivery = $instantlyProcessedQty;//new field
+        $productStock->remaining_delivery_unreduced_qty = $stockProcessLaterQty;//new
+        $productStock->remaining_delivery_unreduced_qty_date = $stockProcessLaterDate;//new
 
-        $productStock->status =1;
-        $productStock->delivery_status =1;
+        $productStock->status = 1;
+        $productStock->delivery_status = 1;
+
+        $productStock->sell_cart = json_encode([
+            'total_sell_qty' => $qty,
+            "total_quantity" => $qty,
+            'mrp_price' =>$cart['mrp_price'] ,
+            'regular_sell_price' => $cart['sell_price'],
+            'sold_price' => $cart['final_sell_price'],
+            'total_selling_amount' => $totalSoldPrice,
+            'total_sold_amount' => $totalSoldPrice,
+            'purchase_price' => $cart['purchase_price'],         
+            'total_purchase_amount' => $totalPurchasePrice,
+            'total_selling_purchase_amount' => $totalPurchasePrice,
+            'total_selling_profit' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+            'total_profit_from_product' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+            'total_profit' =>  number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+            'total_delivered_qty' => $totalDeliverdQty,
+            'remaining_delivery_qty' => $qty - $totalDeliverdQty,
+            'reduced_base_stock_remaining_delivery' =>  $instantlyProcessedQty,
+            'remaining_delivery_unreduced_qty' => $stockProcessLaterQty,
+            'remaining_delivery_unreduced_qty_date' =>  $stockProcessLaterDate,
+        ]);
+
         $productStock->save();
         return $productStock;
     }
@@ -293,42 +314,42 @@ trait StoreDataFromSellCartTrait
     //insert data in the sell products table
     private function insertDataInTheSellProduct($sellInvoice,$cart)
     {
-        $productStock = new SellProduct();
-        $productStock->branch_id = authBranch_hh();
-        $productStock->sell_invoice_id = $sellInvoice->id;
-        $productStock->product_id = $cart['product_id'];
-        $productStock->unit_id = $cart['unit_id'];
-        $productStock->supplier_id = $cart['supplier_id'];
-        $productStock->main_product_stock_id = $cart['selling_main_product_stock_id'];
-        $productStock->product_stock_type = $cart['total_qty_from_others_product_stock'] == 0 ? 1 : 2;
-        $productStock->custom_code = $cart['custom_code'];
+        $productProduct = new SellProduct();
+        $productProduct->branch_id = authBranch_hh();
+        $productProduct->sell_invoice_id = $sellInvoice->id;
+        $productProduct->product_id = $cart['product_id'];
+        $productProduct->unit_id = $cart['unit_id'];
+        $productProduct->supplier_id = $cart['supplier_id'];
+        $productProduct->main_product_stock_id = $cart['selling_main_product_stock_id'];
+        $productProduct->product_stock_type = $cart['total_qty_from_others_product_stock'] == 0 ? 1 : 2;
+        $productProduct->custom_code = $cart['custom_code'];
 
-        $productStock->quantity = $cart['final_sell_quantity'];
-        $productStock->total_quantity = $cart['final_sell_quantity'];
+        $productProduct->total_sell_qty = $cart['final_sell_quantity'];
+        $productProduct->total_quantity = $cart['final_sell_quantity'];
 
-        $productStock->sold_price = $cart['final_sell_price'];
-        $productStock->discount_amount = $cart['discount_amount'];
-        $productStock->discount_type = $cart['discount_type'];
-        $productStock->total_discount = $cart['total_discount_amount'];
-        $productStock->reference_commission = 0;//$cart[''];
+        $productProduct->sold_price = $cart['final_sell_price'];
+        $productProduct->discount_amount = $cart['discount_amount'];
+        $productProduct->discount_type = $cart['discount_type'];
+        $productProduct->total_discount = $cart['total_discount_amount'];
+        $productProduct->reference_commission = 0;//$cart[''];
 
-        $productStock->total_selling_amount = $cart['selling_final_amount'];
-        $productStock->total_sold_amount = $cart['selling_final_amount'];
-        $productStock->total_selling_purchase_amount = $cart['total_purchase_price_of_all_quantity'];
-        $productStock->total_purchase_amount = $cart['total_purchase_price_of_all_quantity'];
+        $productProduct->total_selling_amount = $cart['selling_final_amount'];
+        $productProduct->total_sold_amount = $cart['selling_final_amount'];
+        $productProduct->total_selling_purchase_amount = $cart['total_purchase_price_of_all_quantity'];
+        $productProduct->total_purchase_amount = $cart['total_purchase_price_of_all_quantity'];
 
-        $productStock->total_selling_profit = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
-        $productStock->total_profit_from_product = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
-        $productStock->total_profit = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
+        $productProduct->total_selling_profit = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
+        $productProduct->total_profit_from_product = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
+        $productProduct->total_profit = $cart['selling_final_amount'] - $cart['total_purchase_price_of_all_quantity'];
         
         $this->totalPurchasePriceOfAllQuantityOfThisInvoice += $cart['total_purchase_price_of_all_quantity'];
 
         if($cart['w_g_type'])
         {
-            $productStock->liability_type = json_encode(["w_g_type" => $cart['w_g_type'], "w_g_type_day" => $cart['w_g_type_day']]);
+            $productProduct->liability_type = json_encode(["w_g_type" => $cart['w_g_type'], "w_g_type_day" => $cart['w_g_type_day']]);
         }
-        $productStock->identity_number = $cart['identityNumber'];
-        $productStock->cart = json_encode([
+        $productProduct->identity_number = $cart['identityNumber'];
+        $productProduct->cart = json_encode([
             'productName' => $cart['product_name'],
             "productId" =>$cart['product_id'],
             'mrpPrice' =>$cart['mrp_price'] ,
@@ -343,11 +364,11 @@ trait StoreDataFromSellCartTrait
             'warehouseRackId' =>$cart['warehouse_rack_id'],
         ]);
 
-        $productStock->status =1;
-        $productStock->delivery_status =1;
-        $productStock->created_by = authId_hh();
-        $productStock->save();
-        return $productStock;
+        $productProduct->status =1;
+        $productProduct->delivery_status =1;
+        $productProduct->created_by = authId_hh();
+        $productProduct->save();
+        return $productProduct;
     }
 
     //insert data in the sell invoices table
@@ -363,6 +384,7 @@ trait StoreDataFromSellCartTrait
         $makeInvoice = date("iHsymd").$rand;
         $sellInvoice->invoice_no = $makeInvoice;
         $sellInvoice->total_item = $sellInvoiceSummeryCart['totalItem'];
+        $sellInvoice->total_sell_item = $sellInvoiceSummeryCart['totalItem'];
         $sellInvoice->sell_quantity = $sellInvoiceSummeryCart['totalQuantity'];
         $sellInvoice->total_quantity = $sellInvoiceSummeryCart['totalQuantity'];
         $sellInvoice->subtotal = $sellInvoiceSummeryCart['lineInvoiceSubTotal'];
@@ -396,9 +418,10 @@ trait StoreDataFromSellCartTrait
         
         //payment related section
         $totalPaidAmount = ($this->sellCreateFormData['cash_payment_value'] ?? 0) + ($this->sellCreateFormData['advance_payment_value'] ?? 0) + ($this->sellCreateFormData['banking_payment_value'] ?? 0);
-        $sellInvoice->paid_amount = $totalPaidAmount;
-        $sellInvoice->total_paid_amount	 = $totalPaidAmount;
-        $sellInvoice->due_amount = $totalPayableAmount - $totalPaidAmount;
+        $sellInvoice->paid_amount = $totalPaidAmount; //total before refunded
+        $sellInvoice->total_paid_amount	 = $totalPaidAmount; // after refunded
+        $sellInvoice->due_amount = $totalPayableAmount - $totalPaidAmount; //total before refunded
+        $sellInvoice->total_due_amount = $totalPayableAmount - $totalPaidAmount; //total before refunded
 
         $paymentStatus = "";
         $payment_type = "";
