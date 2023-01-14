@@ -27,6 +27,7 @@
             var createUrl = jQuery('.displayProductListUrl').val();
             var url =  createUrl+"?page="+pageNumber;
             var product_id      = jQuery('.product_id').val();
+            var supplier_id      = jQuery('.supplier_id_for_product_filter').val();
             var category_id     = jQuery('.category_id').val();
             var custom_search   = jQuery('.custom_search').val();
             jQuery.ajax({
@@ -34,7 +35,7 @@
                 type: "GET",
                 datatype:"HTML",
                 data:{
-                    custom_search:custom_search,product_id:product_id,category_id:category_id
+                    custom_search:custom_search,supplier_id:supplier_id,product_id:product_id,category_id:category_id
                 },
                 beforeSend:function(){
                     jQuery('.processing_on').fadeIn();
@@ -54,7 +55,7 @@
 
 
     var ctrlDown = false,ctrlKey = 17,cmdKey = 91,vKey = 86,cKey = 67; xKey = 88;
-    jQuery(document).on('change keyup click','.paginate,.custom_search,.product_id,.category_id',function(e){
+    jQuery(document).on('change keyup click','.paginate,.custom_search,.product_id,.category_id,.supplier_id_for_product_filter',function(e){
         
         var action = 0;
         if(jQuery(e.target).prop("name") == "product_id" && ((e.type)=='change'))
@@ -62,6 +63,10 @@
             action = 1;
         }
         else if(jQuery(e.target).prop("name") == "category_id" && ((e.type)=='change'))
+        {
+            action = 1;
+        }
+        else if(jQuery(e.target).prop("name") == "supplier_id_for_product_filter" && ((e.type)=='change'))
         {
             action = 1;
         } 
@@ -87,13 +92,14 @@
         //var pagination      = jQuery('#paginate :selected').val();
         var product_id      = jQuery('.product_id').val();
         var category_id     = jQuery('.category_id').val();
+        var supplier_id      = jQuery('.supplier_id_for_product_filter').val();
         var custom_search   = jQuery('.custom_search').val();
         jQuery.ajax({
             url: defaultUrl,
             type: "GET",
             datatype:"HTML",
             data:{
-                custom_search:custom_search,product_id:product_id,category_id:category_id
+                custom_search:custom_search,supplier_id:supplier_id,product_id:product_id,category_id:category_id
             },
             beforeSend:function(){
                 jQuery('.processing_on').fadeIn();

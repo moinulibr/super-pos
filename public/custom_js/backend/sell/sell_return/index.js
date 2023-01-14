@@ -21,7 +21,7 @@
                     if(response.status == true)
                     {
                         $('#sellProductReturnModal').html(response.html).modal('show');
-                        $('.product_related_response_here').html(response.product);
+                        $('.return_product_related_response_here').html(response.product);
                         $('.sell_return_payment_options_render').html(response.payment);
                     }
                 }
@@ -297,7 +297,7 @@
                 if(response.status == true)
                 {
                     jQuery.notify(response.message, response.type);
-                    $('.product_related_response_here').html(response.product);
+                    $('.return_product_related_response_here').html(response.product);
                     $('.sell_return_payment_options_render').html(response.payment);
                     $('.alert_success_message_div').show();
                     $('.success_message_text').html(response.message+"<br/>"+response.print);

@@ -353,6 +353,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <div class="row" style="margin-top: 10px;">
                                     <div class="col-md-12">
                                         <div class="selectmain">
+                                            <select name="supplier_id_for_product_filter"  class="supplier_id_for_product_filter arabic-select select2 bag-primary" style="width:100%">
+                                                <option value="">All Supplier</option>
+                                                @foreach ($suppliers as $item)
+                                                <option value="{{$item->id}}">{{$item->name}} ({{$item->phone}})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top: 10px;">
+                                    <div class="col-md-12">
+                                        <div class="selectmain">
                                             <select  name="category_id"  class="category_id arabic-select select2 bag-primary" style="width:100%">
                                                 <option value="">All Categories</option>
                                                 @foreach ($categories as $item)

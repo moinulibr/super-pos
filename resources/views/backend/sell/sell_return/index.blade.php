@@ -125,7 +125,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <h4>Products: </h4>
-                            <div class="product_related_response_here">
+                            <div class="return_product_related_response_here">
                             
                             </div>
                         </div>
@@ -201,6 +201,7 @@
             </div><!-----modal-body--->
 
             <div class="modal-footer">
+                <p>Please Paid full amount!!</p>
                 <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Cancel</button>
                 <input type="submit" value="Submit" disabled class="btn btn-success submitButton_for_sell_return">
             </div>

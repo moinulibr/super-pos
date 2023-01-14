@@ -11,6 +11,7 @@
 //-----------------------------------------------------------------------
     $(document).on('click','.singleSellInvoiceWiseDelivery',function(e){
         e.preventDefault();
+        $('.product_related_response_here').html('');
         var url = $('.sellProductDeliveryInvoiceWiseModalRoute').val();
         var dID = $(this).data('id');
         $.ajax({

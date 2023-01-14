@@ -64,38 +64,11 @@
                                 <td style="width:15%;text-align: center">{{$pstock->remaining_delivery_qty}}</td>
                                 <td style="width:25%;text-align: center">
                                     @php
-                                        $totalAvailableStockWithReducedStockButNotDelivered = ($pstock->productStock ? $pstock->productStock->available_base_stock : 0) + ($pstock->productStock ? $pstock->productStock->reduced_base_stock_remaining_delivery : 0);
-                                        $totalAvailableStock = ($pstock->productStock ? $pstock->productStock->available_base_stock : 0);
                                         $totalRemainingDeliveryQty = $pstock->remaining_delivery_qty;
-                                        $deliveryingQtyNow = 0;
-                                        if(($totalAvailableStockWithReducedStockButNotDelivered > $totalRemainingDeliveryQty) 
-                                                && ($totalRemainingDeliveryQty > 0) 
-                                        )
-                                        {
-                                            $deliveryingQtyNow = $totalRemainingDeliveryQty; 
-                                          
-                                        }
-                                        else if(($totalAvailableStockWithReducedStockButNotDelivered == $totalRemainingDeliveryQty) 
-                                        && ($totalRemainingDeliveryQty > 0) 
-                                        )
-                                        {
-                                            $deliveryingQtyNow = $totalRemainingDeliveryQty; 
-                                        }
-                                        else if(($totalAvailableStockWithReducedStockButNotDelivered < $totalRemainingDeliveryQty)
-                                            && ($totalRemainingDeliveryQty > 0) 
-                                        )
-                                        {
-                                            $deliveryingQtyNow = $totalAvailableStockWithReducedStockButNotDelivered; 
-                                        }
-                                        else if($totalRemainingDeliveryQty == 0) 
-                                        {
-                                            $deliveryingQtyNow = 0; 
-                                        }else{
-                                            $deliveryingQtyNow = 0; 
-                                        }
+                                        $deliveryingQtyNow = $totalRemainingDeliveryQty;
                                     @endphp
                                     @if ($deliveryingQtyNow > 0 && $totalRemainingDeliveryQty > 0)
-                                     <input type="text" name="deliverying_qty_{{$pstock->id}}" value="{{$deliveryingQtyNow}}" class="form-control deliverying_qty deliverying_qty_{{$pstock->id}} inputFieldValidatedOnlyNumeric" data-id="{{$pstock->id}}">
+                                     <input type="text" name="deliverying_qty_{{$pstock->id}}" value="{{$totalRemainingDeliveryQty}}" class="form-control deliverying_qty deliverying_qty_{{$pstock->id}} inputFieldValidatedOnlyNumeric" data-id="{{$pstock->id}}">
                                         @elseif ($deliveryingQtyNow == 0 && $totalRemainingDeliveryQty == 0)
                                         <input type="text" disabled value="{{$deliveryingQtyNow}}" class="form-control" style="background-color: green;color:#ffff;">
                                         @elseif ($deliveryingQtyNow == 0 && $totalRemainingDeliveryQty > 0)
@@ -104,7 +77,7 @@
                                 </td>
                                 <td style="width:10%;text-align: center">
                                     <input type="hidden" class="total_remaining_delivery_qty total_remaining_delivery_qty_{{$pstock->id}}" value="{{$pstock->remaining_delivery_qty}}">
-                                    <input type="hidden" class="total_base_available_stock_WRBND_qty total_base_available_stock_WRBND_qty_{{$pstock->id}}" value="{{$totalAvailableStockWithReducedStockButNotDelivered}}">
+                                    <input type="hidden" class="total_base_available_stock_WRBND_qty total_base_available_stock_WRBND_qty_{{$pstock->id}}" value="{{$totalRemainingDeliveryQty}}">
                                     @if ($deliveryingQtyNow > 0)
                                     <input type="hidden" value="{{$data->id}}" name="purchase_invoice_id">
                                     <input class="check_single_class form-control check_single_class_{{$pstock->id}}" type="checkbox"  name="checked_id[]" value="{{ $pstock->id }}" id="{{$pstock->id}}" style="box-shadow:none;">

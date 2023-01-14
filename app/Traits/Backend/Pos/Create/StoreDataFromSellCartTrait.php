@@ -234,6 +234,7 @@ trait StoreDataFromSellCartTrait
         //stock id 
         $productStock->stock_id = $stockId;
 
+        $stockProcessLaterQty  = 0;
         if($availableBaseStock > $qty)
         {
             //instantly processed all qty
@@ -248,13 +249,21 @@ trait StoreDataFromSellCartTrait
             $stockProcessLaterDate = ""; 
             $stockProcessLaterQty  = 0;
         }
+        else if($availableBaseStock < $qty)
+        {
+            //instantly processed all qty
+            $overStock = $qty - $availableBaseStock;
+            $instantlyProcessedQty = $qty - $overStock;
+            $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
+            $stockProcessLaterQty  = $overStock;
+        }
         else 
         {   
             //instantly processed qty
            $overStock = $qty - $availableBaseStock;
            $instantlyProcessedQty = $qty - $overStock;
            $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
-           $stockProcessLaterQty   = $overStock;
+           $stockProcessLaterQty  = $overStock;
         }
 
         $sellType = $this->sellCreateFormData['sell_type'];
@@ -265,12 +274,13 @@ trait StoreDataFromSellCartTrait
             $this->stock_quantity_FSCT = $instantlyProcessedQty;
             $this->unit_id_FSCT = $cart['unit_id'];
             $this->sellingFromPossStockTypeDecrement();
-
-            if($pStock)
-            {
-                $pStock->reduced_base_stock_remaining_delivery = $instantlyProcessedQty;
-                $pStock->save();
-            }
+        }
+        if($pStock && $sellType  == 1)
+        {
+            //product_stocks table
+            $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) + ($instantlyProcessedQty));
+            $pStock->negative_sold_base_stock = (($pStock->negative_sold_base_stock) + ($stockProcessLaterQty));//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
+            $pStock->save();
         }
 
         //delivery quantity
@@ -287,6 +297,8 @@ trait StoreDataFromSellCartTrait
         $productStock->delivery_status = 1;
 
         $productStock->sell_cart = json_encode([
+            'product_id' => $cart['product_id'],
+            'product_stock_id' => $product_stock_id,
             'total_sell_qty' => $qty,
             "total_quantity" => $qty,
             'mrp_price' =>$cart['mrp_price'] ,

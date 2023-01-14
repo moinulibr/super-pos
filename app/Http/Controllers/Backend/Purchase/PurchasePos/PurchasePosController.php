@@ -49,6 +49,9 @@ class PurchasePosController extends Controller
         if($request->product_id){
             $query->where('id',$request->product_id);
         }
+        if($request->supplier_id){
+            $query->where('supplier_id',$request->supplier_id);
+        }
         if($request->category_id){
             $query->where('category_id',$request->category_id);
         }

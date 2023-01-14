@@ -57,7 +57,7 @@ class PurchaseProductReceiveController extends Controller
             if((isset($request->checked_id)) && (count($request->checked_id) > 0))
             {
                 $rand = rand(01,99);
-                $makeInvoice = 'PREL'.date("iHsymd").$rand;
+                $makeInvoice = date("iHsymd").$rand;
                 $requestData['purchase_invoice_no'] = $request->purchase_invoice_no;
                 $requestData['purchase_chalan_no'] = $request->purchase_chalan_no;
                 $requestData['purchase_reference_no'] = $request->purchase_reference_no;

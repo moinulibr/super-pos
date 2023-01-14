@@ -85,7 +85,7 @@
                                         </th>
                                         <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
                                         <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
-                                            <span style="font-size:14px;"> {{$data->total_invoice_profit}}</span>
+                                            <span style="font-size:14px;"> {{$data->total_profit}}</span>
                                         </th>
                                     </tr>
 
@@ -109,7 +109,7 @@
                         <div class="mb-2">
                             <label>
                                 <strong>Payment Status: </strong>
-                                {{paymentStatus_hh($data->total_payable_amount,$data->total_paid_amount)}}
+                                {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefund(),$data->total_paid_amount)}}
                             </label>
                         </div>
                     </div>
@@ -199,9 +199,9 @@
                                             @endif
                                         </td>
                                         <td style="text-align: center">
-                                            {{$item->quantity}}
+                                            {{$item->total_quantity}}
                                             @php
-                                                $totalQty += $item->quantity;
+                                                $totalQty += $item->total_quantity;
                                             @endphp
                                             {{-- @if (array_key_exists('unitName',$cats))
                                             <small>{{$cats['unitName']}}</small>
@@ -210,7 +210,7 @@
                                             @endif --}}
                                         </td>
                                         <td>
-                                            {{  number_format(( $item->quantity > 0 ? ($item->total_purchase_price / $item->quantity) : $item->total_purchase_price),2,'.', '') }}
+                                            {{  number_format(( $item->total_quantity > 0 ? ($item->total_purchase_price / $item->total_quantity) : $item->total_purchase_price),2,'.', '') }}
                                         </td>
                                         <td>
                                             @php
@@ -223,9 +223,9 @@
                                         </td>
                                         <td>
                                             @php
-                                                $totalSellPrice += number_format(($item->sold_price * $item->quantity),2,'.', '');
+                                                $totalSellPrice += number_format(($item->sold_price * $item->total_quantity),2,'.', '');
                                             @endphp
-                                            {{ number_format(($item->sold_price * $item->quantity),2,'.', '')}}
+                                            {{ number_format(($item->sold_price * $item->total_quantity),2,'.', '')}}
                                         </td>
                                         <td>
                                             @php

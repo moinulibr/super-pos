@@ -121,6 +121,7 @@
                                                         <div class="form-group col-md-6">
                                                             <label class="form-label">{{productCustomCodeLabel_hh()}}</label>
                                                             <input type="text"  value="{{ $product->custom_code }}"  class="form-control custom_code custom_code_0" data-custom_code="0" name="custom_code"  placeholder="{{productCustomCodeLabel_hh()}}" style="" />
+                                                            <strong class="custom_code_err color-red"></strong>
                                                             <div class="clearfix"></div>
                                                         </div>
                                                         <div class="form-group col-md-6">
