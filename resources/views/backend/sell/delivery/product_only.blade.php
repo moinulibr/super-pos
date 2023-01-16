@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table id="example1" class="table table-bordered table-striped table-hover">
+    <table id="example1" class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th style="width:5%;">{{productCustomCodeLabel_hh()}}</th>
@@ -40,15 +40,15 @@
                 @php
                     $cats = json_decode($item->cart,true);
                 @endphp
-                <td> {{$item->custom_code}}</td>
-                <td>
+                <td style="width:5%;"> {{$item->custom_code}}</td>
+                <td style="width:30%;">
                     @if (array_key_exists('productName',$cats))
                         {{$cats['productName']}}
                         @else
                         NULL
                     @endif
                 </td>
-                <td style="text-align: center">
+                <td style="width:5%;text-align: center">
                     {{$item->total_sell_qty}}
                     {{-- @if (array_key_exists('unitName',$cats))
                         <small>{{$cats['unitName']}}</small>
@@ -56,9 +56,9 @@
                         NULL
                     @endif --}}
                 </td>
-                <td>
+                <td style="width:60%;">
                     <div class="table-responsive" style="padding-bottom: 0px;margin-bottom: -7px !important;">
-                        <table id="example1" class="table table-bordered table-striped table-hover"  style="padding-bottom: 0px;margin-bottom: 0px;">
+                        <table id="example1" class="table table-bordered table-hover"  style="padding-bottom: 0px;margin-bottom: 0px;">
                             @foreach ($item->sellProductStocks as $pstock)
                             <tr>
                                 <td style="width:20%;text-align: center">

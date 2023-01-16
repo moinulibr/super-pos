@@ -486,6 +486,22 @@ Route::group(['middleware' => ['auth']], function ()
 
         /*
         |-----------------------------------
+        | Sell product Edit 
+        |-----------------------------------
+        */
+            Route::group(['prefix'=>'admin/sell/edit','as'=> 'admin.sell.edit.', 'namespace'=>'Backend\Sell\SellEdit'],function(){
+                Route::get('cart/product/list/{invoiceNo}','SellEditController@index')->name('product.cart.list');//->middleware(['permissions:unit|index']);
+                Route::post('by/sell/invoice/store','SellEditController@store')->name('invoice.wise.quantity.store');//->middleware(['permissions:unit|index']);
+                
+            });
+        /*
+        |-----------------------------------
+        | Sell product Edit 
+        |-----------------------------------
+        */
+
+        /*
+        |-----------------------------------
         | Sell product delivery
         |-----------------------------------
         */
