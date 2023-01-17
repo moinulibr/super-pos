@@ -25,8 +25,13 @@ use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
 use App\Traits\Backend\Sell\Logical\UpdateSellSummaryCalculationTrait;
 use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
 
+use App\Traits\Backend\Sell\Edit\SellUpdateDataFromSellEditCartTrait;
+
 class SellEditController extends Controller
 {
+    use SellUpdateDataFromSellEditCartTrait;
+
+    
     use StockChangingTrait, PaymentProcessTrait;
     use CustomerPaymentProcessTrait, ManagingCalculationOfCustomerSummaryTrait , UpdateSellSummaryCalculationTrait;
 
@@ -81,6 +86,7 @@ class SellEditController extends Controller
     public function index($invoiceNo,Request $request)
     {
         //$this->deleteSellEditCartBySellInvoice ($invoiceNo);
+        $this->updateSellRelatedDataFronEditCart($invoiceNo);
 
         $sellInvoice = SellInvoice::where('invoice_no',$invoiceNo)->first();
         if(!$sellInvoice){
@@ -274,6 +280,7 @@ class SellEditController extends Controller
             $editSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
             $editSellCartProductStock->remaining_delivery_unreduced_qty_date  = $sellProductStock->remaining_delivery_unreduced_qty_date;
             $editSellCartProductStock->sell_cart = $sellProductStock->sell_cart;
+            $editSellCartProductStock->created_by = authId_hh();
 
             $editSellCartProductStock->save();
 

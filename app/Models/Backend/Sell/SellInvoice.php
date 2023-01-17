@@ -31,6 +31,11 @@ class SellInvoice extends Model
 
     public function sellProducts()
     {
+        return $this->hasMany(SellProduct::class,'sell_invoice_id','id')->whereNull('deleted_at');
+    }
+
+    public function sellProductsAllData()//with deleted data
+    {
         return $this->hasMany(SellProduct::class,'sell_invoice_id','id');
     }
 

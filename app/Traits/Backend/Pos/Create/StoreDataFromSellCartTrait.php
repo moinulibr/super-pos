@@ -284,14 +284,16 @@ trait StoreDataFromSellCartTrait
         }
 
         //delivery quantity
-        $totalDeliverdQty = 0;
-        $productStock->total_delivered_qty = $totalDeliverdQty;
-        $productStock->remaining_delivery_qty = $qty - $totalDeliverdQty;
+        if($sellType  == 1){
+            $totalDeliverdQty = 0;
+            $productStock->total_delivered_qty = $totalDeliverdQty;
+            $productStock->remaining_delivery_qty = $qty - $totalDeliverdQty;
 
-        //$productStock->reduceable_delivered_qty = 0;//new field
-        $productStock->reduced_base_stock_remaining_delivery = $instantlyProcessedQty;//new field
-        $productStock->remaining_delivery_unreduced_qty = $stockProcessLaterQty;//new
-        $productStock->remaining_delivery_unreduced_qty_date = $stockProcessLaterDate;//new
+            //$productStock->reduceable_delivered_qty = 0;//new field
+            $productStock->reduced_base_stock_remaining_delivery = $instantlyProcessedQty;//new field
+            $productStock->remaining_delivery_unreduced_qty = $stockProcessLaterQty;//new
+            $productStock->remaining_delivery_unreduced_qty_date = $stockProcessLaterDate;//new
+        }
 
         $productStock->status = 1;
         $productStock->delivery_status = 1;
