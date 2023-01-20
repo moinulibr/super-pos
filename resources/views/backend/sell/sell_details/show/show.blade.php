@@ -143,7 +143,7 @@
                                             {{$item->sold_price}}
                                         </td>
                                         <td style="text-align: center;">
-                                            {{ number_format(($item->sold_price * $item->quantity),2,'.', '')}}
+                                            {{ number_format(($item->sold_price * $item->total_quantity),2,'.', '')}}
                                         </td>
                                         {{-- <td style="text-align: center;">
                                             {{$item->total_selling_amount}}   

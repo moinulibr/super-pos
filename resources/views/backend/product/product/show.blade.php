@@ -52,7 +52,7 @@
                                 <h6 class="price"><span style="color:orange">  {{productCustomCodeLabel_hh()}} </span> : <span style="background-color:#e3e3f3;padding:2px;">{{ $product->custom_code }}</span></h6>
                                 <h6 class="price"><span style="color:blue"> Company Code </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->company_code}}</span></h6>
                                 <h6 class="price"><span style="color:green"> SKU </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->sku}}</span></h6>
-                                <h6 class="price"><span style="color:blue"> Stock </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->available_base_stock??0}}</span></h6>
+                                <h6 class="price"><span style="color:blue"> Stock </span> : <span style="background-color:#e3e3f3;padding:2px;">{{$product->total_product_stock}}</span></h6>
                                 <h6 class="price"><span style="color:#286e2d"> Status </span> : 
                                     <span style="background-color:#e3e3f3;padding:2px;">
                                         @if (!$product->deleted_at)
@@ -168,7 +168,7 @@
                                                     {{$product->sku }}
                                                 </th>
                                             </tr>
-                                           {{--  <tr>
+                                            {{--  <tr>
                                                 <th style="width:20%;border:none;">
                                                     Barcode
                                                 </th>
@@ -176,7 +176,8 @@
                                                 <th style="border:none;">
                                                     {{$product->bacode }}
                                                 </th>
-                                            </tr> --}}
+                                                </tr> 
+                                            --}}
                                             <tr>
                                                 <th style="width:20%;border:none;">
                                                     Created By

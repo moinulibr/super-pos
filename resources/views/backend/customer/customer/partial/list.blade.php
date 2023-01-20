@@ -67,7 +67,7 @@
                         {{$item->total_advance}}
                     </td>
                     <td>
-                        {{$item->total_due}}
+                        {{number_format($item->totalDueAmount(),2,'.','')}}
                     </td> 
                     <td>
                         {{$item->next_payment_date}}

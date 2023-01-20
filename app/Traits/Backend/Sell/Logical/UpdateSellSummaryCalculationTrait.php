@@ -95,7 +95,13 @@ trait UpdateSellSummaryCalculationTrait
         {
             $amountAfterCalculation = $existingData->{$dbField} + $amountOrQty;
         }else{
-            $amountAfterCalculation = $existingData->{$dbField} - $amountOrQty;
+            if($existingData->{$dbField} != 0){
+                $amount = $existingData->{$dbField} - $amountOrQty;
+            }else{
+                $amount = $amountOrQty;
+            }
+            //$amountAfterCalculation = $existingData->{$dbField} - $amountOrQty;
+            $amountAfterCalculation = $amount;
         }
         $existingData->{$dbField} = $amountAfterCalculation;
         $existingData->save();

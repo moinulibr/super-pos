@@ -100,6 +100,7 @@ trait SellUpdateDataFromSellEditCartTrait
             $previousTotalReduceableDeliveredQty = $existingSellProductStock->reduceable_delivered_qty;
             $previousTotalRemainingDeliveryUnreducedQty = $existingSellProductStock->remaining_delivery_unreduced_qty;
             $previousTotalRemainingDeliveryQtyDate = $existingSellProductStock->remaining_delivery_unreduced_qty_date;
+            
             $previousMrp = $existingSellProductStock->mrp_price;
             $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
             $previousSoldPrice = $existingSellProductStock->sold_price;
@@ -135,7 +136,15 @@ trait SellUpdateDataFromSellEditCartTrait
         $sellProductStock->total_profit_from_product  = $singleSellProductStockCart->total_profit;
         $sellProductStock->total_profit  = $singleSellProductStockCart->total_profit;
 
-
+        //compare total_quantity, if previous qty is more then current qty  
+        $sellType = 1; 
+        if($sellType == 1){
+            $this->getQtyRelatedDataAfterComparePreviousAndCurrentQty(
+                $previousTotalQty,$totalQty, $previousTotalDeliveredQty, 
+                $previousTotalReducedBaseStockRemainingDeliveryQty, $previousTotalReduceableDeliveredQty,
+                $previousTotalRemainingDeliveryUnreducedQty
+            );
+        }
         
         $pStock = productStockByProductStockId_hh($sellProductStock->product_stock_id);
         $stockId = regularStockId_hh();
@@ -218,6 +227,190 @@ trait SellUpdateDataFromSellEditCartTrait
         $sellProductStock->delivery_status = 1;
         $sellProductStock->save();
     }
+    
+    //$this->getQtyRelatedDataAfterComparePreviousAndCurrentQty($previousTotalQty,$totalQty, $previousTotalDeliveredQty, $previousTotalReducedBaseStockRemainingDeliveryQty, $previousTotalReduceableDeliveredQty, $previousTotalRemainingDeliveryUnreducedQty);    
+    private function getQtyRelatedDataAfterComparePreviousAndCurrentQty(
+        int $previousTotalQty, int $currentQty, int $previousTotalDeliveredQty,
+        int $previousTotalReducedBaseStockRemainingDeliveryQty, int $previousInstantlyProcessedQty,
+        int $previousStockProcessLaterQty
+        )
+    {
+
+        $currentlyOverQtyMinusFromStockProcessLaterQty = 0;
+        $currentlyOverQtyMinusFromReducedQtyRemainingDelivery = 0;
+        $currentlyOverQtyWhichWillbeDecrementFromMainStock = 0;
+        $currentlyReturnableQtyWhichWillbeIncrementWithMainStock = 0;
+
+        // 3 < 5
+        //current qty is less then previous qty
+        if($currentQty < $previousTotalQty){
+            //then minus qty from later quanity
+            //focused on reduced based stock remaining delivery.. for keeping this qty first priority
+            
+            //curr 3 , previous reduced stock 5, later qty 0 , total previous qty = 5
+            //curr 3 , previous reduced stock 4, later qty 1 , total previous qty = 5
+            $overQtyMinusFromRemainingDelivery = 0;
+            $overQtyMinusFromProcessLaterQty = 0;
+            if($currentQty < $previousTotalReducedBaseStockRemainingDeliveryQty){
+                //we are bound to minus from both field, if there remain available qty.
+                $overQtyMinusFromRemainingDelivery = $previousTotalReducedBaseStockRemainingDeliveryQty - $currentQty;
+                $overQtyMinusFromProcessLaterQty = ($previousTotalQty - ($overQtyMinusFromRemainingDelivery + $currentQty));
+            }
+            //current qty 4, previous qty processed reduced 0, later 7, total 7
+            //current qty 4, previous qty processed reduced 1, later 6, total 7
+            //current qty 4, previous qty processed reduced 2, later 5, total 7
+            //current qty 4, previous qty processed reduced 3, later 4, total 7
+            else if($currentQty > $previousTotalReducedBaseStockRemainingDeliveryQty){
+                // 4-0 = 4, 7-4=3 thakbe 7-3=4
+                // 4-1 = 3, 7-3=4 thakbe 7-4=3
+                // 4-2 = 2, 7-2=5 thakbe 7-5=2
+                // 4-3 = 1, 7-1=6 thakbe 7-6=1
+                $keepableForLater = $currentQty - $previousTotalReducedBaseStockRemainingDeliveryQty;
+                $overQtyMinusFromProcessLaterQty =  $previousStockProcessLaterQty - $keepableForLater;
+                $overQtyMinusFromRemainingDelivery = 0;
+            }
+            //current qty 4, previous qty processed reduced 4, later 3, total 7
+            //current qty 2, previous qty processed reduced 2, later 5, total 7
+            else if($currentQty == $previousTotalReducedBaseStockRemainingDeliveryQty){
+                $overQtyMinusFromRemainingDelivery = 0;
+                $overQtyMinusFromProcessLaterQty = $previousTotalQty - $previousTotalReducedBaseStockRemainingDeliveryQty;
+            }
+
+            $currentlyOverQtyMinusFromStockProcessLaterQty = $overQtyMinusFromProcessLaterQty;
+            $currentlyOverQtyMinusFromReducedQtyRemainingDelivery = $overQtyMinusFromRemainingDelivery;
+
+            $currentlyOverQtyWhichWillbeDecrementFromMainStock = 0;
+            $currentlyReturnableQtyWhichWillbeIncrementWithMainStock = 0;
+
+        }
+
+        // 7  >  5
+        //current qty is more then previous qty
+        else if($currentQty > $previousTotalQty){
+       
+            $currentlyOverQtyWhichWillbeDecrementFromMainStock = 0;
+            $currentlyReturnableQtyWhichWillbeIncrementWithMainStock = $currentQty - $previousTotalQty;;
+
+            $currentlyOverQtyMinusFromStockProcessLaterQty = 0;
+            $currentlyOverQtyMinusFromReducedQtyRemainingDelivery = 0;
+        }
+
+        // 5   =   5 //nothing change
+        //current qty is equal to previous qty
+        else if($currentQty == $previousTotalQty){
+            $currentlyOverQtyWhichWillbeDecrementFromMainStock = 0;
+            $currentlyReturnableQtyWhichWillbeIncrementWithMainStock = 0;
+
+            $currentlyOverQtyMinusFromStockProcessLaterQty = 0;
+            $currentlyOverQtyMinusFromReducedQtyRemainingDelivery = 0;
+        }
+
+        return [
+            'returnable_qty' => 0,
+            ''
+        ];
+    }
+
+    /*
+    |-----------------------------------------------------------------------------------
+    | this part is only for reduceing stock from all kinds of sells
+    | and increment stock to the particular stocks    
+    |------------------------------------------------------------------------------------
+    */
+        /*
+        |--------------------------------------------------------------------------------------------------------
+        | this section is managing for reducing stock when return/refund qty
+        | note that:- refunding time -> we make a vartual field name totalReduceableQty
+        | It's make by two column:-  totalReduceableQty = (reduceable_delivered_qty + reduced_base_stock_remaining_delivery)
+        |--------------------------------------------------------------------------------------------------------
+        */
+            /* //total reduceable delivered qty
+            $totalReducableDeliveredQty = $sellProductStockDetails->reduceable_delivered_qty; //2
+
+            //total reduced base stock qty remaining delivery :- Its related product_stocks table
+            $totalReducedBaseStockQtyRemaininingDelvierd = $sellProductStockDetails->reduced_base_stock_remaining_delivery;
+            
+            //total reduceable delivered qty = total reduceable delivered qty + total reduced base stock qty remaining delivery
+            $totalReducealbeDeliveredQty = $totalReducableDeliveredQty + $totalReducedBaseStockQtyRemaininingDelvierd;
+            
+            $baseStockIncrementQuantity = 0; //base stock increment qty, which qty increment with main stock - in product_stocks table
+            $reducedBaseStockDecrementQuantity = 0; //reduced base stock decrement qty, which qty is decrement/minus from - reduced_base_stock_remaining_delivery in the sell_product_stocks table
+            $reduceableDeliveredDecrementQuantity = 0; //reduceable delivered decrement qty, which qty is decrement/minus from -  reduceable_delivered_qty in the sell_product_stocks table
+
+            //if return qty == total reduceable delivered qty and total reduceable delivered qty > 0
+            if($totalReducealbeDeliveredQty == $returningQty && $totalReducealbeDeliveredQty > 0){
+                $baseStockIncrementQuantity = $returningQty; //base stock increment value is same.
+
+                $reducedBaseStockDecrementQuantity = 0; //zero
+                $reduceableDeliveredDecrementQuantity = 0; //zero
+            }
+            //if total reduceable delivered qty is more then returning qty and total reduceable delivered qty > 0
+            else if($totalReducealbeDeliveredQty > $returningQty && $totalReducealbeDeliveredQty > 0){
+
+                $baseStockIncrementQuantity = $returningQty;//base stock increment value is same.
+                
+                if($totalReducedBaseStockQtyRemaininingDelvierd == $returningQty){
+                    $reducedBaseStockDecrementQuantity = 0;
+                    $reduceableDeliveredDecrementQuantity = $totalReducableDeliveredQty ;
+                }
+                else if($totalReducedBaseStockQtyRemaininingDelvierd > $returningQty){
+                    $reducedBaseStockDecrementQuantity = $totalReducedBaseStockQtyRemaininingDelvierd - $returningQty;
+                    $reduceableDeliveredDecrementQuantity = $totalReducableDeliveredQty ;
+                }
+                else if($totalReducedBaseStockQtyRemaininingDelvierd < $returningQty){
+                    $moreQtyOfReducedBaseStockFromReturningQty = $returningQty - $totalReducedBaseStockQtyRemaininingDelvierd;
+                    $reducedBaseStockDecrementQuantity = 0;
+                    if($moreQtyOfReducedBaseStockFromReturningQty > 0){
+                        $reduceableDeliveredDecrementQuantity = $totalReducableDeliveredQty - $moreQtyOfReducedBaseStockFromReturningQty;
+                    }else{
+                        $reduceableDeliveredDecrementQuantity = 0;
+                    }
+                }
+            }
+            else if($totalReducealbeDeliveredQty < $returningQty && $totalReducealbeDeliveredQty > 0){
+                $baseStockIncrementQuantity = $totalReducealbeDeliveredQty;
+
+                $reducedBaseStockDecrementQuantity = 0;
+                $reduceableDeliveredDecrementQuantity = 0;
+            }
+            else if($totalReducealbeDeliveredQty == 0){
+                $baseStockIncrementQuantity = 0;
+            }
+            //$reducedBaseStockDecrementQuantity , $reduceableDeliveredDecrementQuantity
+            $sellProductStockDetails->reduced_base_stock_remaining_delivery = $reducedBaseStockDecrementQuantity;
+            $sellProductStockDetails->reduceable_delivered_qty = $reduceableDeliveredDecrementQuantity;
+            $sellProductStockDetails->save(); */
+
+        /*
+        |--------------------------------------------------------------------------------------------------------
+        | this section is managing for reducing stock when return/refund qty
+        | note that:- refunding time -> we make a vartual field name totalReduceableQty
+        | It's make by two column:-  totalReduceableQty = (reduceable_delivered_qty + reduced_base_stock_remaining_delivery)
+        |--------------------------------------------------------------------------------------------------------
+        */
+        /* $productStock = productStockByProductStockId_hh($sellProductStockDetails->product_stock_id);
+        if($productStock &&  $baseStockIncrementQuantity){
+            $productStock->reduced_base_stock_remaining_delivery = $reducedBaseStockDecrementQuantity;
+            $productStock->save();
+        }
+    
+        //increment stock quantity to the particular's stock  from product stock
+        if($invoiceData->sell_type == 1 && $returningQty > 0  && $baseStockIncrementQuantity > 0){
+            $this->stock_id_FSCT = $sellProductStockDetails->stock_id;
+            $this->product_id_FSCT = $sellProductStockDetails->product_id;
+            $this->stock_quantity_FSCT = $baseStockIncrementQuantity;
+            $this->unit_id_FSCT = $sellProduct ? $sellProduct->unit_id:0;
+            $this->sellingReturnStockTypeIncrement();
+        } */
+        //increment stock quantity to the particular's stock  from product stock
+    /*
+    |-----------------------------------------------------------------------------------
+    | this part is only for reduceing stock from all kinds of sells
+    | and increment stock to the particular stocks    
+    |------------------------------------------------------------------------------------
+    */
+
+
 
     /**
     * add new SellProductStock data function, which is under updateSellProductStock function

@@ -30,9 +30,9 @@
                     <li class="breadcrumb-item active">All  Product Stock</li>
                 </ol>
             </div>
-            <div class="products">
+            {{-- <div class="products">
                 <a href="#" class="addStockModal">Add  Product Stock</a>
-            </div>
+            </div> --}}
         </div>
     @endpush
     <!--*********^page title content^*********-->
