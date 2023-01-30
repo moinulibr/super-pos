@@ -78,6 +78,7 @@ trait StoreDataFromSellCartTrait
         $sellInvoice->total_profit_from_product = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
         $sellInvoice->total_profit = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
         
+        $sellInvoice->invoice_no = sprintf("%'.08d", $sellInvoice->id);
         $sellInvoice->save();
 
         //general statement- ledger 
@@ -298,6 +299,7 @@ trait StoreDataFromSellCartTrait
         $productStock->status = 1;
         $productStock->delivery_status = 1;
 
+        $totalDeliverdQty = 0;
         $productStock->sell_cart = json_encode([
             'product_id' => $cart['product_id'],
             'product_stock_id' => $product_stock_id,
@@ -396,7 +398,7 @@ trait StoreDataFromSellCartTrait
         $sellInvoice->branch_id = authBranch_hh();
         $rand = rand(01,99);
         $makeInvoice = date("iHsymd").$rand;
-        $sellInvoice->invoice_no = $makeInvoice;
+        //$sellInvoice->invoice_no = $makeInvoice;
         $sellInvoice->total_item = $sellInvoiceSummeryCart['totalItem'];
         $sellInvoice->total_sell_item = $sellInvoiceSummeryCart['totalItem'];
         $sellInvoice->sell_quantity = $sellInvoiceSummeryCart['totalQuantity'];

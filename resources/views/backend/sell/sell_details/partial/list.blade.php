@@ -18,6 +18,13 @@
             </tr>
         </thead>
         <tbody>
+            @php
+                $totalSellAmount = 0;
+                $totalPaidAmount = 0;
+                $totalDueAmount = 0;
+                $totalLessAmount = 0;
+                $totalItem = 0;
+            @endphp
             @foreach ($datas as $index => $item)
                 <tr>
                     <th scope="row">
@@ -38,7 +45,7 @@
                                 <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Return Product</a>
                                 <a class="dropdown-item " data-id="{{$item->id}}" style="cursor: not-allowed !important;">Make Payment</a> {{--singleSellInvoiceReceivePaymentModalView--}}
                                 <a class="dropdown-item singleViewSellInvoiceWisePaymentDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
-                                <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list',$item->invoice_no)}}" style="cursor: pointer">Edit Sell</a>
+                                {{-- <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list',$item->invoice_no)}}" style="cursor: pointer">Edit Sell</a> --}}
                                 {{-- <a class="dropdown-item singleEditModal" data-id="{{$item->id}}" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item singleDeleteModal" data-id="{{$item->id}}" data-name="{{$item->name}}" href="javascript:void(0)">Delete</a> --}}
                             {{-- <div class="dropdown-divider"></div>
@@ -61,9 +68,41 @@
                     <td>{{$item->createdBy?$item->createdBy->name:NULL}}</td>
                     <td>{{$item->totalSellItemAfterRefund()}}</td>
                     <td>{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
+                    @php
+                        $totalSellAmount += $item->totalInvoicePayableAmountAfterRefund();
+                        $totalPaidAmount += $item->total_paid_amount;
+                        $totalDueAmount += $item->total_due_amount;
+                        $totalLessAmount += $item->total_discount;
+                        $totalItem += $item->totalSellItemAfterRefund();
+                    @endphp
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" style="text-align:right">Total</td>
+                <th>{{number_format($totalSellAmount,2,'.','')}}</th>
+                <td></td>
+                <th>{{number_format($totalPaidAmount,2,'.','')}}</th>
+                <th>{{number_format($totalDueAmount,2,'.','')}}</th>
+                <th>{{number_format($totalLessAmount,2,'.','')}}</th>
+                <td></td>
+                <th>{{$totalItem}}</th>
+                <td></td>
+            </tr>
+        </tfoot>
     </table>
-    {{$datas->links()}}
+    {{-- {{$datas->links()}} --}}
+</div>
+<input type="hidden" class="page_no" name="page" value="{{$page_no}}">
+                    
+<div class="row">
+    <div class="col-md-3">
+        Showing {{$datas->count()}} from {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() }} of {{ $datas->total() }}  entries 
+    </div>
+    <div class="col-md-9">
+        <div style="float: right">
+        {{ $datas->links() }}
+        </div>
+    </div>
 </div>

@@ -14,7 +14,7 @@ return [
     */
 
     'name' => "Khan Sanitary",//env('APP_NAME', 'Khan Sanitary'),
-
+    //'name' => "Amader Sanitary",//env('APP_NAME', 'Amader Sanitary'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment

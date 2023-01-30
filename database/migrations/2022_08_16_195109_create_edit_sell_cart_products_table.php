@@ -31,8 +31,6 @@ class CreateEditSellCartProductsTable extends Migration
                 $table->tinyInteger('product_stock_type')->nullable()->comment('1=single, 2=multiple');
                 
                 $table->string('custom_code',50)->nullable()->comment('product custom_code');
-                $table->decimal('total_sell_qty_before_edit',20,3)->default(0)->comment('creating time sell quantity');
-                $table->decimal('total_sell_qty_after_edit',20,3)->default(0)->comment('when editing');
 
 
                 $table->decimal('sold_price',20,2)->default(0)->comment('creating time');
@@ -43,31 +41,19 @@ class CreateEditSellCartProductsTable extends Migration
 
                 $table->decimal('reference_commission',20,2)->default(0);
                 
-                $table->decimal('total_selling_amount_before_edit',20,2)->default(0)->comment('(sold_price * total_sell_qty_before_edit)');
-                $table->decimal('total_selling_amount_after_edit',20,2)->default(0)->comment('(sold_price * total_sell_qty_after_edit)');
                 $table->decimal('total_sold_amount',20,2)->default(0)->comment('total_selling_amount_after_edit - total_selling_amount_before_edit');
                 
-
-                //$table->decimal('purchase_price',20,2)->nullable();
-                $table->decimal('total_selling_purchase_amount_before_edit',20,2)->default(0)->comment('total_sell_qty_before_edit * sold_price');
-                $table->decimal('total_selling_purchase_amount_after_edit',20,2)->default(0)->comment('total_sell_qty_after_edit * sold_price');
                 $table->decimal('total_purchase_amount',20,2)->default(0)->comment('total_selling_purchase_amount_after_edit - total_selling_purchase_amount_before_edit');
               
-
-                $table->decimal('total_selling_profit_before_edit',20,2)->default(0)->comment('total_selling_purchase_amount_before_edit - total_selling_amount_before_edit');
-                $table->decimal('total_selling_profit_after_edit',20,2)->default(0)->comment('total_selling_purchase_amount_after_edit - total_selling_amount_after_edit');
                 $table->decimal('total_profit',20,2)->default(0)->comment('total_selling_profit_before_edit +- total_selling_profit_after_edit');
 
                  
                 $table->tinyInteger('qty_change_type')->default(0)->comment('update type : 1 = plus, 2= minus');
                 
-                $table->decimal('total_update_qty',20,3)->default(0)->comment('total_sell_qty_after_edit - total_sell_qty_before_edit ...when updating');
                 $table->decimal('total_quantity',20,3)->default(0)->comment('total_sell_qty_after_edit + total_sell_qty_before_edit');
                 
                 $table->decimal('total_delivered_qty',20,3)->default(0)->comment('');
-                $table->decimal('remaining_delivery_qty_before_edit',20,3)->default(0);
-                $table->decimal('remaining_delivery_qty_after_edit',20,3)->default(0);
-
+               
                 $table->text('liability_type')->nullable()->comment('default-null, 1=Warranty,2=Guarantee.json:w_g_type,w_g_type_day,identityNumber');
                 $table->string('identity_number',50)->nullable();
                 $table->text('cart')->nullable()->comment('json:p.name,custom_code,unit_name,wharehouse_id,warehouse_rack_id,sold_price');

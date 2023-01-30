@@ -95,13 +95,13 @@ trait UpdateSellSummaryCalculationTrait
         {
             $amountAfterCalculation = $existingData->{$dbField} + $amountOrQty;
         }else{
-            if($existingData->{$dbField} != 0){
+            /* if($existingData->{$dbField} != 0){
                 $amount = $existingData->{$dbField} - $amountOrQty;
             }else{
                 $amount = $amountOrQty;
-            }
-            //$amountAfterCalculation = $existingData->{$dbField} - $amountOrQty;
-            $amountAfterCalculation = $amount;
+            } */
+            $amountAfterCalculation = $existingData->{$dbField} - $amountOrQty;
+            //$amountAfterCalculation = $amount;
         }
         $existingData->{$dbField} = $amountAfterCalculation;
         $existingData->save();
@@ -163,6 +163,8 @@ trait UpdateSellSummaryCalculationTrait
 
         //total sold amount
         $totalSoldAmount = $existingData->sellProducts->sum('total_sold_amount');
+        $existingData->subtotal = $totalSoldAmount; 
+        $existingData->total_payable_amount = $totalSoldAmount; 
         $existingData->total_sold_amount = $totalSoldAmount; 
 
         //total sold amount
@@ -190,7 +192,7 @@ trait UpdateSellSummaryCalculationTrait
         //total_discount ,total_vat, shipping_cost,others_cost,round_amount
         //total_payable_amount,paid_amount,due_amount,adjustment_amount
         //refund_charge,reference_amount,total_paid_amount,total_due_amount, total_sell_item ,total_refunded_item ,total_item   
-        $totalPayableAmount = $existingData->total_payable_amount - $totalRefundedAmount;
+        $totalPayableAmount = $totalSoldAmount - $totalRefundedAmount;// $existingData->total_payable_amount - $totalRefundedAmount;
         $totalPaidAmount = $existingData->total_paid_amount;
         //$totalDueAmount = $existingData->total_due_amount;
         $overPaidAmount = 0;

@@ -155,7 +155,7 @@
                                                         --}}
                                                     </tr>
                                                 @endforeach
-                                                @foreach ($product->stockNORWhenThidStockIsNotStoreInPreviousTime() as $item)
+                                                @foreach ($product->stockNORWhenThisStockIsNotStoreInPreviousTime() as $item)
                                                     <tr>
                                                         <td style="font-size:16px;background-color:darkgray;color:floralwhite;border-bottom-color:#f1e7e7;">
                                                             {{$item->label}}

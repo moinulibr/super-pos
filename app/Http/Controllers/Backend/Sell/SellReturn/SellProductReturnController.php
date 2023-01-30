@@ -344,7 +344,7 @@ class SellProductReturnController extends Controller
     private function sellReturnProductInvoice($makeInvoice,$sellInvoiceData,$dataRequest) : object {
         $returnInvoice = new SellReturnProductInvoice();
         $returnInvoice->branch_id = authBranch_hh();
-        $returnInvoice->invoice_no = $makeInvoice;
+        //$returnInvoice->invoice_no = $makeInvoice;
         $returnInvoice->sell_invoice_no = $sellInvoiceData->invoice_no;
         $returnInvoice->sell_invoice_id = $sellInvoiceData->id;
         $returnInvoice->customer_id = $dataRequest['customer_id'];
@@ -363,6 +363,8 @@ class SellProductReturnController extends Controller
        
         $returnInvoice->return_date = date('Y-m-d');
         $returnInvoice->created_by = authId_hh();
+        $returnInvoice->save();
+        $returnInvoice->invoice_no = sprintf("%'.08d", $returnInvoice->id);
         $returnInvoice->save();
         return $returnInvoice;
     }

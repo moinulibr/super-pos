@@ -330,13 +330,15 @@ class SellProductDeliveryController extends Controller
     {
         $sellDeliver = new SellProductDeliveryInvoice();
         $sellDeliver->branch_id = authBranch_hh();
-        $sellDeliver->invoice_no = $makeInvoice; 
+        //$sellDeliver->invoice_no = $makeInvoice; 
         $sellDeliver->sell_invoice_no = $sellInvoice->invoice_no; 
         $sellDeliver->sell_invoice_id = $sellInvoice->id; 
         //$sellDeliver->delivery_note = ''; 
         //$sellDeliver->quantity = $this->sellDeliveryQuantity;
         $sellDeliver->delivery_status = 1;
         $sellDeliver->created_by = authId_hh();
+        $sellDeliver->save();
+        $sellDeliver->invoice_no = sprintf("%'.08d", $sellDeliver->id);
         $sellDeliver->save();
         return $sellDeliver;
     }

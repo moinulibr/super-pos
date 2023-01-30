@@ -9,6 +9,7 @@
                 </th>
                 <th>Name</th>
                 <th>Total Stock</th>
+                <th><small style="font-size:10px;">Ready For Delivery</small></th>
                 @foreach ($stocks as $stock)
                     <th>
                         {{$stock->label}}
@@ -55,6 +56,9 @@
                     </td> 
                     <td style="background-color: #ebebeb;text-align: center;">
                         {{ $item->total_product_stock_with_remaining_delivery }}
+                    </td>
+                    <td style="background-color: #ebebeb;text-align: center;">
+                        {{ $item->total_product_stock_ready_for_delivery }}
                     </td>
                     @foreach ($item->productStockNORWhereStatusIsActive() as $productStock)
                     <td style="text-align: center;">

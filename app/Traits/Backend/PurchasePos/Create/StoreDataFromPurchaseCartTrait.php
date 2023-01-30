@@ -60,8 +60,9 @@ trait StoreDataFromPurchaseCartTrait
             //product price update
             $this->productPriceUpdateInTheProductPriceTable($purchaseSessionCart);
         }//end foreach
-        
+
         $purchaseInvoice->total_purchase_amount = $this->totalPurchasePriceOfAllQuantityOfThisInvoice;
+        $purchaseInvoice->invoice_no = sprintf("%'.08d", $purchaseInvoice->id);
         $purchaseInvoice->save();
 
         if(($this->purchaseCreateFormRequestData['invoice_total_paying_amount'] ?? 0) > 0)
@@ -206,7 +207,7 @@ trait StoreDataFromPurchaseCartTrait
         $purchaseInvoice->branch_id = authBranch_hh();
         $rand = rand(01,99);
         $makeInvoice = date("iHsymd").$rand;
-        $purchaseInvoice->invoice_no = $makeInvoice;
+        //$purchaseInvoice->invoice_no = $makeInvoice;
         $purchaseInvoice->supplier_id = $this->purchaseCreateFormRequestData['supplier_id'];
         $purchaseInvoice->chalan_no = $this->purchaseCreateFormRequestData['chalan_no'];
         $purchaseInvoice->reference_no = $this->purchaseCreateFormRequestData['reference_no'];

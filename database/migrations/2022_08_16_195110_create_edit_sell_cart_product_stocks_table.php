@@ -29,31 +29,19 @@ class CreateEditSellCartProductStocksTable extends Migration
                 $table->integer('stock_id')->nullable();
                 $table->integer('product_stock_id')->nullable()->comment('product stock id');
                 
-                $table->decimal('total_sell_qty_before_edit',20,3)->default(0)->comment('sell creating time');
-                $table->decimal('total_sell_qty_after_edit',20,3)->default(0)->comment('sell creating time');
                 $table->decimal('mrp_price',20,2)->default(0);
                 $table->decimal('regular_sell_price',20,2)->default(0);
                 $table->decimal('sold_price',20,2)->default(0);
                 $table->decimal('purchase_price',20,2)->default(0);
-                
-                $table->decimal('total_sold_amount_before_edit',20,2)->default(0)->comment('sold_price * total_sell_qty');
-                $table->decimal('total_sold_amount_after_edit',20,2)->default(0)->comment('sold_price * total_sell_qty');
-                $table->decimal('total_purchase_amount_before_edit',20,2)->default(0)->comment('purchase_price * total_sell_qty');
-                $table->decimal('total_purchase_amount_after_edit',20,2)->default(0)->comment('purchase_price * total_sell_qty');
-     
+               
                 $table->tinyInteger('qty_change_type')->default(0)->comment('update type : 1 = plus, 2= minus');
                 
-                $table->decimal('total_update_qty',20,3)->default(0)->comment('total_sell_qty_after_edit - total_sell_qty_before_edit ...when updating');
                 $table->decimal('total_quantity',20,3)->default(0)->comment('total_sell_qty_after_edit + total_sell_qty_before_edit');
                 
-                $table->decimal('total_selling_profit_before_edit',20,2)->default(0)->comment('total_purchase_amount_before_edit - total_sold_amount_before_edit');
-                $table->decimal('total_selling_profit_after_edit',20,2)->default(0)->comment('total_purchase_amount_after_edit - total_sold_amount_after_edit');
-                $table->decimal('total_profit',20,2)->default(0)->comment('total_selling_profit_after_edit +- total_selling_profit_before_edit');
+               $table->decimal('total_profit',20,2)->default(0)->comment('total_selling_profit_after_edit +- total_selling_profit_before_edit');
                 
                 $table->decimal('total_delivered_qty',20,3)->default(0)->comment('');
-                $table->decimal('remaining_delivery_qty_before_edit',20,3)->default(0);
-                $table->decimal('remaining_delivery_qty_after_edit',20,3)->default(0);
-            
+                
                 $table->decimal('reduced_base_stock_remaining_delivery',20,3)->default(0)->comment('');
                 $table->decimal('reduceable_delivered_qty',20,3)->default(0)->comment('');
                 $table->string('remaining_delivery_unreduced_qty',30)->nullable()->comment('');

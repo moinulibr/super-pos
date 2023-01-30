@@ -81,8 +81,8 @@ class ProductController extends Controller
         $supplier_group_id = $request->supplier_group_id ?? NULL;
         $brand_id = $request->brand_id ?? NULL;
         $category_id = $request->category_id ?? NULL;
-        $date_from = Carbon::parse($request->input('start_date'));
-        $date_to = Carbon::parse($request->input('end_date') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-21 day")));
+        $date_from = Carbon::parse($request->input('date_from'));
+        $date_to = Carbon::parse($request->input('date_to') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-21 day")));
         
         $product  = Product::query();
         if($request->ajax())

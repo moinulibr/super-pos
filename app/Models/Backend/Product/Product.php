@@ -93,6 +93,23 @@ class Product extends Model
         }
 
 
+        //have to processed
+        public function getTotalProductStockRemainingDeliveryWithShortageQtyAttribute()
+        {
+            return number_format(($this->productStocks()->sum('reduced_base_stock_remaining_delivery')+($this->productStocks()->sum('negative_sold_base_stock'))),2,'.', '');
+        }
+        //total product stock is ready for delivery.. reduced stock from main stock, but not delivered yet now
+        public function getTotalProductStockReadyForDeliveryAttribute()
+        {
+            return number_format($this->productStocks()->sum('reduced_base_stock_remaining_delivery'),2,'.', '');
+        }
+        //have to processed
+        public function getTotalProductStockShortageRemainingDeliveryAttribute()
+        {
+            return number_format($this->productStocks()->sum('negative_sold_base_stock'),2,'.', '');
+        }
+
+
         public function productStocks()
         {
             return $this->hasMany(ProductStock::class,'product_id','id');

@@ -5,9 +5,21 @@
 
     function sellList()
     {
-        var url = $('.sellListUrl').val();
+        var createUrl = $('.sellListUrl').val();
+        var page_no     = parseInt($('.page_no').val());
+        var pagination  = $('.paginate :selected').val();
+
+        var date_from = $('.date_from').val();
+        var date_to = $('.date_to').val();
+
+        var search = $('.search').val();
+        var url  =  createUrl+"?page="+page_no;
+
         $.ajax({
             url:url,
+            data:{
+                pagination:pagination,search:search,page_no:page_no,date_from:date_from,date_to:date_to
+            },
             success:function(response){
                 if(response.status == true)
                 {
@@ -28,8 +40,21 @@
     function getPagination(pageNumber){
         var createUrl = $('.sellListUrl').val();
         var url =  createUrl+"?page="+pageNumber;
+
+        var createUrl = $('.sellListUrl').val();
+        var page_no     = parseInt($('.page_no').val());
+        var pagination  = $('.paginate :selected').val();
+        
+        var date_from = $('.date_from').val();
+        var date_to = $('.date_to').val();
+
+        var search = $('.search').val();
+
         $.ajax({
             url: url,
+            data:{
+                pagination:pagination,search:search,page_no:page_no,date_from:date_from,date_to:date_to
+            },
             type: "GET",
             datatype:"HTML",
             success: function(response){
@@ -42,25 +67,33 @@
     }
 //-----------------------------------------------------------------------
 
+    $(document).on('click change','.date_from,.date_to,.paginate',function(){
+        sellList();
+    });
+
 
 
 
 //-----------------------------------------------------------------------
-    //search 
-    var ctrlDown = false,
-    ctrlKey = 17,
-    cmdKey = 91,
-    vKey = 86,
-    cKey = 67;
-    xKey = 88;
+    //search
+    var ctrlDown = false,ctrlKey = 17,cmdKey = 91,vKey = 86,cKey = 67;xKey = 88;
     $(document).on('keypress keyup','.search',function(e){
         if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
         if (ctrlDown && (e.keyCode == vKey || e.keyCode == cKey || e.keyCode == xKey)) return false;
         var search = $(this).val();
-        var url = $('.sellListUrl').val();
+        var createUrl = $('.sellListUrl').val();
+        var page_no     = parseInt($('.page_no').val());
+        var pagination  = $('.paginate :selected').val();
+
+        var date_from = $('.date_from').val();
+        var date_to = $('.date_to').val();
+
+        var url  =  createUrl+"?page="+page_no;
         $.ajax({
             url: url,
-            data:{search:search},
+            data:{
+                pagination:pagination,search:search,page_no:page_no,date_from:date_from,date_to:date_to
+            },
             type: "GET",
             datatype:"HTML",
             success: function(response){

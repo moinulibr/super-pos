@@ -34,10 +34,15 @@ class EditSellCartInvoice extends Model
     {
         return $this->hasMany(SellProduct::class,'sell_invoice_id','id');
     }
-
+    //edit sell cart product
     public function editSellCartProducts()
     {
         return $this->hasMany(EditSellCartProduct::class,'edit_sell_cart_invoice_id','id');
+    } 
+    //edit sell cart product
+    public function editSellCartProductsStock()
+    {
+        return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_invoice_id','id');
     }
 
     public function invoicePayment()

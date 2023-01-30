@@ -144,7 +144,7 @@
             <br>
             <!-------responsive table------>
             <div style="background-color:#ffff;width: 100%;">
-                <div class="productListAjaxResponseResult"style="padding:2%;">
+                <div class="productListAjaxResponseResult" style="padding:2%;">
 
                     @include('backend.product.product.partial.list')
 

@@ -228,6 +228,16 @@
                                                     {{-- {{ unitView_hh($product->unit_id,$product->available_stock)  }} --}}
                                                 </th>
                                             </tr>
+                                            <tr>
+                                                <th style="width:20%;border:none;">
+                                                    <small>Stock Ready For Delivery</small>
+                                                </th>
+                                                <td style="width:1%;border:none;">:</td>
+                                                <th style="border:none;">
+                                                    {{ $product->total_product_stock_ready_for_delivery }}
+                                                </th>
+                                            </tr>
+                                            
                                         </thead>
                                     </table>
                                 </div> 
@@ -254,28 +264,28 @@
                                                     {{$product->categories ? $product->categories->name : null }}
                                                 </th>
                                             </tr>
-                                            @if ($product->sub_category_id)
+                                           
                                             <tr>
                                                 <th style="width:20%;border:none;">
                                                     Sub-category
                                                 </th>
                                                 <td style="width:1%;border:none;">:</td>
                                                 <th style="border:none;">
-                                                    {{$product->subCategories ? $product->subCategories->name : null }}
+                                                    {{$product->subCategories ? $product->subCategories->name : 'None' }}
                                                 </th>
                                             </tr>
-                                            @endif
-                                            @if ($product->color_id)    
+                                           
+                                           
                                             <tr>
                                                 <th style="width:20%;border:none;">
                                                     Color
                                                 </th>
                                                 <td style="width:1%;border:none;">:</td>
                                                 <th style="border:none;">
-                                                    {{$product->colors ? $product->colors->name : null }}
+                                                    {{$product->colors ? $product->colors->name : 'None' }}
                                                 </th>
                                             </tr>
-                                            @endif
+                                            
                                             <tr>
                                                 <th style="width:20%;border:none;">
                                                     Grade

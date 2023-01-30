@@ -84,9 +84,9 @@ class SellEditController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index($invoiceNo,Request $request)
-    {
+    {   
         //$this->deleteSellEditCartBySellInvoice ($invoiceNo);
-        $this->updateSellRelatedDataFronEditCart($invoiceNo);
+        $this->updateSellRelatedDataForEditCart($sellType = 1,$invoiceNo);
 
         $sellInvoice = SellInvoice::where('invoice_no',$invoiceNo)->first();
         if(!$sellInvoice){
@@ -135,8 +135,8 @@ class SellEditController extends Controller
         $editSellCart->sell_type = $sellInvoiceData->sell_type;   
         $editSellCart->sell_invoice_id = $sellInvoiceData->id;   
         $editSellCart->sell_invoice_no = $sellInvoiceData->invoice_no;   
-        $editSellCart->total_sell_item_before_edit = $sellInvoiceData->total_item;   
-        $editSellCart->total_sell_item_after_edit = $sellInvoiceData->total_item;   
+        //$editSellCart->total_sell_item_before_edit = $sellInvoiceData->total_item;   
+        //$editSellCart->total_sell_item_after_edit = $sellInvoiceData->total_item;   
         $editSellCart->total_item = $sellInvoiceData->total_item;   
         $editSellCart->total_sell_quantity_before_edit	 = $sellInvoiceData->total_quantity;   
         $editSellCart->subtotal = $sellInvoiceData->subtotal;   
@@ -149,28 +149,28 @@ class SellEditController extends Controller
         $editSellCart->others_cost = $sellInvoiceData->others_cost;   
         $editSellCart->round_amount = $sellInvoiceData->round_amount;   
         $editSellCart->round_type = $sellInvoiceData->round_type;   
-        $editSellCart->total_payable_amount_before_edit = $sellInvoiceData->total_payable_amount;   
-        $editSellCart->total_payable_amount_after_edit = $sellInvoiceData->total_payable_amount;   
-        $editSellCart->total_paid_amount_before_edit = $sellInvoiceData->total_paid_amount;   
-        $editSellCart->total_due_amount_before_edit = $sellInvoiceData->total_due_amount;   
-        $editSellCart->total_paid_amount_after_edit = $sellInvoiceData->total_paid_amount;   
-        $editSellCart->total_due_amount_after_edit = $sellInvoiceData->total_due_amount;   
+        //$editSellCart->total_payable_amount_before_edit = $sellInvoiceData->total_payable_amount;   
+        //$editSellCart->total_payable_amount_after_edit = $sellInvoiceData->total_payable_amount;   
+        //$editSellCart->total_paid_amount_before_edit = $sellInvoiceData->total_paid_amount;   
+        //$editSellCart->total_due_amount_before_edit = $sellInvoiceData->total_due_amount;   
+        //$editSellCart->total_paid_amount_after_edit = $sellInvoiceData->total_paid_amount;   
+        //$editSellCart->total_due_amount_after_edit = $sellInvoiceData->total_due_amount;   
         $editSellCart->total_paid_amount = $sellInvoiceData->total_paid_amount;   
         $editSellCart->total_due_amount = $sellInvoiceData->total_due_amount;   
         $editSellCart->reference_amount = $sellInvoiceData->reference_amount;   
-        $editSellCart->total_selling_amount_before_edit = $sellInvoiceData->total_sold_amount;   
-        $editSellCart->total_selling_amount_after_edit = $sellInvoiceData->total_sold_amount;   
+        //$editSellCart->total_selling_amount_before_edit = $sellInvoiceData->total_sold_amount;   
+        //$editSellCart->total_selling_amount_after_edit = $sellInvoiceData->total_sold_amount;   
         $editSellCart->total_sold_amount = $sellInvoiceData->total_sold_amount;   
-        $editSellCart->total_selling_purchase_amount_before_edit = $sellInvoiceData->total_purchase_amount;   
-        $editSellCart->total_selling_purchase_amount_after_edit = $sellInvoiceData->total_purchase_amount;   
+        //$editSellCart->total_selling_purchase_amount_before_edit = $sellInvoiceData->total_purchase_amount;   
+        //$editSellCart->total_selling_purchase_amount_after_edit = $sellInvoiceData->total_purchase_amount;   
         $editSellCart->total_purchase_amount = $sellInvoiceData->total_purchase_amount;   
-        $editSellCart->total_selling_profit_before_edit = $sellInvoiceData->total_profit;   
-        $editSellCart->total_selling_profit_after_edit = $sellInvoiceData->total_profit;   
+        //$editSellCart->total_selling_profit_before_edit = $sellInvoiceData->total_profit;   
+        //$editSellCart->total_selling_profit_after_edit = $sellInvoiceData->total_profit;   
         $editSellCart->total_profit = $sellInvoiceData->total_profit;   
         //$editSellCart->qty_change_type = $sellInvoiceData->;total_update_qty   
         $editSellCart->total_delivered_qty = $sellInvoiceData->total_delivered_qty;   
-        $editSellCart->remaining_delivery_qty_before_edit = $sellInvoiceData->total_quantity - $sellInvoiceData->total_delivered_qty;   
-        $editSellCart->remaining_delivery_qty_after_edit = $sellInvoiceData->total_quantity - $sellInvoiceData->total_delivered_qty;   
+        //$editSellCart->remaining_delivery_qty_before_edit = $sellInvoiceData->total_quantity - $sellInvoiceData->total_delivered_qty;   
+        //$editSellCart->remaining_delivery_qty_after_edit = $sellInvoiceData->total_quantity - $sellInvoiceData->total_delivered_qty;   
         $editSellCart->payment_status = $sellInvoiceData->payment_status;   
         $editSellCart->payment_type = $sellInvoiceData->payment_type;   
         $editSellCart->customer_id = $sellInvoiceData->customer_id;   
@@ -199,34 +199,35 @@ class SellEditController extends Controller
             $editSellCartProduct->edit_sell_cart_invoice_id  = $editSellCart->id;
             $editSellCartProduct->sell_invoice_id  = $item->sell_invoice_id;
             $editSellCartProduct->sell_invoice_no  = $editSellCart->sell_invoice_no;
+            $editSellCartProduct->product_id  = $item->product_id;
             $editSellCartProduct->unit_id  = $item->unit_id;
             $editSellCartProduct->supplier_id  = $item->supplier_id;
             $editSellCartProduct->main_product_stock_id  = $item->main_product_stock_id;
             $editSellCartProduct->product_added_type  = 1;//edit, 2=add
             $editSellCartProduct->product_stock_type  = $item->product_stock_type;
             $editSellCartProduct->custom_code  = $item->custom_code;
-            $editSellCartProduct->total_sell_qty_before_edit  = $item->total_quantity;
-            $editSellCartProduct->total_sell_qty_after_edit  = $item->total_quantity;
+            //$editSellCartProduct->total_sell_qty_before_edit  = $item->total_quantity;
+            //$editSellCartProduct->total_sell_qty_after_edit  = $item->total_quantity;
             $editSellCartProduct->sold_price  = $item->sold_price;
             $editSellCartProduct->discount_amount  = $item->discount_amount;
             $editSellCartProduct->discount_type  = $item->discount_type;
             $editSellCartProduct->total_discount  = $item->total_discount;
             $editSellCartProduct->reference_commission  = $item->reference_commission;
-            $editSellCartProduct->total_selling_amount_before_edit  = $item->total_sold_amount;
-            $editSellCartProduct->total_selling_amount_after_edit  = $item->total_sold_amount;
+            //$editSellCartProduct->total_selling_amount_before_edit  = $item->total_sold_amount;
+            //$editSellCartProduct->total_selling_amount_after_edit  = $item->total_sold_amount;
             $editSellCartProduct->total_sold_amount  = $item->total_sold_amount;
-            $editSellCartProduct->total_selling_purchase_amount_before_edit  = $item->total_purchase_amount;
-            $editSellCartProduct->total_selling_purchase_amount_after_edit  = $item->total_purchase_amount;
+            //$editSellCartProduct->total_selling_purchase_amount_before_edit  = $item->total_purchase_amount;
+            //$editSellCartProduct->total_selling_purchase_amount_after_edit  = $item->total_purchase_amount;
             $editSellCartProduct->total_purchase_amount  = $item->total_purchase_amount;
-            $editSellCartProduct->total_selling_profit_before_edit  = $item->total_profit;
-            $editSellCartProduct->total_selling_profit_after_edit  = $item->total_profit;
+            //$editSellCartProduct->total_selling_profit_before_edit  = $item->total_profit;
+            //$editSellCartProduct->total_selling_profit_after_edit  = $item->total_profit;
             $editSellCartProduct->total_profit  = $item->total_profit;
             //$editSellCartProduct->qty_change_type  = NULL;
             //$editSellCartProduct->total_update_qty  = $item->product_id;
             $editSellCartProduct->total_quantity  = $item->total_quantity;
             $editSellCartProduct->total_delivered_qty  = $item->delivered_qty;
-            $editSellCartProduct->remaining_delivery_qty_before_edit  = $item->total_quantity - $item->delivered_qty;
-            $editSellCartProduct->remaining_delivery_qty_after_edit  = $item->total_quantity - $item->delivered_qty;
+            //$editSellCartProduct->remaining_delivery_qty_before_edit  = $item->total_quantity - $item->delivered_qty;
+            //$editSellCartProduct->remaining_delivery_qty_after_edit  = $item->total_quantity - $item->delivered_qty;
             $editSellCartProduct->liability_type  = $item->liability_type;
             $editSellCartProduct->identity_number  = $item->identity_number;
             $editSellCartProduct->cart  = $item->cart;
@@ -254,25 +255,25 @@ class SellEditController extends Controller
             $editSellCartProductStock->product_id  = $sellProductStock->product_id;
             $editSellCartProductStock->stock_id  = $sellProductStock->stock_id;
             $editSellCartProductStock->product_stock_id  = $sellProductStock->product_stock_id;
-            $editSellCartProductStock->total_sell_qty_before_edit  = $sellProductStock->total_quantity;
-            $editSellCartProductStock->total_sell_qty_after_edit  = $sellProductStock->total_quantity;
+            //$editSellCartProductStock->total_sell_qty_before_edit  = $sellProductStock->total_quantity;
+            //$editSellCartProductStock->total_sell_qty_after_edit  = $sellProductStock->total_quantity;
             $editSellCartProductStock->mrp_price  = $sellProductStock->mrp_price;
             $editSellCartProductStock->regular_sell_price  = $sellProductStock->regular_sell_price;
             $editSellCartProductStock->sold_price  = $sellProductStock->sold_price;
             $editSellCartProductStock->purchase_price  = $sellProductStock->purchase_price;
-            $editSellCartProductStock->total_sold_amount_before_edit  = $sellProductStock->total_sold_amount;
-            $editSellCartProductStock->total_sold_amount_after_edit	  = $sellProductStock->total_sold_amount;
-            $editSellCartProductStock->total_purchase_amount_before_edit	  = $sellProductStock->total_purchase_amount;
-            $editSellCartProductStock->total_purchase_amount_after_edit  = $sellProductStock->total_purchase_amount;
+            //$editSellCartProductStock->total_sold_amount_before_edit  = $sellProductStock->total_sold_amount;
+            //$editSellCartProductStock->total_sold_amount_after_edit	  = $sellProductStock->total_sold_amount;
+            //$editSellCartProductStock->total_purchase_amount_before_edit	  = $sellProductStock->total_purchase_amount;
+            //$editSellCartProductStock->total_purchase_amount_after_edit  = $sellProductStock->total_purchase_amount;
             //$editSellCartProductStock->qty_change_type  = $sellProductStock->main_product_stock_id;
             //$editSellCartProductStock->total_update_qty  = $sellProductStock->main_product_stock_id;
             $editSellCartProductStock->total_quantity  = $sellProductStock->total_quantity;
-            $editSellCartProductStock->total_selling_profit_before_edit  = $sellProductStock->total_profit;
-            $editSellCartProductStock->total_selling_profit_after_edit  = $sellProductStock->total_profit;
+            //$editSellCartProductStock->total_selling_profit_before_edit  = $sellProductStock->total_profit;
+            //$editSellCartProductStock->total_selling_profit_after_edit  = $sellProductStock->total_profit;
             $editSellCartProductStock->total_profit  = $sellProductStock->total_profit;
             $editSellCartProductStock->total_delivered_qty  = $sellProductStock->total_delivered_qty;
-            $editSellCartProductStock->remaining_delivery_qty_before_edit  = $sellProductStock->remaining_delivery_qty;
-            $editSellCartProductStock->remaining_delivery_qty_after_edit  = $sellProductStock->remaining_delivery_qty;
+            //$editSellCartProductStock->remaining_delivery_qty_before_edit  = $sellProductStock->remaining_delivery_qty;
+            //$editSellCartProductStock->remaining_delivery_qty_after_edit  = $sellProductStock->remaining_delivery_qty;
 
             $editSellCartProductStock->reduced_base_stock_remaining_delivery  = $sellProductStock->reduced_base_stock_remaining_delivery;
             $editSellCartProductStock->reduceable_delivered_qty  = $sellProductStock->reduceable_delivered_qty;

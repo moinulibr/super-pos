@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Sell\Details;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -28,19 +29,66 @@ class SellController extends Controller
                         ->whereNull('deleted_at')
                         //->orderBy('custom_serial','ASC')
                         ->paginate(50);
+        $data['page_no'] =  1;
         return view('backend.sell.sell_details.index',$data);
     }
 
     public function sellListByAjaxResponse(Request $request)
     {
+        /* $status         = $request->status ?? NULL;
+        $pagination     = $request->pagination ?? 50;
+        $search         = $request->search ?? NULL;
+        
+        $date_from = Carbon::parse($request->input('start_date'));
+        $date_to = Carbon::parse($request->input('end_date') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-21 day")));
+        
+        $query= Order::query();
+        if($search)
+        {   
+            $query->where('order_number','like','%'.$search.'%')
+            ->orWhere('customer_name','like','%'.$search.'%')
+            ->orWhere('status','like','%'.$search.'%')
+            ->orWhere('payment_status','like','%'.$search.'%')
+            ->orWhere('method','like','%'.$search.'%')
+            ;
+        }
+        if($date_from)
+        {
+            $query->whereDate('created_at', '<=', $date_from)
+            ->whereDate('created_at', '>=', $date_to);
+        }
+        if($status != "none" && $status != "")
+        {
+            $query->where('status',$status);
+        }
+        $data['orders'] =    $query->orderBy('id', 'desc')
+                        ->paginate($pagination); 
+        $data['page_no'] = $request->page ?? 1; */
+
+        $status         = $request->status ?? NULL;
+        $pagination     = $request->pagination ?? 50;
+        $search         = $request->search ?? NULL;
+        
+        $date_to = Carbon::parse($request->input('date_to'));
+        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-7 day")));
+        //$date_from = Carbon::parse($request->input('date_from'));
+        //$date_to = Carbon::parse($request->input('date_to') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-7 day")));
+
         $sell  = SellInvoice::query();
         if($request->ajax())
         {
             if($request->search)
             {
-                $sell->where('invoice_no','like','%'.$request->search.'%');
+                $sell->where('invoice_no','like','%'.$request->search.'%')
+                ->orWhere('customer_phone','like','%'.$request->search.'%');
             }
-            $data['datas']  =  $sell->where('sell_type',1)->latest()->paginate(50);
+            if($date_from)
+            {
+                $sell->whereDate('created_at', '>=', $date_from)
+                ->whereDate('created_at', '<=', $date_to);
+            }
+            $data['datas']  =  $sell->where('sell_type',1)->latest()->paginate($pagination);
+            $data['page_no'] = $request->page ?? 1;
             $html = view('backend.sell.sell_details.ajax.list_ajax_response',$data)->render();
             return response()->json([
                 'status' => true,
