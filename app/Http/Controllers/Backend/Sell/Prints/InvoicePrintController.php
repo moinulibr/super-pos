@@ -25,13 +25,21 @@ class InvoicePrintController extends Controller
         $data['data']  =  SellInvoice::where('id',$invoiceId)->first();
         return view('backend.sell.print.invoice-from-sell.pos_print',$data);
     }
+
     public function normalPrintFromSellList($invoiceId)
     {
         $data['data']  =  SellInvoice::where('id',$invoiceId)->first();
         return view('backend.sell.print.invoice-from-sell.normal_print',$data);
     }
 
+    //sell quotation print
+    public function normalPrintFromSellQuotationList($sellInvoiceId)
+    {
+        $data['data']  =  SellInvoice::where('id',$sellInvoiceId)->first();
+        return view('backend.sell.print.invoice-from-sell.normal_quotation_print',$data);
+    }
 
+    
     
     public function index()
     {

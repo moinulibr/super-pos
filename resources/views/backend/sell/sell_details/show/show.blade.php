@@ -326,7 +326,11 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Cancel</button>
+            @if ($data->sell_type == 1)
             <a class="btn btn-primary print" target="_blank" href="{{route('admin.sell.regular.normal.print.from.sell.list',$data->id)}}" style="cursor: pointer">Print</a>
+                @elseif($data->sell_type == 2)
+                <a class="btn btn-primary print" target="_blank" href="{{route('admin.sell.regular.normal.print.from.sell.quotation.list',$data->id)}}" style="cursor: pointer">Print</a>
+            @endif
         </div>
     </div>
 </div>

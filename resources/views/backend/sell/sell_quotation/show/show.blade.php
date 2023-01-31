@@ -162,7 +162,7 @@
                                             {{$item->sold_price}}
                                         </td>
                                         <td style="text-align: center;">
-                                            {{ number_format(($item->sold_price * $item->quantity),2,'.', '')}}
+                                            {{ number_format(($item->sold_price * $item->total_quantity),2,'.', '')}}
                                         </td>
                                         <td style="text-align: center;">
                                             {{$item->total_discount}}
@@ -319,7 +319,7 @@
 
         </div>
         <div class="modal-footer">
-            <a class="btn btn-primary print" target="_blank" href="{{route('admin.sell.regular.normal.print.from.sell.list',$data->id)}}" style="cursor: pointer">Print</a>
+            <a class="btn btn-primary print" target="_blank" href="{{route('admin.sell.regular.normal.print.from.sell.quotation.list',$item->sell_invoice_id)}}" style="cursor: pointer">Print</a>
             <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Cancel</button>
         </div>
     </div>

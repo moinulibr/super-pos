@@ -476,6 +476,7 @@ Route::group(['middleware' => ['auth']], function ()
                 //print sell invoice :- pos print
                 Route::get('pos/print/from/sell/list/by/{invoiceId}','InvoicePrintController@posPrintFromSellList')->name('pos.print.from.sell.list');
                 Route::get('normal/print/from/sell/list/by/{invoiceId}','InvoicePrintController@normalPrintFromSellList')->name('normal.print.from.sell.list');
+                Route::get('normal/print/from/sell/quotation/list/by/{sellInvoiceId}','InvoicePrintController@normalPrintFromSellQuotationList')->name('normal.print.from.sell.quotation.list');
             });
         /*
         |-----------------------------------

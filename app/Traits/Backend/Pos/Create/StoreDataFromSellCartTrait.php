@@ -78,7 +78,6 @@ trait StoreDataFromSellCartTrait
         $sellInvoice->total_profit_from_product = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
         $sellInvoice->total_profit = (($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding']) - ($this->totalPurchasePriceOfAllQuantityOfThisInvoice) - ($sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'] ));
         
-        $sellInvoice->invoice_no = sprintf("%'.08d", $sellInvoice->id);
         $sellInvoice->save();
 
         //general statement- ledger 
@@ -491,10 +490,12 @@ trait StoreDataFromSellCartTrait
         $sellInvoice->created_by = authId_hh();
 
         $sellInvoice->save();
+        $sellInvoice->invoice_no = sprintf("%'.08d", $sellInvoice->id);
+        $sellInvoice->save();
 
         if( $this->sellCreateFormData['sell_type'] == 2) 
         {
-            $quotation =  new SellQuotation();
+            $quotation = new SellQuotation();
             $quotation->sell_invoice_id  = $sellInvoice->id;
             $quotation->invoice_no       = $sellInvoice->invoice_no;
             $quotation->customer_name    = $this->sellCreateFormData['customer_name'];

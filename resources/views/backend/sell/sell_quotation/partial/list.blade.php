@@ -32,7 +32,8 @@
                                 <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.normal.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print</a>
                                 <a class="dropdown-item print"  target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.pos.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print (POS)</a>
                                 <a class="dropdown-item singleSellInvoiceWiseDelivery" data-id="{{$item->id}}" style="cursor: pointer">Delivery</a> --}}
-                                <a class="dropdown-item singleSellQuotationInvoiceProfitLossView" data-id="{{$item->id}}" style="cursor: pointer">View Profit/Loss</a>
+                                {{-- <a class="dropdown-item singleSellQuotationInvoiceProfitLossView" data-id="{{$item->id}}" style="cursor: pointer">View Profit/Loss</a> --}}
+                                <a class="dropdown-item print" target="_blank" href="{{route('admin.sell.regular.normal.print.from.sell.quotation.list',$item->id)}}" data-id="{{$item->id}}" style="cursor: pointer">Print</a>
                                 {{-- <a class="dropdown-item singleEditModal" data-id="{{$item->id}}" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item singleDeleteModal" data-id="{{$item->id}}" data-name="{{$item->name}}" href="javascript:void(0)">Delete</a> --}}
                             {{-- <div class="dropdown-divider"></div>
@@ -46,12 +47,12 @@
                             {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                         </a>
                     </td>
-                    <td>{{$item->customer?$item->customer->name:NULL}}</td>
+                    <td>{{$item->quotation ? $item->quotation->customer_name : NULL}}</td>
                     <td>{{$item->total_payable_amount}}</td>
                     <td>{{$item->total_discount}}</td>
-                    <td>{{$item->createdBy?$item->createdBy->name:NULL}}</td>
+                    <td>{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                     <td>{{$item->total_item}}</td>
-                    <td>{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
+                    <td>{{$item->referenceBy ? $item->referenceBy->name : NULL}}</td>
                 </tr>
             @endforeach
         </tbody>

@@ -61,5 +61,11 @@ class SellInvoice extends Model
     }
 
 
+    //quotation
+    public function quotation()
+    {
+        return $this->hasOne(SellQuotation::class,'sell_invoice_id','id');
+    }
+
 
 }

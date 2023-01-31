@@ -8,10 +8,10 @@
                 <th style="width:;">Date(Time) </th>
                 <th style="width:;">Customer </th>
                 <th style="width:;">Total Amount </th>
-                <th style="width:;">Payment Status </th>
                 <th style="width:;">Paid Amount </th>
                 <th style="width:;">Due Amount </th>
                 <th style="width:;">Less Amount </th>
+                <th style="width:;">Payment Status </th>
                 <th style="width:;">Created By </th>
                 <th style="width:;">Total Item </th>
                 <th style="width:;">Reference By</th>
@@ -61,11 +61,11 @@
                     </td>
                     <td>{{$item->customer?$item->customer->name:NULL}}</td>
                     <td>{{$item->totalInvoicePayableAmountAfterRefund()}}</td>
-                    <td>{{paymentStatus_hh($item->totalInvoicePayableAmountAfterRefund(),$item->total_paid_amount)}}</td>
                     <td>{{$item->total_paid_amount}}</td>
                     <td>{{$item->total_due_amount}}</td>
                     <td>{{$item->total_discount}}</td>
-                    <td>{{$item->createdBy?$item->createdBy->name:NULL}}</td>
+                    <td>{{paymentStatus_hh($item->totalInvoicePayableAmountAfterRefund(),$item->total_paid_amount)}}</td>
+                    <td>{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                     <td>{{$item->totalSellItemAfterRefund()}}</td>
                     <td>{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
                     @php
@@ -82,10 +82,10 @@
             <tr>
                 <td colspan="5" style="text-align:right">Total</td>
                 <th>{{number_format($totalSellAmount,2,'.','')}}</th>
-                <td></td>
                 <th>{{number_format($totalPaidAmount,2,'.','')}}</th>
                 <th>{{number_format($totalDueAmount,2,'.','')}}</th>
                 <th>{{number_format($totalLessAmount,2,'.','')}}</th>
+                <td></td>
                 <td></td>
                 <th>{{$totalItem}}</th>
                 <td></td>
