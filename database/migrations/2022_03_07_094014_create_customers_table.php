@@ -27,8 +27,10 @@ class CreateCustomersTable extends Migration
                 $table->string('password')->nullable();
 
                 $table->string('gender',10)->nullable();
-                $table->string('phone',15)->unique()->nullable();
-                $table->string('phone_2',15)->unique()->nullable();
+                //$table->string('phone',15)->unique()->nullable();
+                $table->string('phone',15)->nullable();
+                //$table->string('phone_2',15)->unique()->nullable();
+                $table->string('phone_2',15)->nullable();
 
                 $table->string('blood_group',20)->nullable();
                 $table->string('religion',20)->nullable();

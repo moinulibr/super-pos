@@ -52,18 +52,29 @@
                     <div class="col-md-4">
                         <div class="mb-2">
                             <label>
-                                <strong>Customer Name : </strong> <span style="font-size:14px;"> {{$data->customer ? $data->customer->name  :NULL}}</span>
+                                <strong>Customer Name : </strong> 
+                                <span style="font-size:14px;">
+                                    @if ($data->sell_type == 1)
+                                        {{$data->customer ? $data->customer->name  :NULL}}
+                                        @elseif($data->sell_type == 2)
+                                        {{ $data->quotation ? $data->quotation->customer_name : "N/L" }}
+                                    @endif
+                                </span>
                             </label>
                         </div>
                         <div class="mb-2">
                             <label>
-                                <strong>Address : </strong>
-                                {{$data->customer ? $data->customer->address  :NULL}}
+                                <strong>Mobile : </strong>
+                                @if ($data->sell_type == 1)
+                                    {{$data->customer ? $data->customer->phone  :NULL}}
+                                    @elseif($data->sell_type == 2)
+                                    {{ $data->quotation ? $data->quotation->phone : "N/L" }}
+                                @endif
                             </label>
                             <br/>
                             <label>
-                                <strong>Mobile : </strong>
-                                {{$data->customer ? $data->customer->phone  :NULL}}
+                                <strong>Address : </strong>
+                                {{$data->customer ? $data->customer->address  :NULL}}
                             </label>
                         </div>
                     </div>
@@ -119,7 +130,7 @@
                                             $cats = json_decode($item->cart,true);
                                         @endphp
                                         <td> {{$item->custom_code}}</td>
-                                        <td>
+                                        <td style="width:30%;">
                                             @if (array_key_exists('productName',$cats))
                                                 {{$cats['productName']}}
                                                 @else

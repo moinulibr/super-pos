@@ -456,7 +456,7 @@
             </li> --}}
             <!---Account--->
 
-            <!---Prouct Attribute--->
+            <!---Product Attribute--->
             <li class="sidenav-item @if(request()->is('admin/unit/*')
                 || request()->is('admin/brand/*') || request()->is('admin/product/grade/*') 
                 || request()->is('admin/category/*') || request()->is('admin/sub/category/*') 
@@ -465,7 +465,7 @@
              ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-tag"></i>
-                    <div>Prouct Attribute</div>
+                    <div>Product Attribute</div>
                     <div class="pl-1 ml-auto">
                        {{--  <div class="badge badge-danger">Hot</div> --}}
                     </div>

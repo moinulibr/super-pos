@@ -80,7 +80,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5" style="text-align:right">Total</td>
+                <th colspan="5" style="text-align:right">Total</th>
                 <th>{{number_format($totalSellAmount,2,'.','')}}</th>
                 <th>{{number_format($totalPaidAmount,2,'.','')}}</th>
                 <th>{{number_format($totalDueAmount,2,'.','')}}</th>

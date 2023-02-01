@@ -75,7 +75,7 @@
                     <div class="col-md-4">
                         <div class="mb-2">
                             <label>
-                                <strong>Customer Name : </strong> <span style="font-size:14px;"> {{$data->customer ? $data->customer->name  :NULL}}</span>
+                                <strong>Customer Name : </strong> <span style="font-size:14px;"> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }}</span>
                             </label>
                         </div>
                         <div class="mb-2">
@@ -86,7 +86,7 @@
                             <br/>
                             <label>
                                 <strong>Mobile : </strong>
-                                {{$data->customer ? $data->customer->phone  :NULL}}
+                                {{ $data->quotation ? $data->quotation->phone : "N/L" }}
                             </label>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                                             $cats = json_decode($item->cart,true);
                                         @endphp
                                         <td> {{$item->custom_code}}</td>
-                                        <td>
+                                        <td  style="width:40%;">
                                             @if (array_key_exists('productName',$cats))
                                                 {{$cats['productName']}}
                                                 @else

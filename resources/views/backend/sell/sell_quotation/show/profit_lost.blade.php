@@ -85,7 +85,7 @@
                                         </th>
                                         <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
                                         <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
-                                            <span style="font-size:14px;"> {{$data->total_invoice_profit}}</span>
+                                            <span style="font-size:14px;"> {{$data->total_profit}}</span>
                                         </th>
                                     </tr>
 
@@ -138,40 +138,27 @@
                     <div class="col-md-4">
                         <div class="mb-2">
                             <label>
-                                <strong>Customer Name : </strong> <span style="font-size:14px;"> {{$data->customer ? $data->customer->name  :NULL}}</span>
+                                <strong>Customer Name : </strong> <span style="font-size:14px;"> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }}</span>
                             </label>
                         </div>
                         <div class="mb-2">
                             <label>
-                                <strong>Address : </strong>
-                                {{$data->customer ? $data->customer->address  :NULL}}
-                            </label>
-                            <br/>
-                            <label>
                                 <strong>Mobile : </strong>
-                                {{$data->customer ? $data->customer->phone  :NULL}}
+                                {{ $data->quotation ? $data->quotation->phone : "N/L" }}
                             </label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="mb-2">
                             <label>
-                                <strong>Shipping :</strong>
-                                {{ $data->shipping_id ? $data->shipping? $data->shipping->address : NUll : NULL }}
-                                {{ $data->shipping_id ? $data->shipping ? " (". $data->shipping->phone .")" : NUll : NULL }}
+                                <strong>Quotation No :</strong>
+                               {{ $data->quotation ? $data->quotation->quotation_no : "N/L" }} 
                             </label>
                         </div>
                         <div class="mb-2">
                             <label>
-                                <strong>Reference By: </strong>
-                                {{$data->referenceBy ? $data->referenceBy->name:NULL}}
-                                {{$data->referenceBy ? " (". $data->referenceBy->phone .")" :NULL}}
-                            </label>
-                        </div>
-                        <div class="mb-2">
-                            <label>
-                                <strong>Receiver Details: </strong>
-                                {{$data->receiver_details}}
+                                <strong>Validate Date: </strong>
+                                {{ $data->quotation ? date('d-m-Y',strtotime($data->quotation->validate_date)) : "N/L" }}
                             </label>
                         </div>
                     </div>
@@ -221,9 +208,9 @@
                                             @endif
                                         </td>
                                         <td style="text-align: center">
-                                            {{$item->quantity}}
+                                            {{$item->total_quantity}}
                                             @php
-                                                $totalQty += $item->quantity;
+                                                $totalQty += $item->total_quantity;
                                             @endphp
                                             {{-- @if (array_key_exists('unitName',$cats))
                                             <small>{{$cats['unitName']}}</small>
@@ -232,22 +219,22 @@
                                             @endif --}}
                                         </td>
                                         <td>
-                                            {{  number_format(($item->total_purchase_price / $item->quantity),2,'.', '') }}
+                                            {{  number_format(($item->total_purchase_amount / $item->total_quantity),2,'.', '') }}
                                         </td>
                                         <td>
                                             @php
-                                                 $totalPurchasePrice += $item->total_purchase_price ;
+                                                 $totalPurchasePrice += $item->total_purchase_amount ;
                                             @endphp
-                                            {{ $item->total_purchase_price }}
+                                            {{ $item->total_purchase_amount }}
                                         </td>
                                         <td>
                                             {{$item->sold_price}}
                                         </td>
                                         <td>
                                             @php
-                                                $totalSellPrice += number_format(($item->sold_price * $item->quantity),2,'.', '');
+                                                $totalSellPrice += number_format(($item->sold_price * $item->total_quantity),2,'.', '');
                                             @endphp
-                                            {{ number_format(($item->sold_price * $item->quantity),2,'.', '')}}
+                                            {{ number_format(($item->sold_price * $item->total_quantity),2,'.', '')}}
                                         </td>
                                         <td>
                                             @php
@@ -257,7 +244,7 @@
                                         </td>
                                         <td>
                                             @php
-                                                $totalSoldWithoutLessAmount += $item->total_sold_price
+                                                $totalSoldWithoutLessAmount += $item->total_sold_amount ;
                                             @endphp
                                             {{ $item->total_profit}}   
                                         </td>

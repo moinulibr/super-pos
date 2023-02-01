@@ -115,7 +115,7 @@ class PurchaseProductReceiveController extends Controller
     {
         $purchaseProductStockDetails = PurchaseProductStock::where('id',$purchase_product_stock_id)
                 ->select('id','purchase_product_id','product_id','stock_id','product_stock_id','total_quantity',
-                    'remaining_delivery_qty','total_delivered_qty',
+                    'remaining_delivery_qty','total_delivered_qty'
                 )
                 ->first();
 

@@ -115,7 +115,7 @@ class SellProductDeliveryController extends Controller
     {
         $sellProductStockDetails = SellProductStock::where('id',$sell_product_stock_id)
                 ->select('id','sell_product_id','product_id','stock_id','product_stock_id','total_quantity',
-                   'reduceable_delivered_qty','reduced_base_stock_remaining_delivery','delivered_total_qty','remaining_delivery_qty','total_delivered_qty',
+                   'reduceable_delivered_qty','reduced_base_stock_remaining_delivery','delivered_total_qty','remaining_delivery_qty','total_delivered_qty'
                 )
                 ->first();
 

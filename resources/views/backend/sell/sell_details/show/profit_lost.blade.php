@@ -210,13 +210,13 @@
                                             @endif --}}
                                         </td>
                                         <td>
-                                            {{  number_format(( $item->total_quantity > 0 ? ($item->total_purchase_price / $item->total_quantity) : $item->total_purchase_price),2,'.', '') }}
+                                            {{  number_format(( $item->total_quantity > 0 ? ($item->total_purchase_amount / $item->total_quantity) : $item->total_purchase_price),2,'.', '') }}
                                         </td>
                                         <td>
                                             @php
-                                                 $totalPurchasePrice += $item->total_purchase_price ;
+                                                 $totalPurchasePrice += $item->total_purchase_amount ;
                                             @endphp
-                                            {{ $item->total_purchase_price }}
+                                            {{ $item->total_purchase_amount }}
                                         </td>
                                         <td>
                                             {{$item->sold_price}}
@@ -235,7 +235,7 @@
                                         </td>
                                         <td>
                                             @php
-                                                $totalSoldWithoutLessAmount += $item->total_sold_price
+                                                $totalSoldWithoutLessAmount += $item->total_sold_amount;
                                             @endphp
                                             {{ $item->total_profit}}   
                                         </td>

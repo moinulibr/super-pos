@@ -15,6 +15,7 @@ class InvoicePrintController extends Controller
     }
     public function normalPrintFromDirectSellCart()
     {
+        //its working from sell list print
         return "normal print";
     }
 

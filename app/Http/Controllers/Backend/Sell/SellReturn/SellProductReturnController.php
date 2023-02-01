@@ -201,7 +201,7 @@ class SellProductReturnController extends Controller
     private function sellProductStockChangesData($returnInvoice,$invoiceData,$sell_product_stock_id, $returningQty){
            
         $sellProductStockDetails = SellProductStock::select('id','reduceable_delivered_qty','reduced_base_stock_remaining_delivery','product_id','stock_id','sell_product_id','product_stock_id','sold_price','total_quantity','total_delivered_qty')->where('id',$sell_product_stock_id)->first();
-        $sellProduct =  SellProduct::select('id','unit_id',)->where('id',$sellProductStockDetails->sell_product_id)->first();
+        $sellProduct =  SellProduct::select('id','unit_id')->where('id',$sellProductStockDetails->sell_product_id)->first();
         
         /*
         |-----------------------------------------------------------------------------------

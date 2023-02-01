@@ -254,7 +254,7 @@ trait UpdateSellSummaryCalculationTrait
     private function updateSellProductCalculation(int $primaryId) : bool {
 
         $existingData = SellProduct::select('id','total_sell_qty','sold_price','total_selling_amount','total_refunded_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
-        'total_selling_profit','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty',
+        'total_selling_profit','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty'
         )->where('id',$primaryId)->first(); //maybe have to delete this field- total_refunded_received_qty
 
 
@@ -313,7 +313,7 @@ trait UpdateSellSummaryCalculationTrait
     private function updateSellProductStockCalculation(int $primaryId) : bool {
 
         $existingData = SellProductStock::select('id','total_sell_qty','sold_price','purchase_price','total_selling_amount','total_refunded_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
-            'total_selling_profit','refunded_reduced_profit','total_profit_from_product','total_profit','remaining_delivery_qty','total_delivered_qty','total_purchase_amount','total_quantity','total_refunded_qty',
+            'total_selling_profit','refunded_reduced_profit','total_profit_from_product','total_profit','remaining_delivery_qty','total_delivered_qty','total_purchase_amount','total_quantity','total_refunded_qty'
             )->where('id',$primaryId)->first(); //maybe have to delete this field- total_refunded_received_qty
 
         //total sell and refunded quantity
