@@ -607,9 +607,9 @@ Route::group(['middleware' => ['auth']], function ()
         });
         //have to process later
         Route::group(['as'=> 'admin.purchase.regular.purchase.', 'prefix'=>'admin/regular/purchase','namespace'=>'Backend\Sell\Prints'],function(){
-            //print sell invoice :- pos print
-            Route::get('pos/print/from/direct/sell/cart','InvoicePrintController@posPrintFromDirectSellCart')->name('pos.print.from.direct.purchase.cart');
-            Route::get('normal/print/from/direct/sell/cart','InvoicePrintController@normalPrintFromDirectSellCart')->name('normal.print.from.direct.purchase.cart');
+            //print purchase invoice :- pos print
+            Route::get('pos/print/from/direct/purchase/cart','InvoicePrintController@posPrintFromDirectPurchaseCart')->name('pos.print.from.direct.purchase.cart');
+            Route::get('normal/print/from/direct/purchase/cart','InvoicePrintController@normalPrintFromDirectPurchaseCart')->name('normal.print.from.direct.purchase.cart');
         });
 
     /*
@@ -636,9 +636,9 @@ Route::group(['middleware' => ['auth']], function ()
         });
 
         Route::group(['prefix'=>'admin/purchase/regular','as'=> 'admin.purchase.regular.','namespace'=>'Backend\Sell\Prints'],function(){
-            //print sell invoice :- pos print
-            Route::get('pos/print/from/sell/list/by/{invoiceId}','InvoicePrintController@posPrintFromSellList')->name('pos.print.from.purchase.list');
-            Route::get('normal/print/from/sell/list/by/{invoiceId}','InvoicePrintController@normalPrintFromSellList')->name('normal.print.from.purchase.list');
+            //print purchase invoice :- pos print
+            Route::get('pos/print/from/purchase/list/by/{invoiceId}','InvoicePrintController@posPrintFromPurchaseList')->name('pos.print.from.purchase.list');
+            Route::get('normal/print/from/purchase/list/by/{invoiceId}','InvoicePrintController@normalPrintFromPurchaseList')->name('normal.print.from.purchase.list');
         });
     /*
     |-----------------------------------

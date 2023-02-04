@@ -42,7 +42,7 @@ trait PaymentProcessTrait
         $rand = rand(01,99);
         $makeInvoice = date("iHsymd").$rand;
         $ap->branch_id = authBranch_hh();
-        $ap->payment_invoice_no = $makeInvoice;;
+        //$ap->payment_invoice_no = $makeInvoice;;
         $ap->payment_reference_no = "";
         $ap->main_module_id = $this->mainPaymentModuleId;
         $ap->module_id = $this->paymentModuleId;
@@ -64,7 +64,9 @@ trait PaymentProcessTrait
         $ap->sms_send = $this->paymentProcessingRelatedOfAllRequestData['sms_send'];
         $ap->email_send = $this->paymentProcessingRelatedOfAllRequestData['email_send'];
         $ap->save();
-        
+        $ap->payment_invoice_no = sprintf("%'.08d", $ap->id);
+        $ap->save();
+
         $lopping = paymentMethodsBasedLooping_hh($this->paymentProcessingRelatedOfAllRequestData['payment_method_id']);
         for ($paymentOptionId=1; $paymentOptionId <= $lopping; $paymentOptionId++) { 
             $this->insertAccountPaymentInformation($ap,$paymentOptionId);

@@ -12,8 +12,12 @@ use App\Traits\Backend\Payment\PaymentProcessTrait;
 use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
 use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
 
+use App\Traits\Backend\Sell\Logical\UpdateSellSummaryCalculationTrait;
+
 class SellController extends Controller
 {
+    use UpdateSellSummaryCalculationTrait;
+
     use PaymentProcessTrait;
     use CustomerPaymentProcessTrait, ManagingCalculationOfCustomerSummaryTrait;
 
@@ -28,8 +32,9 @@ class SellController extends Controller
                         ->where('branch_id',authBranch_hh())
                         ->whereNull('deleted_at')
                         //->orderBy('custom_serial','ASC')
-                        ->paginate(50);
-        $data['page_no'] =  1;
+                        ->latest()
+                        ->paginate(10);
+        $data['page_no'] = 1;
         return view('backend.sell.sell_details.index',$data);
     }
 
@@ -197,10 +202,15 @@ class SellController extends Controller
                 //calculation in the customer table 
                                    
                 //change amount from sellinvoice 
-                $invoiceData->paid_amount =   $invoiceData->paid_amount + $request->invoice_total_paying_amount ?? 0;
+                $invoiceData->paid_amount = $invoiceData->paid_amount + $request->invoice_total_paying_amount ?? 0;
                 $invoiceData->due_amount = $invoiceData->due_amount - $request->invoice_total_paying_amount ?? 0;
                 $invoiceData->total_paid_amount = $invoiceData->total_paid_amount + $request->invoice_total_paying_amount ?? 0;
                 $invoiceData->save();
+                $this->updateSellInvoiceCalculation($invoiceData->id);
+
+                //$dbField = 21;'current_paid_due';
+                //$calType = 1='plus', 2='minus'
+                $this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 21 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
             } 
             DB::commit();
 

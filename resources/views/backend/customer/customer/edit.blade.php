@@ -61,9 +61,14 @@
             <div class="form-group row">
                 <div class="col-sm-6">
                     <label class="col-form-label text-sm-right">Previous Due</label>
-                    <input name="previous_due" value="{{$customer->previous_due}}"  type="number" step="any" value="0" class="form-control" placeholder="Previous Due">
+                    <input name="previous_due" value="{{$customer->previous_due}}" {{$customer->previous_due == 0 ? '' : 'readonly'}} type="number" step="any" value="0" class="form-control" placeholder="Previous Due">
                     <strong class="previous_due_err color-red"></strong>
                     <div class="clearfix"></div>
+                    @if ($customer->previous_due == 0 || $customer->previous_due == 0.00)
+                            <input type="hidden" name="previous_due_type" value="new">
+                        @else
+                            <input type="hidden" name="previous_due_type" value="old">
+                    @endif
                 </div>
                 <div class="col-sm-6">
                     <label class="col-form-label text-sm-right">Previous Due Date</label>

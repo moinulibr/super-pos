@@ -132,10 +132,14 @@
                                         @foreach ($item->purchaseProductStocks ? $item->purchaseProductStocks : NULL  as $ppsitem)
                                         <td>
                                             {{ number_format(($ppsitem->total_delivered_qty ),2,'.', '')}}
+                                            
                                             @if ($ppsitem->total_delivered_qty == $ppsitem->total_quantity)
-                                                <span class="badge badge-info">Received All</span>
+                                            <span class="badge badge-info">Received All</span>
+                                            @elseif ($ppsitem->total_delivered_qty < $ppsitem->total_quantity && $ppsitem->total_delivered_qty > 0)
+                                            <span class="badge badge-warning">Partial Received</span>
+                                            @elseif ($ppsitem->total_delivered_qty == 0)
+                                            <span class="badge badge-danger">Not Received</span>
                                                 @else 
-                                                <span class="badge badge-danger">Partial Received</span>
                                             @endif
                                         </td>
                                         <td style="text-align: center;">

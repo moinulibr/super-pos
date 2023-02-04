@@ -29,6 +29,39 @@ trait ManagingCalculationOfCustomerSummaryTrait
         return $arrayLabel;
     }
     
+     
+    //update calculation field
+    protected function updateCustomerSpecificField($customerId,$databaseField,$calType,$amount)
+    {
+        $dbField = $this->getCustomerDBFieldByInteger($databaseField);
+        //1='plus', 2='minus'
+        $existingCustomerData = Customer::select('id',"$dbField")->where('id',$customerId)->first();
+        $amountAfterCalculation = 0;
+        if($calType == 1)
+        {
+            $amountAfterCalculation = $existingCustomerData->{$dbField} + $amount;
+        }else{
+            $changeableAmount = 0;
+            if($existingCustomerData->{$dbField} == 0){
+                $changeableAmount = 0;
+            }
+            else if($existingCustomerData->{$dbField} == $amount){
+                $changeableAmount = 0;
+            }
+            else if($existingCustomerData->{$dbField} > $amount){
+                $changeableAmount = $existingCustomerData->{$dbField} - $amount;
+            }
+            else if($existingCustomerData->{$dbField} < $amount && $existingCustomerData->{$dbField} > 0){
+                $changeableAmount = 0;
+            }
+            //$amountAfterCalculation = $existingCustomerData->{$dbField} - $amount;
+            $amountAfterCalculation = $changeableAmount;
+        }
+        $existingCustomerData->{$dbField} = $amountAfterCalculation;
+        $existingCustomerData->save();
+        return $existingCustomerData->{$dbField};
+    }
+
     //update calculation field
     private function updateCustomerCalculationField($customerId,$dbField,$calType,$amount)
     {
@@ -39,7 +72,21 @@ trait ManagingCalculationOfCustomerSummaryTrait
         {
             $amountAfterCalculation = $existingCustomerData->{$dbField} + $amount;
         }else{
-            $amountAfterCalculation = $existingCustomerData->{$dbField} - $amount;
+            $changeableAmount = 0;
+            if($existingCustomerData->{$dbField} == 0){
+                $changeableAmount = 0;
+            }
+            else if($existingCustomerData->{$dbField} == $amount){
+                $changeableAmount = 0;
+            }
+            else if($existingCustomerData->{$dbField} > $amount){
+                $changeableAmount = $existingCustomerData->{$dbField} - $amount;
+            }
+            else if($existingCustomerData->{$dbField} < $amount && $existingCustomerData->{$dbField} > 0){
+                $changeableAmount = 0;
+            }
+            //$amountAfterCalculation = $existingCustomerData->{$dbField} - $amount;
+            $amountAfterCalculation = $changeableAmount;
         }
         $existingCustomerData->{$dbField} = $amountAfterCalculation;
         $existingCustomerData->save();
@@ -123,11 +170,16 @@ trait ManagingCalculationOfCustomerSummaryTrait
         $currentTotalDue =  $existingData->current_due - $existingData->current_paid_due;
         $currentTotalAdvance =  $existingData->current_advance - $existingData->current_paid_advance;
         $currentTotalLoan =  $existingData->current_loan - $existingData->current_paid_loan;
-        $currentTotalReturn =  $existingData->current_return - $existingData->current_paid_return;
+
+        //return part is exceptional---think more about return..
+        //temporary current_return == current_paid_return => both are equal
+        //$currentTotalReturn =  $existingData->current_return - $existingData->current_paid_return;
+        $currentTotalReturn =  $existingData->current_paid_return;
 
         $existingData->current_total_due = $currentTotalDue;
         $existingData->current_total_advance = $currentTotalAdvance;
         $existingData->current_total_loan =  $currentTotalLoan;
+
         $existingData->current_total_return = $currentTotalReturn;
 
         $existingData->total_due = $previousTotalDue + $currentTotalDue;

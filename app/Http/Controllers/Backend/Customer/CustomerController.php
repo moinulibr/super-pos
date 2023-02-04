@@ -87,30 +87,33 @@ class CustomerController extends Controller
             ]);
         }
 
-        $saveData =  auth()->user()->customerUsers()->create($request->all());
+        $saveData =  auth()->user()->customerUsers()->create($request->except(['previous_due']));
+        //$saveData =  auth()->user()->customerUsers()->create($request->all());
         $saveData->branch_id = authBranch_hh();
         $saveData->save();
         
-        //customer transaction statement history
-        $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
-        $this->amount = $request->previous_due ?? 0;
-        $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due');
-        $this->ctsCustomerId = $saveData->id;
-        $ttModuleInvoics = [
-            'invoice_no' => NULL,
-            'invoice_id' => NULL
-        ];
-        $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
-        $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');
-        $this->processingOfAllCustomerTransaction();
-        //customer transaction statement history
+        if(($request->previous_due ?? 0) > 0){
 
-        //calculation in the customer table
-        //$dbField = 1;'previous_due';
-        //$calType = 1='plus', 2='minus'
-        $this->managingCustomerCalculation($saveData->id,$dbField = 1 ,$calType = 1,$request->amount);
-        //calculation in the customer table
-        
+            //customer transaction statement history
+            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
+            $this->amount = $request->previous_due ?? 0;
+            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due');
+            $this->ctsCustomerId = $saveData->id;
+            $ttModuleInvoics = [
+                'invoice_no' => NULL,
+                'invoice_id' => NULL
+            ];
+            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');
+            $this->processingOfAllCustomerTransaction();
+            //customer transaction statement history
+    
+            //calculation in the customer table
+            //$dbField = 1;'previous_due';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($saveData->id,$dbField = 1 ,$calType = 1,$request->previous_due ?? 0);
+            //calculation in the customer table 
+        }
         
         //shipping address
         $shipping = new CustomerShippingAddress();
@@ -175,9 +178,33 @@ class CustomerController extends Controller
             ]);
         }
         $updateData = Customer::findOrFail($request->id);
-        $updateData->update($request->all());//auth()->user()->unitUsers()->
+        //$updateData->update($request->all());//auth()->user()->unitUsers()->
+        $updateData->update($request->except(['previous_due']));//auth()->user()->unitUsers()->
         //$updateData->created_by = Auth::user()->id;
         //$updateData->save();
+        
+        if(($request->previous_due_type == 'new') && (($request->previous_due ?? 0) > 0)){
+
+            //customer transaction statement history
+            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
+            $this->amount = $request->previous_due ?? 0;
+            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due');
+            $this->ctsCustomerId = $updateData->id;
+            $ttModuleInvoics = [
+                'invoice_no' => NULL,
+                'invoice_id' => NULL
+            ];
+            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');
+            $this->processingOfAllCustomerTransaction();
+            //customer transaction statement history
+    
+            //calculation in the customer table
+            //$dbField = 1;'previous_due';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($updateData->id,$dbField = 1 ,$calType = 1,$request->previous_due ?? 0);
+            //calculation in the customer table 
+        }
 
         return response()->json([
             'status' => true,

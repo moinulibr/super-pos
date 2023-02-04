@@ -245,6 +245,7 @@
         {
             var totalInvoicePayableAmount = nanCheckForSellPayment(parseFloat(jQuery('.total_invoice_payble_amount').text()));
             jQuery('.invoice_paying_amount').val(0);
+            totalInvoicePayableAmount = (totalInvoicePayableAmount.toFixed(2));
             jQuery('.invoice_due_amount').val(totalInvoicePayableAmount);
         }
         //payment Processing With Due Full Amount And Paying Amount Disabled And Zero
@@ -252,6 +253,7 @@
         {
             var totalInvoicePayableAmount = nanCheckForSellPayment(parseFloat(jQuery('.total_invoice_payble_amount').text()));
             jQuery('.invoice_paying_amount').val(0);
+            totalInvoicePayableAmount = (totalInvoicePayableAmount.toFixed(2));
             jQuery('.invoice_due_amount').val(totalInvoicePayableAmount);
             jQuery('.invoice_paying_amount').attr('readonly',true);
 
@@ -499,6 +501,7 @@
                     paymentProcessingWithDueFullAmountAndPayingAmountZero();
                     jQuery.notify(response.message, response.type);
                     $('.success_message_text').html(response.message);
+                    sellList();
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);

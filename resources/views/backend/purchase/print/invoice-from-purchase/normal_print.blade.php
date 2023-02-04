@@ -4,10 +4,10 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="keywords" content="AMADER SANITARY">
+        <meta name="keywords" content=" {{ config('app.name') }}">
         <meta name="author" content="GeniusOcean">
 
-        <title>AMADER SANITARY Admin Panel</title>
+        <title> {{ config('app.name') }}</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -60,10 +60,10 @@ html {
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
                     <div class="invoice__orderDetails" style="text-align: center;font-size: 14px">
-                        <strong style="font-size: 19px">AMADER SANITARY</strong><br>
-                        <span>Janata Bank More, Hafej Bulding Under</span> 
-                             Graound, Faridpur<br>
-                        <span><strong>Call: 01711 11 11 92</strong> </span><br>
+                        <strong style="font-size: 19px">{{ companyNameInInvoice_hh() }}</strong><br>
+                        <span>{{ companyAddressLineOneInInvoice_hh() }}</span> 
+                        {{ companyAddressLineTwoInInvoice_hh() }}<br>
+                        <span><strong>Call:  {{ companyPhone_hh() }} {{ companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL }} {{ companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL }}</strong> </span><br>
                     </div>
                 </div>
                 <div class="col-lg-3"></div>
@@ -74,26 +74,23 @@ html {
                 <div class="col-lg-3" style="margin-top:-10px;">
                     <div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Order Details') }} </strong><br>
-                        <span><strong>{{ __('Invoice Number') }} :</strong> {{ $data->invoice_no }}</span><br>
-                        <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
-                        <span>{{  __('Order ID')}} : <span> </span> {{ sprintf("%'.08d", $data->id) }}</span>
+                        <span><span>{{ __('Invoice Number') }} :</span> {{ $data->invoice_no }}</span><br>
+                        <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span>
                     </div>
                 </div>
                 <div class="col-lg-5"  style="margin-top:-10px;">
                     <div class="invoice__orderDetails" style="margin-top:1px;">
-                        <strong  style="font-size: 15px">{{ __('Customer Details') }}</strong><br>
-                        <span>{{ __('Customer Name') }}</span>:  <span> {{ $data->customer ? $data->customer->name : "N/L" }} </span><br>
-                        <span>{{ __('Customer Phone') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span><br>
-                        <span>{{ __('Address') }}</span>: <span>{{ $data->customer ? $data->customer->address : "N/L" }}</span>
+                        <strong  style="font-size: 15px">{{ __('Supplier Details') }}</strong><br>
+                        <span>Supplier Name : </span> <span style="font-size:14px;"> {{$data->supplier ? $data->supplier->name  :NULL}}</span><br>
+                        <span>{{ __('Supplier Phone') }}</span>:  <span>  {{$data->supplier ? $data->supplier->phone  :NULL}}</span>
                     </div>
                 </div>
                 
                 <div class="col-lg-4" style="margin-top:-10px;">
                     <div class="invoice__orderDetails" style="margin-top:1px;">
-                        <strong  style="font-size: 15px">{{ __('Shipping Details') }}</strong><br>
-                        <span>{{ __('Shipping Phone') }}</span>: <span>{{ $data->shipping ? $data->shipping->phone : "N/L" }} </span><br>
-                        <span>{{ __('Shipping Address') }}</span>: <span> {{ $data->shipping ? $data->shipping->address : "N/L" }}</span><br/>
-                        <span>{{ __('Receiver Details') }}</span>: <span> {{$data->receiver_details ?? NULL}} </span><br>
+                        <strong  style="font-size: 15px">{{ __('Notes') }}</strong><br>
+                        <span>{{ __('Shipping Note') }}</span>: <span>{{ $data->shipping_note }} </span><br>
+                        <span>{{ __('Shipping Note') }}</span>: <span> {{ $data->purchase_note }}</span>
                     </div>
                 </div>
             </div>
@@ -110,46 +107,41 @@ html {
                                             <th>{{ __('Sl.') }}</th>
                                             <th>{{productCustomCodeLabel_hh()}}</th>
                                             <th style="width:50%">{{ __('Product') }}</th>
-                                            <th  style="text-align: center;">{{ __('Qty') }}</th>
-                                            <th  style="text-align: center;">{{ __('Sale Price') }}</th>
-                                            <th  style="text-align: right;">{{ __('Subtotal') }}</th>
+                                            <th style="text-align: center;">{{ __('Qty') }}</th>
+                                            <th style="text-align: center;">{{ __('Purchase Price') }}</th>
+                                            <th style="text-align: right;">{{ __('Subtotal') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @php
                                         $i = 0;
                                         @endphp
-                                        @foreach ($data->sellProducts ? $data->sellProducts : NULL  as $item)
+                                        @foreach ($data->purchaseProducts ? $data->purchaseProducts : NULL  as $item)
                                         <tr>
                                             @php
-                                                $cats = json_decode($item->cart,true);
+                                                $cat = json_decode($item->carts,true);
                                                 $i++;
                                             @endphp
-                                            <td>{{ $i }}</th>
+                                            <td>{{$i}}</td>
                                             <td>{{$item->custom_code}} </th>
                                             <td style="width:50%">
-                                                @if (array_key_exists('productName',$cats))
-                                                    {{$cats['productName']}}
+                                                @if (array_key_exists('productName',$cat))
+                                                    {{$cat['productName']}}
                                                     @else
                                                     NULL
                                                 @endif    
                                             </th>
                                             <td style="text-align: center;">
                                                 {{$item->quantity}}
-                                                {{-- @if (array_key_exists('unitName',$cats))
-                                                    <small>{{$cats['unitName']}}</small>
+                                                {{-- @if (array_key_exists('unitName',$cat))
+                                                    <small>{{$cat['unitName']}}</small>
                                                     @else
                                                     NULL
                                                 @endif --}}    
                                             </th>
-                                            <td style="text-align: center;">{{$item->sold_price}}</th>
-                                            <td style="text-align: right;"> 
-                                                {{$item->total_sold_price}}
-                                                @if ($item->total_discount > 0)
-                                                    <br/>
-                                                    (Less : {{ $item->total_discount }})
-                                                @endif 
-                                            </th>
+                                            <td style="text-align: center;">{{number_format(($item->total_purchase_price / $item->quantity),2,'.','')}}</td>
+
+                                            <td style="text-align: right;">{{$item->total_purchase_price}}</td>
                                         </tr> 
                                         @endforeach
                                         <tr>
@@ -174,26 +166,7 @@ html {
                                             </th>
                                             <th style="text-align: right;">{{$data->subtotal}}</th>
                                         </tr>
-                                        <tr>
-                                            <th colspan="2">
-                                                Paid  : 
-                                                <span style="margin-left:5px;">
-                                                    {{ $data->total_paid_amount ?? 0.00 }} 
-                                                </span> 
-                                            </th>
-                                            <th style="text-align: center;">
-                                                <span style="margin-right:5px;">
-                                                    Current Due :  {{ $data->due_amount ?? 0.00 }},     
-                                                </span>    
-                                                <span style="margin-left:5px;margin-right:5px;">
-                                                    Previous Due :  {{$data->others_cost}},     
-                                                </span>  
-                                            </th>
-                                            <th colspan="2" style="text-align: right;">
-                                                Total Due Amount
-                                            </th>
-                                            <th style="text-align: right;">{{$data->subtotal}}</th>
-                                        </tr>
+                                        
                                     </tbody>
                                 </table>
                             </div>

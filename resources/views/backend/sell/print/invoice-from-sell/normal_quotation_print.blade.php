@@ -63,7 +63,7 @@ html {
                         <strong style="font-size: 19px">{{ companyNameInInvoice_hh() }}</strong><br>
                         <span>{{ companyAddressLineOneInInvoice_hh() }}</span> 
                         {{ companyAddressLineTwoInInvoice_hh() }}<br>
-                        <span><strong>Call:  {{ companyPhone_hh() }}, {{ companyPhoneOne_hh() }}, {{ companyPhoneTwo_hh() }}</strong> </span><br>
+                        <span><strong>Call:  {{ companyPhone_hh() }} {{ companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL }} {{ companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL }}</strong> </span><br>
                     </div>
                 </div>
                 <div class="col-lg-3"></div>

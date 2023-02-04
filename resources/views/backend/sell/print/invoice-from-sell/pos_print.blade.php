@@ -162,7 +162,7 @@
             </h2>
             <div class="info" style="font-size: 0.9em;">
                 <p>{{ companyFullAddressInInvoice_hh() }} </p>
-                <p>Call: {{ companyPhone_hh() }}, {{ companyPhoneOne_hh() }}</p>
+                <p>Call: {{ companyPhone_hh() }} {{ companyPhoneOne_hh() ? ','.companyPhoneOne_hh() : NULL }}</p>
                 <b>Invoice No. #{{$data->invoice_no}}</b>
                 <p>Date: {{date('d/m/Y, h:i:s A')}}</p>
                 <p class="serve">Served by: {{$data->createdBy ? $data->createdBy->name: "N/L"}} </p>

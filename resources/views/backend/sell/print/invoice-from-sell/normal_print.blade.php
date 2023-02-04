@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="keywords" content="AMADER SANITARY">
+        <meta name="keywords" content=" {{ config('app.name') }}">
         <meta name="author" content="GeniusOcean">
 
         <title> {{ config('app.name') }} </title>
@@ -63,7 +63,7 @@ html {
                         <strong style="font-size: 19px">{{ companyNameInInvoice_hh() }}</strong><br>
                         <span>{{ companyAddressLineOneInInvoice_hh() }}</span> 
                         {{ companyAddressLineTwoInInvoice_hh() }}<br>
-                        <span><strong>Call:  {{ companyPhone_hh() }}, {{ companyPhoneOne_hh() }}, {{ companyPhoneTwo_hh() }}</strong> </span><br>
+                        <span><strong>Call:  {{ companyPhone_hh() }} {{ companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL }} {{ companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL }}</strong> </span><br>
                     </div>
                 </div>
                 <div class="col-lg-3"></div>
@@ -125,8 +125,8 @@ html {
                                                 $cats = json_decode($item->cart,true);
                                                 $i++;
                                             @endphp
-                                            <td>{{ $i }}</th>
-                                            <td>{{$item->custom_code}} </th>
+                                            <td>{{ $i }}</td>
+                                            <td>{{$item->custom_code}} </td>
                                             <td style="width:50%">
                                                 @if (array_key_exists('productName',$cats))
                                                     {{$cats['productName']}}
@@ -141,7 +141,7 @@ html {
                                                     @else
                                                     NULL
                                                 @endif --}}    
-                                            </th>
+                                            </td>
                                             <td style="text-align: center;">{{$item->sold_price}}</th>
                                             <td style="text-align: right;"> 
                                                 {{$item->total_sold_amount}}
@@ -149,7 +149,7 @@ html {
                                                     <br/>
                                                     (Less : {{ $item->total_discount }})
                                                 @endif ---}}
-                                            </th>
+                                            </td>
                                         </tr> 
                                         @endforeach
                                         <tr>

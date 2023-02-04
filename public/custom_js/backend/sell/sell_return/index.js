@@ -302,6 +302,7 @@
                     $('.alert_success_message_div').show();
                     $('.success_message_text').html(response.message+"<br/>"+response.print);
                     discountCalculationBasedOnSubtotalAfterSubmit();
+                    sellList();
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);

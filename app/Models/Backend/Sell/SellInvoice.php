@@ -51,7 +51,7 @@ class SellInvoice extends Model
     //after refunded amount
     public function totalInvoicePayableAmountAfterRefund()
     {
-        return number_format($this->total_payable_amount - $this->total_refunded_amount,2,'.','');
+        return number_format($this->total_selling_amount - $this->total_refunded_amount,2,'.','');
     }
 
     //total item after refunded item.

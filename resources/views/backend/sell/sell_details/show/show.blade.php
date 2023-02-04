@@ -113,8 +113,8 @@
                                     <tr>
                                         <th>{{productCustomCodeLabel_hh()}}</th>
                                         <th style="width:30%;">Product</th>
-                                        <th><small>Unit</small></th>
                                         <th><small>Delivered qty</small></th>
+                                        <th><small>Unit</small></th>
                                         <th><small>Sell Quantity</small></th>
                                         <th>Sell Price</th>
                                         <th style="text-align:left;">SubTotal</th>
@@ -138,14 +138,14 @@
                                             @endif
                                         </td>
                                         <td>
+                                            {{$item->delivered_qty}}
+                                        </td>
+                                        <td>
                                             @if (array_key_exists('unitName',$cats))
                                                 <small>{{$cats['unitName']}}</small>
                                                 @else
                                                 NULL
                                             @endif
-                                        </td>
-                                        <td>
-                                            {{$item->delivered_qty}}
                                         </td>
                                         <td style="text-align: center">
                                             {{$item->total_sell_qty}}
@@ -154,7 +154,8 @@
                                             {{$item->sold_price}}
                                         </td>
                                         <td style="text-align: center;">
-                                            {{ number_format(($item->sold_price * $item->total_quantity),2,'.', '')}}
+                                            {{ number_format(($item->sold_price * $item->total_sell_qty),2,'.', '')}} <!--like total_selling_amount-->
+                                            {{-- {{ number_format(($item->sold_price * $item->total_quantity),2,'.', '')}} --}}
                                         </td>
                                         {{-- <td style="text-align: center;">
                                             {{$item->total_selling_amount}}   
@@ -283,7 +284,7 @@
                                         </td>
                                         <td><small style="color:rgb(113, 22, 22)">(before return)</small></td>
                                         <td style="text-align:right;">
-                                            {{$data->total_payable_amount}}
+                                            {{$data->total_selling_amount}}
                                         </td>
                                     </tr>
                                     <tr>

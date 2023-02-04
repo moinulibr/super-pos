@@ -100,8 +100,8 @@ trait CustomerPaymentProcessTrait
         $this->ctsPaymentChangingAmount = $changingAmount;
         $this->ctsCdsChangingTypeId = $ctsCdfType;
         return true;
-        allCTSModule_hp();//its when chack only
-        getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId);//its when chack only
+        allCTSModule_hp();//its when check only
+        getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId);//its when check only
     }
 
     //current cdc amount after culculation by cdf type id

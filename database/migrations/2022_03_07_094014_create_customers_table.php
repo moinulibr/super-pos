@@ -69,11 +69,18 @@ class CreateCustomersTable extends Migration
                 $table->decimal('current_due', 20, 2)->default(00.00)->comment('after using this app.');
                 $table->decimal('current_advance', 20, 2)->default(00.00)->comment('after using this app.');
                 $table->decimal('current_loan', 20, 2)->default(00.00)->comment('after using this app.');
+                
+                
+                //return part is exceptional---think more about return..
+                //temporary current_return == current_paid_return => both are equal
                 $table->decimal('current_return', 20, 2)->default(00.00)->comment('after using this app.');
 
                 $table->decimal('current_paid_due', 20, 2)->default(00.00)->comment('after using this app.');
                 $table->decimal('current_paid_advance', 20, 2)->default(00.00)->comment('after using this app.');
                 $table->decimal('current_paid_loan', 20, 2)->default(00.00)->comment('after using this app.');
+                
+                //return part is exceptional---think more about return..
+                //temporary current_return == current_paid_return => both are equal
                 $table->decimal('current_paid_return', 20, 2)->default(00.00)->comment('after using this app.');
 
                 $table->decimal('current_total_due', 20, 2)->default(00.00)->comment('after using this app.');

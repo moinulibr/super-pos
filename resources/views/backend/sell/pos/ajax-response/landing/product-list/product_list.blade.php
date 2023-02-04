@@ -75,7 +75,7 @@
                                     
                                 Price: Tk {{ $prices->price }} <br />
                                 @endforeach
-                                Stock: {{ $item->available_base_stock ?? 0 }}
+                                Stock: {{ $item->total_product_stock ?? 0 }}
                             </h4>
                         </div>
                     </div>

@@ -150,6 +150,9 @@ class SellProductReturnController extends Controller
                     //customer transaction statement history   
                     
                     //calculation in the customer table
+                    //$dbField = 20;'current_return';
+                    //$calType = 1='plus', 2='minus'
+                    $this->updateCustomerSpecificField($request->customer_id,$dbField = 20 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
                     //$dbField = 24;'current_paid_return';
                     //$calType = 1='plus', 2='minus'
                     $this->managingCustomerCalculation($request->customer_id,$dbField = 24 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );

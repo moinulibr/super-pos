@@ -325,7 +325,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <input type="hidden" class="paymentModalOpenUrl" value="{{route('admin.purchase.regular.pos.purchase.payment.modal.open')}}">
                                             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">
 
-                                            <a href="{{ route('admin.purchase.regular.purchase.pos.print.from.direct.purchase.cart') }}" class="print normal_print_direct_from_purchase_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;" target="_blank">
+                                            <a href="#" data-href="{{ route('admin.purchase.regular.purchase.pos.print.from.direct.purchase.cart') }}" class="print normal_print_direct_from_purchase_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;cursor: not-allowed;">
                                                 POS Print
                                             </a>
 

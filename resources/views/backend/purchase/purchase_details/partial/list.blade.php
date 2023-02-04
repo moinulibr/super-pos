@@ -34,8 +34,8 @@
                             </button>
                             <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
                                 <a class="dropdown-item singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
-                                <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.normal.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print</a>
-                                <a class="dropdown-item print"  target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.pos.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print (POS)</a>
+                                <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.purchase.regular.normal.print.from.purchase.list',$item->id)}}" style="cursor: pointer">Print</a>
+                                {{-- <a class="dropdown-item print"  target="_blank" data-id="{{$item->id}}" href="{{route('admin.purchase.regular.pos.print.from.purchase.list',$item->id)}}" style="cursor: pointer">Print (POS)</a> --}}
                                 <a class="dropdown-item singlePurchaseInvoiceWiseReceiveProduct" data-id="{{$item->id}}" style="cursor: pointer">Receive Product</a>
                                 <a class="dropdown-item singleViewPurchaseInvoiceWiseMakePaymentModal" data-id="{{$item->id}}" style="cursor: pointer">Make Payment</a>
                                 <a class="dropdown-item singleViewPurchaseInvoiceWisePaymentModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>

@@ -27,7 +27,6 @@
 
         <link rel="stylesheet" href="{{asset('backend/links/assets')}}/libs/perfect-scrollbar/perfect-scrollbar.css">
         <link rel="stylesheet" href="{{asset('backend/links/assets')}}/libs/flot/flot.css">
-        <link rel="stylesheet" href="{{asset('backend/links/assets')}}/libs/flot/flot.css">
 
        {{--  <!--toster js-->
         <link rel="stylesheet" href="{{asset('backend/links/assets')}}/libs/toastr/toastr.css"> --}}
