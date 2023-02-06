@@ -321,7 +321,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             
                             <!---------added to cart product list----------->
                             <div class="display_sell_edit_added_to_cart_product_list">
-                                @include('backend.sell.edit.edit_cart_product_list',['sellEditCart' => $sellEditCart])
+                                @include('backend.sell.edit.ajax-response.landing.added-to-cart.list')
                             </div>
                             <!---------added to cart product list----------->
 
@@ -372,7 +372,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">
                                             <input type="hidden" class="quotationModalOpenUrl" value="{{route('admin.sell.regular.pos.sell.quotation.modal.open')}}">
 
-                                            <a href="{{ route('admin.sell.regular.pos.pos.print.from.direct.sell.cart') }}" class="print normal_print_direct_from_sell_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;" target="_blank">
+                                            <a href="" class="print normal_print_direct_from_sell_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;" target="_blank">
                                                 POS Print
                                             </a>
                                             <a class="normalPriceFromSellList pos_print_direct_from_sell_cart btn btn-primary btnFullWidth white" target="_blank" style="cursor:not-allowed !important;margin-top:1%;color:#d1cdcd;">
@@ -382,7 +382,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </div>
 
                                         <div class="col-8">
-                                            @include('backend.sell.pos.landing.include.invoice_final_calculation_summery')
+                                            @include('backend.sell.edit.landing.include.invoice_final_calculation_summery')
                                         </div>
                                     </div>                                    
                                 </div>
@@ -473,13 +473,12 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <!-- Button trigger modal -->
 
-
-        @include('backend.sell.pos.landing.modal.payment_modal')
-        @include('backend.sell.pos.landing.modal.quotation_modal')
-        @include('backend.sell.pos.landing.modal.shipping_modal')
-        @include('backend.sell.pos.landing.modal.shipping_cost_modal')
-        @include('backend.sell.pos.landing.modal.choose_customer_modal')
-        @include('backend.sell.pos.landing.modal.folder_modal')
+        @include('backend.sell.edit.landing.modal.payment_modal')
+        @include('backend.sell.edit.landing.modal.quotation_modal')
+        @include('backend.sell.edit.landing.modal.shipping_modal')
+        @include('backend.sell.edit.landing.modal.shipping_cost_modal')
+        @include('backend.sell.edit.landing.modal.choose_customer_modal')
+        @include('backend.sell.edit.landing.modal.folder_modal')
 
        
 
@@ -487,7 +486,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
         <!-------show single Product details  Modal------> 
         <div class="modal fade" id="showProductDetailModal"  aria-modal="true"></div>
-        <input type="hidden" class="showProductDetailsModalRoute" value="{{ route('admin.sell.regular.pos.show.single.product.details') }}">
+        <input type="hidden" class="showProductDetailsModalRoute" value="{{ route('admin.sell.edit.regular.pos.show.single.product.details') }}">
         <!-------show single Product details  Modal------> 
 
         <!-------show Product quantity Modal------> 
@@ -495,31 +494,31 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-------show Product quantity Modal------> 
 
         <!-------display product list------> 
-        <input type="hidden" class="displayProductListUrl" value="{{ route('admin.sell.regular.pos.display.product.list') }}">
+        <input type="hidden" class="displayProductListUrl" value="{{ route('admin.sell.edit.regular.pos.display.product.list') }}">
         <!-------display product list------> 
         
         <!-------display added to product list------> 
-        <input type="hidden" class="displaySellCreateAddedToCartProductListUrl" value="{{ route('admin.sell.regular.pos.display.sell.created.added.to.cart.product.list') }}">
+        <input type="hidden" class="displaySellCreateAddedToCartProductListUrl" value="{{ route('admin.sell.edit.regular.pos.display.sell.edit.created.added.to.cart.product.list') }}">
         <!-------display added to product list------> 
         
         <!------- invoice final calculation summery------> 
-        <input type="hidden" class="invoiceFinalSellCalculationSummeryUrl" value="{{ route('admin.sell.regular.pos.sell.final.invoice.calculation.summery') }}">
+        <input type="hidden" class="invoiceFinalSellCalculationSummeryUrl" value="{{ route('admin.sell.edit.regular.pos.sell.edit.final.invoice.calculation.summery') }}">
         <!------- invoice final calculation summery------> 
 
         <!-------remove single item from added to sell cart list------> 
         <div class="modal fade" id="removeSingleItemFromSellAddedToCartModal"  aria-modal="true"></div>
-        <input type="hidden" class="removeConfirmationRequiredSingleItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.regular.pos.remove.confirmation.required.single.item.from.sell.added.to.cart.list') }}">
-        <input type="hidden" class="removeSingleItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.regular.pos.remove.single.item.from.sell.added.to.cart.list') }}">
+        <input type="hidden" class="removeConfirmationRequiredSingleItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.edit.regular.pos.remove.confirmation.required.single.item.from.sell.edit.added.to.cart.list') }}">
+        <input type="hidden" class="removeSingleItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.edit.regular.pos.remove.single.item.from.sell.edit.added.to.cart.list') }}">
         <!-------remove single item from added to sell cart list------> 
 
         <!-------remove all item from added to sell cart list------> 
         <div class="modal fade" id="removeAllItemFromSellAddedToCartModal"  aria-modal="true"></div>
-        <input type="hidden" class="removeConfirmationRequiredAllItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.regular.pos.remove.confirmation.required.all.item.from.sell.added.to.cart.list') }}">
-        <input type="hidden" class="removeAllItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.regular.pos.remove.all.item.from.sell.added.to.cart.list') }}">
+        <input type="hidden" class="removeConfirmationRequiredAllItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.edit.regular.pos.remove.confirmation.required.all.item.from.sell.edit.added.to.cart.list') }}">
+        <input type="hidden" class="removeAllItemFromSellAddedToCartListUrl" value="{{ route('admin.sell.edit.regular.pos.remove.all.item.from.sell.edit.added.to.cart.list') }}">
         <!-------remove all item from added to sell cart list------> 
 
         <!-------change quantity from added to sell cart list------> 
-        <input type="hidden" class="changeQuantityFromSellAddedToCartListUrl" value="{{ route('admin.sell.regular.pos.change.quantity.from.sell.added.to.cart.list') }}">
+        <input type="hidden" class="changeQuantityFromSellAddedToCartListUrl" value="{{ route('admin.sell.edit.regular.pos.change.quantity.from.sell.edit.added.to.cart.list') }}">
         <!-------change quantity from added to sell cart list------> 
 
 
@@ -584,9 +583,9 @@ License: You must have a valid license purchased only from themeforest(the above
         
         @stack('pos-js')
 
-        <script src="{{asset('custom_js/backend')}}/sell/pos/landing/product-list.js"></script>
-        <script src="{{asset('custom_js/backend')}}/sell/pos/single-product/stock-with-price.js"></script>
-        <script src="{{asset('custom_js/backend')}}/sell/pos/add-to-cart/add_to_cart.js"></script>
+        <script src="{{asset('custom_js/backend')}}/sell/sell_edit_pos/landing/product-list.js"></script>
+        <script src="{{asset('custom_js/backend')}}/sell/sell_edit_pos/single-product/stock-with-price.js"></script>
+        <script src="{{asset('custom_js/backend')}}/sell/sell_edit_pos/add-to-cart/add_to_cart.js"></script>
         
         <script src="{{asset('custom_js/backend')}}/sell/session/setting.js"></script>
 

@@ -16,7 +16,7 @@ class EditSellCartProduct extends Model
 
     public function editSellCartProductStocks()
     {
-        return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_product_id','id');
+        return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_product_id','id')->where('status',1);
     }
 
     

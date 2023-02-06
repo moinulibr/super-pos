@@ -388,6 +388,7 @@ Route::group(['middleware' => ['auth']], function ()
     |   Sell  middleware(['permissions:unit|index','auth_only:auth|yes'])
     |---------------------------------------
     */
+        //pos sell
         Route::group(['as'=> 'admin.sell.regular.pos.', 'prefix'=>'admin/regular/sell','namespace'=>'Backend\Sell\Pos'],function(){
             Route::get('display/product/list','PosController@displayProductList')->name('display.product.list');
             Route::get('create','PosController@create')->name('create');
@@ -489,9 +490,61 @@ Route::group(['middleware' => ['auth']], function ()
         |-----------------------------------
         | Sell product Edit 
         |-----------------------------------
-        */
+        */ 
+            /*
+            |-----------------------------------
+            | Sell  Edit - POS 
+            |-----------------------------------
+            */    
+                Route::group(['as'=> 'admin.sell.edit.regular.pos.', 'prefix'=>'admin/regular/sell/edit','namespace'=>'Backend\Sell\SellEdit'],function(){
+                    Route::get('display/product/list','EditPosController@displayProductList')->name('display.product.list');
+                    Route::get('create','EditPosController@create')->name('create');
+                    Route::get('show/single/product/details','EditPosController@singleProductDetails')->name('show.single.product.details');
+                    
+                    Route::get('display/single/price/list/by/product/stock/id','EditPosController@displaySinglePriceListByProductStockId')->name('display.sigle.price.list.by.product.stock.id');
+                    
+                    //display product stock and price, when sell create. more than stock, from others stock
+                    Route::get('display/quantity/wise/single/product/sotck/by/product/id','EditPosController@displayQuantityWiseSingleProductStockByProductId')->name('display.quantity.wise.sigle.product.stock.by.product.id');
+                    
+                    Route::post('store','EditPosController@store')->name('store');
+                    //display addted to product list
+                    Route::get('display/sell/edit/create/added/to/cart/product/list','EditPosController@displaySellEditCreateAddedToCartProductList')->name('display.sell.edit.created.added.to.cart.product.list');
+                    
+                    //sell final invoice calculation summery [save in session]
+                    Route::get('/sell/edit/final/invoice/calculation/summery','EditPosController@invoiceFinalSellEditCalculationSummery')->name('sell.edit.final.invoice.calculation.summery');
+
+                    //remove single item from sell added to cart list
+                    Route::get('remove/confirm-req/for/single/item/from/sell/edit/added/to/cart/list','EditPosController@removeConfirmationRequiredForSingleItemFromSellEditAddedToCartList')->name('remove.confirmation.required.single.item.from.sell.edit.added.to.cart.list');
+                    Route::get('remove/single/item/from/sell/edit/added/to/cart/list','EditPosController@removeSingleItemFromSellEditAddedToCartList')->name('remove.single.item.from.sell.edit.added.to.cart.list');
+                    
+                    //remove all item from sell added to cart list
+                    Route::get('remove/confirm-req/for/all/item/from/sell/edit/added/to/cart/list','EditPosController@removeConfirmationRequiredForAllItemFromSellEditAddedToCartList')->name('remove.confirmation.required.all.item.from.sell.edit.added.to.cart.list');
+                    Route::get('remove/all/item/from/sell/edit/added/to/cart/list','EditPosController@removeAllItemFromSellEditAddedToCartList')->name('remove.all.item.from.sell.edit.added.to.cart.list');
+                    //change quantity [plus or minus]
+                    Route::get('change/quantity/from/added/to/cart/list','EditPosController@changeQuantity')->name('change.quantity.from.sell.edit.added.to.cart.list');
+                    
+
+                    // Store data from sell cart
+                    Route::post('store/data/from/sell/edit/cart','EditPosController@storeDataFromSellEditCart')->name('store.data.from.sell.edit.cart');
+
+                    //customer shipping address
+                    Route::post('customer/shipping/address','EditPosController@customerShippingAddress')->name('customer.shipping.address');
+                    
+                    
+                    //sell payment modal open 
+                    Route::get('sell/edit/payment/modal/open','EditPosController@paymentModalOpen')->name('sell.edit.payment.modal.open');
+                    Route::get('sell/edit/quotation/modal/open','EditPosController@quotationModalOpen')->name('sell.edit.quotation.modal.open');
+                    
+                });
+                
+            /*
+            |-----------------------------------
+            | Sell  Edit - POS 
+            |-----------------------------------
+            */
+
             Route::group(['prefix'=>'admin/sell/edit','as'=> 'admin.sell.edit.', 'namespace'=>'Backend\Sell\SellEdit'],function(){
-                Route::get('cart/product/list/{invoiceNo}','SellEditController@index')->name('product.cart.list');//->middleware(['permissions:unit|index']);
+                Route::get('cart/product/list','SellEditController@index')->name('product.cart.list');//->middleware(['permissions:unit|index']);
                 Route::post('by/sell/invoice/store','SellEditController@store')->name('invoice.wise.quantity.store');//->middleware(['permissions:unit|index']);
                 
             });

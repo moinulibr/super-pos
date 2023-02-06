@@ -154,7 +154,7 @@ class Product extends Model
         }
 
         //stockNORWhenThisStockIsNotStoreInPreviousTime
-        public function stockNORWhenThidStockIsNotStoreInPreviousTime()
+        public function stockNORWhenThisStockIsNotStoreInPreviousTime()
         {
             $stockId = ProductStock::where('branch_id',authBranch_hh())
             ->select('id','stock_id','product_id','deleted_at')

@@ -83,17 +83,29 @@ class SellEditController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($invoiceNo,Request $request)
+    public function index(Request $request)
     {   
+        $id = NUll;
+        if(isset($request->seid)){
+            $id = \Crypt::decrypt($request->seid);
+        }else{
+            return redirect()->route('admin.sell.regular.sell.index')->with('error','Invalid data');
+        }
+       
         //$this->deleteSellEditCartBySellInvoice ($invoiceNo);
-        $this->updateSellRelatedDataForEditCart($sellType = 1,$invoiceNo);
+        //$this->updateSellRelatedDataForEditCart($sellType = 1,$invoiceNo);
 
-        $sellInvoice = SellInvoice::where('invoice_no',$invoiceNo)->first();
+        $sellInvoice = SellInvoice::findOrFail($id);
         if(!$sellInvoice){
             return redirect()->back()->with('error','Data Not Found!');
         }
+       
         //$data['sellEditCart'] = $this->insertSellEditCart($sellInvoice);
-        $data['sellEditCart'] = EditSellCartInvoice::first();
+        $editSellCartInvoice = EditSellCartInvoice::where('sell_invoice_id',$sellInvoice->id)->first();
+        session()->put('sell_invoice_id',$sellInvoice->id);
+        session()->put('sell_type',$sellInvoice->sell_type);
+        session()->put('edit_sell_cart_invoice_id',$editSellCartInvoice->id);
+        $data['sellEditCart'] = $editSellCartInvoice;
 
         $data['customers'] = Customer::latest()->get();
         $data['references'] = Reference::latest()->get();
@@ -103,6 +115,7 @@ class SellEditController extends Controller
         $data['products'] = Product::select('name','id','photo','available_base_stock')
                                 ->latest()
                                 ->paginate(21);
+        //$data['sellInvoice'] = $sellInvoice;
         return view('backend.sell.edit.index',$data);
 
         return view('backend.sell.edit.cart_product_list');

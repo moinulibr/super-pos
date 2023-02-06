@@ -27,7 +27,7 @@ class EditSellCartProductStock extends Model
     //only edit sell product related  
     public function editSellCartProductOnly()
     {
-        return $this->belongsTo(EditSellCartProduct::class,'edit_sell_cart_product_id','id')->where('product_id',$this->product_id);
+        return $this->belongsTo(EditSellCartProduct::class,'edit_sell_cart_product_id','id')->where('product_id',$this->product_id)->where('status',1);
     }
 
 }

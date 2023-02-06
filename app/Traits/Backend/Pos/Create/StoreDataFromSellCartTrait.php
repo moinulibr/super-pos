@@ -205,7 +205,7 @@ trait StoreDataFromSellCartTrait
         $productStock->total_sell_qty = $qty;
         $productStock->total_quantity = $qty;
 
-        $totalPurchasePrice = $cart['purchase_price'] * $qty;
+        $totalPurchasePrice = $purchase_price * $qty ;//$cart['purchase_price'] * $qty;
         $totalSoldPrice = $cart['final_sell_price'] * $qty;
         $productStock->mrp_price = $cart['mrp_price'];
         $productStock->regular_sell_price = $cart['sell_price'];
@@ -213,7 +213,7 @@ trait StoreDataFromSellCartTrait
 
         $productStock->total_selling_amount = $totalSoldPrice;//$cart['selling_final_amount'];
         $productStock->total_sold_amount = $totalSoldPrice;//$cart['selling_final_amount'];
-        $productStock->purchase_price = $cart['purchase_price'];
+        $productStock->purchase_price = $purchase_price;//$cart['purchase_price'];
         $productStock->total_purchase_amount = $totalPurchasePrice;//$cart['total_purchase_price_of_all_quantity'];
         $productStock->total_selling_purchase_amount = $totalPurchasePrice;//$cart['total_purchase_price_of_all_quantity'];
         
@@ -309,7 +309,7 @@ trait StoreDataFromSellCartTrait
             'sold_price' => $cart['final_sell_price'],
             'total_selling_amount' => $totalSoldPrice,
             'total_sold_amount' => $totalSoldPrice,
-            'purchase_price' => $cart['purchase_price'],         
+            'purchase_price' => $purchase_price , //$cart['purchase_price'],         
             'total_purchase_amount' => $totalPurchasePrice,
             'total_selling_purchase_amount' => $totalPurchasePrice,
             'total_selling_profit' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),

@@ -37,10 +37,20 @@ class EditSellCartInvoice extends Model
     //edit sell cart product
     public function editSellCartProducts()
     {
-        return $this->hasMany(EditSellCartProduct::class,'edit_sell_cart_invoice_id','id');
+        return $this->hasMany(EditSellCartProduct::class,'edit_sell_cart_invoice_id','id')->where('status',1);
     } 
     //edit sell cart product
     public function editSellCartProductsStock()
+    {
+        return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_invoice_id','id')->where('status',1);
+    }
+    //edit sell cart product
+    public function editSellCartAllProducts()
+    {
+        return $this->hasMany(EditSellCartProduct::class,'edit_sell_cart_invoice_id','id');
+    } 
+    //edit sell cart product
+    public function editSellCartAllProductsStock()
     {
         return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_invoice_id','id');
     }

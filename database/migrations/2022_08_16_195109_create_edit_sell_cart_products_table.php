@@ -58,7 +58,7 @@ class CreateEditSellCartProductsTable extends Migration
                 $table->string('identity_number',50)->nullable();
                 $table->text('cart')->nullable()->comment('json:p.name,custom_code,unit_name,wharehouse_id,warehouse_rack_id,sold_price');
 
-                $table->tinyInteger('status')->nullable();
+                $table->tinyInteger('status')->default(1)->comment('1=active, 2=delete');
                 $table->tinyInteger('delivery_status')->nullable()->comment('total_quantity == delivered_qty ? delivered : purtial delivered');
 
                 $table->integer('created_by')->nullable();
