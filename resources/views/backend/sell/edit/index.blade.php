@@ -82,7 +82,9 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
         </div> --}}
         <!-- pos header -->
-
+        @php
+            $sellInvoice = session()->get('sellInvoice_for_edit');
+        @endphp
         <header class="pos-header bg-white">
             <div class="container-fluid">
                 <div class="row align-items-center">
@@ -90,11 +92,11 @@ License: You must have a valid license purchased only from themeforest(the above
                     <div class="col-xl-4 col-lg-4 col-md-6">
                         <div class="greeting-text">
                             <h3 class="card-label mb-0 font-weight-bold text-primary">
-                                <a href="{{route('home')}}" style="text-decoration: none;">WELCOME To</a>
+                                <a href="{{route('admin.sell.regular.sell.index')}}"  title="go to sell list" style="text-decoration: none;">Sell Edit</a>
                             </h3>
                             <h3 class="card-label mb-0">
-                                <a href="{{route('home')}}" style="text-decoration: none;">
-                                    {{ config('app.name') }} 
+                                <a href="{{route('admin.sell.regular.sell.index')}}"  title="go to sell list" style="text-decoration: none;">
+                                    Invoice No : {{$sellInvoice->invoice_no}}
                                 </a>
                             </h3>
                         </div>
@@ -181,6 +183,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <!--Last Sell List-->
                             <div class="topbar-item">
                                 <div class="btn btn-icon w-auto h-auto btn-clean d-flex align-items-center py-0 mr-3" data-toggle="modal" data-target="#LastsellList">
+                                    <a href="{{route('home')}}" title="go to home">
                                     <span class="symbol symbol-35 symbol-light-success">
                                         <span class="symbol-label bg-success font-size-h5">
                                             <svg width="20px" height="20px" xmlns="http://www.w3.org/2000/svg" fill="#ffff" viewBox="0 0 16 16">
@@ -190,6 +193,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                             </svg>
                                         </span>
                                     </span>
+                                </a>
                                 </div>
                             </div>
                             <!--Last Sell List-->
@@ -247,7 +251,7 @@ License: You must have a valid license purchased only from themeforest(the above
             </div>
         </header>
 
-        <div class="contentPOS h-90">
+        <div class="contentPOS h-90" style="background-color:#0b3b5e !important">
             <div class="container-fluid h-100">
                 <!-----row------>
                 <div class="row h-100">
@@ -277,7 +281,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <select class="addedNewCustomer customer_id arabic-select" style="width: 100%;"> <!--arabic-select--->
                                             <option value="">Select a customer</option>
                                             @foreach ($customers as $item)
-                                            <option value="{{$item->id}}">{{$item->name}} ({{$item->phone}})</option>
+                                            <option {{$sellInvoice->customer_id == $item->id ? 'selected' : ''}} value="{{$item->id}}">{{$item->name}} ({{$item->phone}})</option>
                                             @endforeach
                                         </select>
                                     </div><!----------Customer---------->
@@ -296,7 +300,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <select class="addedNewReference reference_id arabic-select" style="width: 100%;"><!--arabic-select--->
                                             <option value="">Select Reference</option>
                                             @foreach ($references as $item)
-                                            <option value="{{$item->id}}">{{$item->name}} ({{$item->phone}})</option>
+                                            <option {{$sellInvoice->reference_id == $item->id ? 'selected' : ''}} value="{{$item->id}}">{{$item->name}} ({{$item->phone}})</option>
                                             @endforeach
                                         </select>
                                     </div><!----------reference---------->
@@ -360,17 +364,22 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <a href="#" class="btn btn-danger btnFullWidth white removeOrEmptyAllItemFromCreateSellCartList" style="margin-top: 1%;">
                                                 Cancel
                                             </a>
-
-                                            <a href="#" class="quotationModalOpen btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{---paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#quotation-popup"--}}
+                                            @if ($sellInvoice->sell_type == 2)    
+                                            <a href="#" class="quotationModalOpen btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;">
                                                 Quotation <img class="quotation_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;">
                                             </a>
+                                            @else
+                                            <a href="#" class="btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;cursor:not-allowed !important;">
+                                                Quotation 
+                                            </a>
+                                            @endif
 
                                             <a href="#" class="paymentModalOpen  btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{--paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#payment-popup"--}}
                                                 Payment <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                             </a>
-                                            <input type="hidden" class="paymentModalOpenUrl" value="{{route('admin.sell.regular.pos.sell.payment.modal.open')}}">
+                                            <input type="hidden" class="paymentModalOpenUrl" value="{{route('admin.sell.edit.regular.pos.sell.edit.payment.modal.open')}}">
                                             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">
-                                            <input type="hidden" class="quotationModalOpenUrl" value="{{route('admin.sell.regular.pos.sell.quotation.modal.open')}}">
+                                            <input type="hidden" class="quotationModalOpenUrl" value="{{route('admin.sell.edit.regular.pos.sell.edit.quotation.modal.open')}}">
 
                                             <a href="" class="print normal_print_direct_from_sell_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;" target="_blank">
                                                 POS Print

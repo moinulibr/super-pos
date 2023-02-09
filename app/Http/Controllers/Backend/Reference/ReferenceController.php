@@ -149,7 +149,7 @@ class ReferenceController extends Controller
       
     public function delete(Reference $reference, Request $request)
     {
-        Reference::findOrFail($request->id)->delete();
+        //Reference::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

@@ -123,5 +123,5 @@
     </div>
 </div>
 <!---------added to cart product list----------->
-<input type="hidden" class="total_item_from_cartlist" value="0">
+<input type="hidden" class="total_item_from_cartlist" value="{{$sellEditCart->count()}}">
 <input type="hidden" name="sell_invoice_id" value="{{$sellEditCart->sell_invoice_id}}">

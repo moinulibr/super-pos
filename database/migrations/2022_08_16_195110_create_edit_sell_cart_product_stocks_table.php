@@ -32,7 +32,9 @@ class CreateEditSellCartProductStocksTable extends Migration
                 $table->decimal('mrp_price',20,2)->default(0);
                 $table->decimal('regular_sell_price',20,2)->default(0);
                 $table->decimal('sold_price',20,2)->default(0);
+                $table->decimal('total_sold_amount',20,2)->default(0);
                 $table->decimal('purchase_price',20,2)->default(0);
+                $table->decimal('total_purchase_amount',20,2)->default(0);
                
                 $table->tinyInteger('qty_change_type')->default(0)->comment('update type : 1 = plus, 2= minus');
                 

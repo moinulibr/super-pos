@@ -268,6 +268,19 @@ class StockController extends Controller
 
 
 
+    public function stockHistoryList(){
+
+    }
+    public function showSingleProductStockHistory(Request $request){
+        $data['product'] = Product::findOrFail($request->id);
+        $data['stockHistories'] = StockHistory::where('product_id',$request->id)->where('branch_id',authBranch_hh())->latest()->get();
+        $html = view('backend.stock.stockHistory.show',$data)->render();
+        return response()->json([
+            'status' => true,
+            'html' => $html
+        ]);
+    }
+
 
 
 }

@@ -153,7 +153,7 @@ class ColorController extends Controller
     }
     public function delete(Color $color, Request $request)
     {
-        Color::findOrFail($request->id)->delete();
+        //Color::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

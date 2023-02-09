@@ -34,22 +34,22 @@ class EditSellCartInvoice extends Model
     {
         return $this->hasMany(SellProduct::class,'sell_invoice_id','id');
     }
-    //edit sell cart product
+    //edit sell cart product :-  //only active data... like. except deleted data
     public function editSellCartProducts()
     {
         return $this->hasMany(EditSellCartProduct::class,'edit_sell_cart_invoice_id','id')->where('status',1);
     } 
-    //edit sell cart product
+    //edit sell cart product :- //all data .. like with deleted data
     public function editSellCartProductsStock()
     {
         return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_invoice_id','id')->where('status',1);
     }
-    //edit sell cart product
+    //edit sell cart product :-  //only active data... like. except deleted data
     public function editSellCartAllProducts()
     {
         return $this->hasMany(EditSellCartProduct::class,'edit_sell_cart_invoice_id','id');
     } 
-    //edit sell cart product
+    //edit sell cart product :- //all data .. like with deleted data
     public function editSellCartAllProductsStock()
     {
         return $this->hasMany(EditSellCartProductStock::class,'edit_sell_cart_invoice_id','id');

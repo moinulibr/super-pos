@@ -165,7 +165,7 @@ class SupplierController extends Controller
     
     public function delete(Supplier $supplier, Request $request)
     {
-        Supplier::findOrFail($request->id)->delete();
+        //Supplier::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

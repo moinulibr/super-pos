@@ -278,7 +278,7 @@ class ProductController extends Controller
         }
         $item->delete(); */
         
-        $item = Product::findOrFail($request->id)->delete();
+        //$item = Product::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

@@ -161,6 +161,11 @@
             <input type="hidden" class="showProductModalRoute" value="{{ route('admin.product.show') }}">
             <!-------show Product Modal------> 
 
+            <!-------show single Product stock history Modal------> 
+            <div class="modal fade " id="showSingleProductStockHistoryModal"  aria-modal="true"></div>
+            <input type="hidden" class="singleProductStockHistoryUrl" value="{{ route('admin.product.stock.show.single.product.stock.history') }}">
+            <!-------show Product Modal------> 
+
 
 
 
@@ -184,7 +189,7 @@
 
     {{--product stock list url --}}
     <input type="hidden" class="productStockListUrl" value="{{route('admin.product.stock.list.ajaxresponse')}}">
-    {{--product stock list url --}}
+    {{--product stock list url --}} 
 
 <!--=================js=================-->
 @push('js')

@@ -19,6 +19,7 @@ class CreateStockChangingTypiesTable extends Migration
                 $table->integer('branch_id')->nullable();
                 $table->string('name',100)->nullable()->comment('
                     use lowercase and underline between tow word,like:regular_stock');
+                $table->string('label_name',255)->nullable()->comment('visible label like name');
                 $table->string('label',200)->nullable()->comment('
                     use as name ,like: Regular Stock');
                 $table->string('changing_sign',2)->nullable();

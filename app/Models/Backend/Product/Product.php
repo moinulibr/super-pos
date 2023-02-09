@@ -12,6 +12,7 @@ use App\Models\Backend\ProductAttribute\SubCategory;
 use App\Models\Backend\ProductAttribute\Unit;
 use App\Models\Backend\Stock\ProductStock;
 use App\Models\Backend\Stock\Stock;
+use App\Models\Backend\Stock\StockHistory;
 use App\Models\Backend\Supplier\Supplier;
 use App\Models\Backend\Warehouse\Warehouse;
 use App\Models\Backend\Warehouse\WarehouseRack;
@@ -391,5 +392,19 @@ class Product extends Model
 
 
 
+
+    /*
+    |-------------------------------------------------------
+    | Stock History
+    |-------------------------------------------------------
+    */
+        public function productStockHistories(){
+            return $this->hasMany(StockHistory::class,'product_id','id');
+        }
+    /*
+    |-------------------------------------------------------
+    | Stock History
+    |-------------------------------------------------------
+    */
 
 }

@@ -27,10 +27,12 @@ use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrai
 
 use App\Traits\Backend\Sell\Edit\SellUpdateDataFromSellEditCartTrait;
 
+use App\Traits\Backend\Sell\Edit\SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
+
 class SellEditController extends Controller
 {
     use SellUpdateDataFromSellEditCartTrait;
-
+    use SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
     
     use StockChangingTrait, PaymentProcessTrait;
     use CustomerPaymentProcessTrait, ManagingCalculationOfCustomerSummaryTrait , UpdateSellSummaryCalculationTrait;
@@ -85,6 +87,7 @@ class SellEditController extends Controller
      */
     public function index(Request $request)
     {   
+        //$this->updateSellRelatedDataForEditCart($sellType = 1,$invoiceNo);
         $id = NUll;
         if(isset($request->seid)){
             $id = \Crypt::decrypt($request->seid);
@@ -92,46 +95,53 @@ class SellEditController extends Controller
             return redirect()->route('admin.sell.regular.sell.index')->with('error','Invalid data');
         }
        
-        //$this->deleteSellEditCartBySellInvoice ($invoiceNo);
-        //$this->updateSellRelatedDataForEditCart($sellType = 1,$invoiceNo);
-
         $sellInvoice = SellInvoice::findOrFail($id);
         if(!$sellInvoice){
             return redirect()->back()->with('error','Data Not Found!');
         }
        
-        //$data['sellEditCart'] = $this->insertSellEditCart($sellInvoice);
-        $editSellCartInvoice = EditSellCartInvoice::where('sell_invoice_id',$sellInvoice->id)->first();
-        session()->put('sell_invoice_id',$sellInvoice->id);
-        session()->put('sell_type',$sellInvoice->sell_type);
-        session()->put('edit_sell_cart_invoice_id',$editSellCartInvoice->id);
-        $data['sellEditCart'] = $editSellCartInvoice;
+        DB::beginTransaction();
+        try {
+            if($sellInvoice)
+            {
+                $this->deleteSellEditCartBySellInvoice($id);
+
+                $data['sellEditCart'] = $this->insertSellEditCart($sellInvoice);
+                $editSellCartInvoice = EditSellCartInvoice::where('sell_invoice_id',$sellInvoice->id)->first();
+                
+                session()->put('sellInvoice_for_edit',$sellInvoice);
+                session()->put('total_edit_count_for_edit',$sellInvoice->total_edit_count);
+                session()->put('total_return_count_for_edit',$sellInvoice->total_return_count);
+                session()->put('total_delivered_count_for_edit',$sellInvoice->total_delivered_count);
+
+                session()->put('sell_invoice_id_for_edit',$sellInvoice->id);
+                session()->put('sell_type_for_edit',$sellInvoice->sell_type);
+                session()->put('edit_sell_cart_invoice_id_for_edit',$editSellCartInvoice->id);
+                
+                //update edit sell cart invoice table : all calculation
+                $this->updateSellEditCartInvoiceCalculation($editSellCartInvoice->id);
+                DB::commit();
+            }else{
+                return redirect()->back()->with('error','Invalid Data!');
+            }
+           
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+            return redirect()->back()->with('error','Something went wrong!');
+        }
 
         $data['customers'] = Customer::latest()->get();
         $data['references'] = Reference::latest()->get();
 
         $data['categories'] = Category::latest()->get();
         $data['allproducts'] = Product::select('name','id')->latest()->get();
-        $data['products'] = Product::select('name','id','photo','available_base_stock')
-                                ->latest()
-                                ->paginate(21);
-        //$data['sellInvoice'] = $sellInvoice;
+        $data['products'] = Product::select('name','id','photo','available_base_stock')->latest()->paginate(21);
         return view('backend.sell.edit.index',$data);
 
         return view('backend.sell.edit.cart_product_list');
-
-        $data['data']  =  SellInvoice::where('id',$request->id)->first();
-        $data['cashAccounts'] = cashAccounts_hh();
-        $data['advanceAccounts'] = advanceAccounts_hh();
-        $html = view('backend.sell.sell_return.index',$data)->render();
-        $product = view('backend.sell.sell_return.product_only',$data)->render();
-        $payment = view('backend.sell.sell_return.payment',$data)->render();
-        return response()->json([
-            'status' => true,
-            'html' => $html,
-            'product' => $product,
-            'payment' => $payment,
-        ]);
+        $dkd = session()->get('sellInvoice_for_edit');
+        return $dkd->invoice_no;
     }
 
     /**
@@ -147,11 +157,8 @@ class SellEditController extends Controller
         $editSellCart->branch_id = authBranch_hh();   
         $editSellCart->sell_type = $sellInvoiceData->sell_type;   
         $editSellCart->sell_invoice_id = $sellInvoiceData->id;   
-        $editSellCart->sell_invoice_no = $sellInvoiceData->invoice_no;   
-        //$editSellCart->total_sell_item_before_edit = $sellInvoiceData->total_item;   
-        //$editSellCart->total_sell_item_after_edit = $sellInvoiceData->total_item;   
-        $editSellCart->total_item = $sellInvoiceData->total_item;   
-        $editSellCart->total_sell_quantity_before_edit	 = $sellInvoiceData->total_quantity;   
+        $editSellCart->sell_invoice_no = $sellInvoiceData->invoice_no;    
+        $editSellCart->total_sell_item = $sellInvoiceData->total_item;   
         $editSellCart->subtotal = $sellInvoiceData->subtotal;   
         $editSellCart->discount_amount = $sellInvoiceData->discount_amount;   
         $editSellCart->discount_type = $sellInvoiceData->discount_type;   
@@ -162,40 +169,15 @@ class SellEditController extends Controller
         $editSellCart->others_cost = $sellInvoiceData->others_cost;   
         $editSellCart->round_amount = $sellInvoiceData->round_amount;   
         $editSellCart->round_type = $sellInvoiceData->round_type;   
-        //$editSellCart->total_payable_amount_before_edit = $sellInvoiceData->total_payable_amount;   
-        //$editSellCart->total_payable_amount_after_edit = $sellInvoiceData->total_payable_amount;   
-        //$editSellCart->total_paid_amount_before_edit = $sellInvoiceData->total_paid_amount;   
-        //$editSellCart->total_due_amount_before_edit = $sellInvoiceData->total_due_amount;   
-        //$editSellCart->total_paid_amount_after_edit = $sellInvoiceData->total_paid_amount;   
-        //$editSellCart->total_due_amount_after_edit = $sellInvoiceData->total_due_amount;   
+        $editSellCart->total_payable_amount = $sellInvoiceData->total_payable_amount;
         $editSellCart->total_paid_amount = $sellInvoiceData->total_paid_amount;   
         $editSellCart->total_due_amount = $sellInvoiceData->total_due_amount;   
         $editSellCart->reference_amount = $sellInvoiceData->reference_amount;   
-        //$editSellCart->total_selling_amount_before_edit = $sellInvoiceData->total_sold_amount;   
-        //$editSellCart->total_selling_amount_after_edit = $sellInvoiceData->total_sold_amount;   
         $editSellCart->total_sold_amount = $sellInvoiceData->total_sold_amount;   
-        //$editSellCart->total_selling_purchase_amount_before_edit = $sellInvoiceData->total_purchase_amount;   
-        //$editSellCart->total_selling_purchase_amount_after_edit = $sellInvoiceData->total_purchase_amount;   
         $editSellCart->total_purchase_amount = $sellInvoiceData->total_purchase_amount;   
-        //$editSellCart->total_selling_profit_before_edit = $sellInvoiceData->total_profit;   
-        //$editSellCart->total_selling_profit_after_edit = $sellInvoiceData->total_profit;   
         $editSellCart->total_profit = $sellInvoiceData->total_profit;   
-        //$editSellCart->qty_change_type = $sellInvoiceData->;total_update_qty   
         $editSellCart->total_delivered_qty = $sellInvoiceData->total_delivered_qty;   
-        //$editSellCart->remaining_delivery_qty_before_edit = $sellInvoiceData->total_quantity - $sellInvoiceData->total_delivered_qty;   
-        //$editSellCart->remaining_delivery_qty_after_edit = $sellInvoiceData->total_quantity - $sellInvoiceData->total_delivered_qty;   
-        $editSellCart->payment_status = $sellInvoiceData->payment_status;   
-        $editSellCart->payment_type = $sellInvoiceData->payment_type;   
-        $editSellCart->customer_id = $sellInvoiceData->customer_id;   
-        $editSellCart->customer_phone = $sellInvoiceData->customer_phone;   
-        $editSellCart->customer_type_id = $sellInvoiceData->customer_type_id;   
-        $editSellCart->shipping_id = $sellInvoiceData->shipping_id;   
-        $editSellCart->shipping_note = $sellInvoiceData->shipping_note;   
-        $editSellCart->receiver_details = $sellInvoiceData->receiver_details;   
-        $editSellCart->reference_id = $sellInvoiceData->reference_id;   
-        $editSellCart->sell_note = $sellInvoiceData->sell_note;   
         $editSellCart->sell_date = $sellInvoiceData->sell_date;   
-  
         $editSellCart->save();   
 
         $this->insertEditSellCartProduct($sellInvoiceData, $editSellCart);
@@ -268,26 +250,15 @@ class SellEditController extends Controller
             $editSellCartProductStock->product_id  = $sellProductStock->product_id;
             $editSellCartProductStock->stock_id  = $sellProductStock->stock_id;
             $editSellCartProductStock->product_stock_id  = $sellProductStock->product_stock_id;
-            //$editSellCartProductStock->total_sell_qty_before_edit  = $sellProductStock->total_quantity;
-            //$editSellCartProductStock->total_sell_qty_after_edit  = $sellProductStock->total_quantity;
             $editSellCartProductStock->mrp_price  = $sellProductStock->mrp_price;
             $editSellCartProductStock->regular_sell_price  = $sellProductStock->regular_sell_price;
             $editSellCartProductStock->sold_price  = $sellProductStock->sold_price;
+            $editSellCartProductStock->total_sold_amount  = $sellProductStock->sold_price * $sellProductStock->total_quantity;
             $editSellCartProductStock->purchase_price  = $sellProductStock->purchase_price;
-            //$editSellCartProductStock->total_sold_amount_before_edit  = $sellProductStock->total_sold_amount;
-            //$editSellCartProductStock->total_sold_amount_after_edit	  = $sellProductStock->total_sold_amount;
-            //$editSellCartProductStock->total_purchase_amount_before_edit	  = $sellProductStock->total_purchase_amount;
-            //$editSellCartProductStock->total_purchase_amount_after_edit  = $sellProductStock->total_purchase_amount;
-            //$editSellCartProductStock->qty_change_type  = $sellProductStock->main_product_stock_id;
-            //$editSellCartProductStock->total_update_qty  = $sellProductStock->main_product_stock_id;
+            $editSellCartProductStock->total_purchase_amount  = $sellProductStock->purchase_price * $sellProductStock->total_quantity;
             $editSellCartProductStock->total_quantity  = $sellProductStock->total_quantity;
-            //$editSellCartProductStock->total_selling_profit_before_edit  = $sellProductStock->total_profit;
-            //$editSellCartProductStock->total_selling_profit_after_edit  = $sellProductStock->total_profit;
-            $editSellCartProductStock->total_profit  = $sellProductStock->total_profit;
             $editSellCartProductStock->total_delivered_qty  = $sellProductStock->total_delivered_qty;
-            //$editSellCartProductStock->remaining_delivery_qty_before_edit  = $sellProductStock->remaining_delivery_qty;
-            //$editSellCartProductStock->remaining_delivery_qty_after_edit  = $sellProductStock->remaining_delivery_qty;
-
+            
             $editSellCartProductStock->reduced_base_stock_remaining_delivery  = $sellProductStock->reduced_base_stock_remaining_delivery;
             $editSellCartProductStock->reduceable_delivered_qty  = $sellProductStock->reduceable_delivered_qty;
             $editSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
@@ -302,36 +273,26 @@ class SellEditController extends Controller
         return true;
     }
 
-    private function checkThisInvoiceIsExistOrNotInTheSellEditCart(){
 
-    }
 
 
 
     /**
      * delete Sell Edit Cart function, where from we delete sell edit cart
      *
-     * @param string $sellInvoiceNo
+     * @param int $id
      * @return boolean
      */
-    private function deleteSellEditCartBySellInvoice (string $sellInvoiceNo) : bool {
-        $editSellCart = EditSellCartInvoice::where('sell_invoice_no',$sellInvoiceNo)->where('branch_id',authBranch_hh())->first();
+    private function deleteSellEditCartBySellInvoice (int $id) : bool {
+        $editSellCart = EditSellCartInvoice::where('sell_invoice_id',$id)->where('branch_id',authBranch_hh())->first();
         if($editSellCart){
-            EditSellCartProduct::where('sell_invoice_no',$sellInvoiceNo)->where('branch_id',authBranch_hh())->delete();
-            EditSellCartProductStock::where('sell_invoice_no',$sellInvoiceNo)->where('branch_id',authBranch_hh())->delete();
+            EditSellCartProduct::where('sell_invoice_id',$id)->where('branch_id',authBranch_hh())->delete();
+            EditSellCartProductStock::where('sell_invoice_id',$id)->where('branch_id',authBranch_hh())->delete();
             $editSellCart->delete();
         }
         return true;
     }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -345,88 +306,7 @@ class SellEditController extends Controller
         try {
             if((isset($request->checked_id)) && (count($request->checked_id) > 0))
             {
-                $dataRequest['return_note'] = $request->return_note;
-                $dataRequest['receive_note'] = $request->receive_note;
-                $dataRequest['discount_amount'] = $request->return_invoice_discount_amount;
-                $dataRequest['discount_type'] = $request->return_invoice_discount_type;
-                $dataRequest['subtotal_before_discount'] = $request->return_invoice_subtotal_before_discount;
-                $dataRequest['total_amount_after_discount'] = $request->return_invoice_total_amount_after_discount;
-                $dataRequest['total_discount_amount'] = $request->return_invoice_total_discount_amount;
-                $dataRequest['invoice_total_paying_amount'] = $request->invoice_total_paying_amount ?? 0 ;
-                $dataRequest['customer_id'] = $request->customer_id;
-                $rand = rand(01,99);
-                //$makeInvoice = 'SREL'.date("iHsymd").$rand;
-                $makeInvoice = date("iHsymd").$rand;
-                $invoiceData = SellInvoice::where('id',$request->sell_invoice_id)->first();
-                $invoiceData->total_return_count = (($invoiceData->total_return_count) + 1);
-                $invoiceData->save();
-                
-                $returnInvoice  = $this->sellReturnProductInvoice($makeInvoice,$invoiceData,$dataRequest);
-
-                foreach($request->checked_id as $sell_product_stock_id)
-                {
-                    $this->sellProductStockChangesData($returnInvoice,$invoiceData, $sell_product_stock_id, $request->input('returning_qty_'.$sell_product_stock_id));
-                }
-                //$this->updateSellInvoiceTable($invoiceData);
-                //module = SellProduct, moduleTypeId = 1
-                $this->managingSellCalculationAfterRefunding($moduleTypeId = 1, $primaryId = $request->sell_invoice_id,
-                    $calable = false, $dbField = NULL, $calType = 1, $amountOrQty = 0
-                );
-                
-                //payment process
-                if(($request->invoice_total_paying_amount ?? 0) > 0){
-                    //for payment processing 
-                    $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-                    $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell Return');
-                    $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Debit');
-                    $moduleRelatedData = [
-                        'main_module_invoice_no' => $invoiceData->invoice_no,
-                        'main_module_invoice_id' => $invoiceData->id,
-                        'module_invoice_no' => $makeInvoice,
-                        'module_invoice_id' => $returnInvoice->id,
-                        'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
-                    ];
-                    $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
-                    $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
-                    $this->invoiceTotalPayingAmount = $request->invoice_total_paying_amount ?? 0 ;
-                    $this->processingPayment();
-                    //for payment processing 
-
-                    //customer transaction statement history
-                    $requestCTSData = [];
-                    $requestCTSData['amount'] =$request->invoice_total_paying_amount ?? 0 ;
-                    $requestCTSData['ledger_page_no'] = NULL;
-                    $requestCTSData['next_payment_date'] = NULL;
-                    $requestCTSData['short_note'] = "Sell Return";
-                    $requestCTSData['sell_amount'] = 0;
-                    $requestCTSData['sell_paid'] = 0;
-                    $requestCTSData['sell_due'] = 0;
-                    $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
-                    $this->amount = $request->invoice_total_paying_amount ?? 0 ;
-                    
-                    $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Return');
-                    $this->ctsCustomerId = $invoiceData->customer_id;
-                    $ttModuleInvoics = [
-                        'invoice_no' => $makeInvoice,
-                        'invoice_id' => $returnInvoice->id
-                    ];
-                    $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
-                    $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
-                    $this->processingOfAllCustomerTransaction();
-                    //customer transaction statement history   
-                    
-                    //calculation in the customer table
-                    //$dbField = 24;'current_paid_return';
-                    //$calType = 1='plus', 2='minus'
-                    $this->managingCustomerCalculation($request->customer_id,$dbField = 24 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
-                    //calculation in the customer table    
-                }else{
-                    //calculation in the customer table
-                    //$dbField = 20;'current_return';
-                    //$calType = 1='plus', 2='minus'
-                    $this->managingCustomerCalculation($request->customer_id,$dbField = 20 ,$calType = 1,$request->return_invoice_total_amount_after_discount);
-                    //calculation in the customer table 
-                }         
+                      
                 DB::commit();
             }else{
                 return response()->json([
@@ -435,22 +315,7 @@ class SellEditController extends Controller
                     'type'      => 'error'
                 ]);
             }
-            $data['cashAccounts'] = cashAccounts_hh();
-            $data['advanceAccounts'] = advanceAccounts_hh();
-            
-            $data['data']  = SellInvoice::where('id',$request->sell_invoice_id)->first();
-            $product = view('backend.sell.sell_return.product_only',$data)->render();
-            $payment = view('backend.sell.sell_return.payment',$data)->render();
-            $printRoute = route('admin.sell.product.return.print.product.returned.invoice.wise.returned.list',$makeInvoice);
-            $printRouteHtml = '<a href="'.$printRoute.'" class="print" target="_blank">Print</a>';
-            return response()->json([
-                'status'    => true,
-                'product' => $product,
-                'payment' => $payment,
-                'print' => $printRouteHtml,
-                'message'   => "Return submited successfully!",
-                'type'      => 'success'
-            ]);
+           
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -598,266 +463,6 @@ class SellEditController extends Controller
 
   
 
-
-    /**
-     * sellReturnProductInvoice function, where store sell return invoice information
-     *
-     * @param [type] $makeInvoice
-     * @param [type] $sellInvoiceData
-     * @param [type] $dataRequest
-     * @return object
-     */
-    private function sellReturnProductInvoice($makeInvoice,$sellInvoiceData,$dataRequest) : object {
-        $returnInvoice = new SellReturnProductInvoice();
-        $returnInvoice->branch_id = authBranch_hh();
-        $returnInvoice->invoice_no = $makeInvoice;
-        $returnInvoice->sell_invoice_no = $sellInvoiceData->invoice_no;
-        $returnInvoice->sell_invoice_id = $sellInvoiceData->id;
-        $returnInvoice->customer_id = $dataRequest['customer_id'];
-        //$returnInvoice->quantity = $makeInvoice;
-        $returnInvoice->subtotal_before_discount = $dataRequest['subtotal_before_discount'];
-        $returnInvoice->discount_amount = $dataRequest['discount_amount'];
-        $returnInvoice->discount_type = $dataRequest['discount_type'];
-        $returnInvoice->total_discount = $dataRequest['total_discount_amount'];
-        $returnInvoice->total_amount_after_discount = $dataRequest['total_amount_after_discount'];
-        $returnInvoice->total_payable_amount = $dataRequest['total_amount_after_discount'];
-        $returnInvoice->return_note = $dataRequest['return_note'];
-        $returnInvoice->receive_note = $dataRequest['receive_note'];
-
-        $returnInvoice->paid_amount	 = $dataRequest['invoice_total_paying_amount'];
-        $returnInvoice->due_amount	 = $dataRequest['total_amount_after_discount'] - $dataRequest['invoice_total_paying_amount'];
-       
-        $returnInvoice->return_date = date('Y-m-d');
-        $returnInvoice->created_by = authId_hh();
-        $returnInvoice->save();
-        return $returnInvoice;
-    }
-
-    //sell return product
-    /**
-     * sellReturnProductStore function, where store sell return product related information
-     *
-     * @param [type] $returnInvoice
-     * @param [type] $sellInvoice
-     * @param [type] $sellProductStockDetails
-     * @param [type] $returningQty
-     * @return void
-     */
-    private function sellReturnProductStore($returnInvoice,$sellInvoice,$sellProductStockDetails,$returningQty)
-    {
-        $returnProduct = new SellReturnProduct();
-        $returnProduct->branch_id = authBranch_hh();
-        $returnProduct->sell_return_product_invoice_id = $returnInvoice->id; 
-        $returnProduct->sell_invoice_id = $sellInvoice->id; 
-        $returnProduct->sell_product_id = $sellProductStockDetails->sell_product_id;
-        $returnProduct->sell_product_stock_id = $sellProductStockDetails->id;
-        $returnProduct->product_id = $sellProductStockDetails->product_id;
-        $returnProduct->stock_id = $sellProductStockDetails->stock_id;
-        $returnProduct->product_stock_id = $sellProductStockDetails->product_stock_id;
-        $returnProduct->quantity = $returningQty;
-        $returnProduct->sell_price = $sellProductStockDetails->sold_price;
-        $returnProduct->total_sell_price = $sellProductStockDetails->sold_price * $returningQty;
-        $returnProduct->delivery_status = 1;
-        $returnProduct->created_by = authId_hh();
-        $returnProduct->save();
-        return $returnProduct;
-    }
-
-
-
-    //print
-    public function printSellReturnProducInvoiceWisedProductList($invoiceId)
-    {
-        $data['delivery_invoice'] = $invoiceId;
-        $data['sellProductDelivery']  =  SellReturnProductInvoice::where('invoice_no',$invoiceId)->first();
-        $data['data']  =  SellReturnProductInvoice::where('invoice_no',$invoiceId)->get();
-        return view('backend.sell.sell_return.print',$data);
-    }
-
-
-
-
-
-
-
-
-    
-    //it will be processed, when sell return amount paid
-    private function laterProcess(){
-        //calculation in the customer table
-        //$dbField = 24;'current_paid_return';
-        //$calType = 1='plus', 2='minus'
-        $this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 24 ,$calType = 2,$request->invoice_total_paying_amount ?? 0 );
-        //calculation in the customer table    
-    }
-
-
-    //no need/not using this method.. update some fields in the sell invoice table
-    private function updateSellInvoiceTable($invoiceData){
-        $subtotal = $invoiceData->sellProducts->sum('total_sold_price');
-        $totalPurchasePrice = $invoiceData->sellProducts->sum('total_purchase_price');
-        
-        $totalDiscountAmount = $this->getTotalDiscountAmount($subtotal,$invoiceData->discount_amount,$invoiceData->discount_type);
-        $payableAmount = ($subtotal - $totalDiscountAmount) + $invoiceData->total_vat +  $invoiceData->shipping_cost + $invoiceData->others_cost; 
-        
-        if($invoiceData->round_type == '+')
-        {
-            $payableAmount = $payableAmount + $invoiceData->round_amount;
-        }else{
-            $payableAmount = $payableAmount - $invoiceData->round_amount;
-        }
-        $invoiceData->subtotal = $subtotal;
-        $invoiceData->total_discount = $totalDiscountAmount;
-        $invoiceData->total_payable_amount = $payableAmount;
-        $invoiceData->total_purchase_amount = $totalPurchasePrice;
-        $invoiceData->total_invoice_profit = (($subtotal - $totalDiscountAmount) - $totalPurchasePrice);
-        $invoiceData->save();
-    }
-
-    //have to check the previous logic just for study
-    public function show($id)
-    {
-        
-        /* 
-            $sellProductStockDetails = SellProductStock::where('id',$sell_product_stock_id)
-                    ->select('id','sell_product_id','product_id','stock_id','product_stock_id','total_quantity','stock_process_instantly_qty',
-                        'stock_process_instantly_qty_reduced','total_stock_processed_qty','remaining_delivery_qty','total_delivered_qty','total_stock_remaining_process_qty'
-                        ,'total_return_qty','sold_price','purchase_price','total_sold_price','total_purchase_price','total_profit'
-                    )
-                    ->first();
-
-            $sellProduct =  SellProduct::select('id','unit_id','quantity','sold_price','total_sold_price','total_purchase_price','total_profit')->where('id',$sellProductStockDetails->sell_product_id)->first();
-
-            // total_quantity from sellproductstock
-            $totalSoldQty = $sellProductStockDetails->total_quantity;
-            if($totalSoldQty > 0)
-            {
-                if($returningQty > $totalSoldQty)
-                {
-                    $returningQty = $totalSoldQty;
-                }
-                else if($returningQty == $totalSoldQty)
-                {
-                    $returningQty = $totalSoldQty;
-                }
-                else if($returningQty < $totalSoldQty)
-                {
-                    $returningQty = $returningQty;
-                }else{
-                    $returningQty = 0;
-                }
-            }else{
-                $returningQty = 0;
-            }
-            
-            // total_quantity from sellproductstock
-            //sell product stock table single single row wise data update
-            $currentTotalQuantity = $sellProductStockDetails->total_quantity - $returningQty;
-
-            //delivery and remaining delivery based on current total quantity
-                $deliveredQty = 0;
-                $remainingDelivertQty = 0;
-                $previousDeliveredQty = $sellProductStockDetails->total_delivered_qty;
-                if($currentTotalQuantity < $previousDeliveredQty)
-                {
-                    $deliveredQty = $currentTotalQuantity;
-                    $remainingDelivertQty = 0;
-                }
-                else if($currentTotalQuantity == $previousDeliveredQty)
-                {
-                    $deliveredQty = $currentTotalQuantity;
-                    $remainingDelivertQty = 0;
-                }
-                else if($currentTotalQuantity > $previousDeliveredQty)
-                {
-                    $deliveredQty = $previousDeliveredQty;
-                    $remainingDelivertQty = $currentTotalQuantity - $previousDeliveredQty;
-                }
-                $sellProductStockDetails->total_delivered_qty = $deliveredQty;
-                $sellProductStockDetails->remaining_delivery_qty = $remainingDelivertQty;
-            //delivery and remaining delivery based on current total quantity
-
-
-            $sellProductStockDetails->total_quantity = $currentTotalQuantity;
-            $sellProductStockDetails->total_return_qty = $sellProductStockDetails->total_return_qty + $returningQty;
-                //sold price, total_sold_price, purchase_price, total_purchase_price,total_profit, 
-                $totalSoldPrice =  $sellProductStockDetails->sold_price * $currentTotalQuantity;
-                $totalPurchasePrice =  $sellProductStockDetails->purchase_price * $currentTotalQuantity;
-                $sellProductStockDetails->total_sold_price = $totalSoldPrice;
-                $sellProductStockDetails->total_purchase_price = $totalPurchasePrice;
-                $sellProductStockDetails->total_profit = $totalSoldPrice - $totalPurchasePrice;
-                //sold price, total_sold_price, purchase_price, total_purchase_price,total_profit, 
-            $sellProductStockDetails->save();
-            //sell product stock table single single row wise data update
-
-
-            //update some fields from sell product table 
-                //amount calculation (in the sell product table)
-                $currentQuantityOfSellProduct = $sellProduct->quantity - $returningQty;
-
-                $subtotalSoldPriceOfSellProduct = $sellProduct->sold_price * $currentQuantityOfSellProduct;
-
-                $totalDiscountAmountOfSellProduct = $this->getTotalDiscountAmount($subtotalSoldPriceOfSellProduct,$sellProduct->discount_amount,$sellProduct->discount_type);
-
-                $sellProduct->total_discount = $totalDiscountAmountOfSellProduct;
-                $totalSoldPriceOfSellProduct = $subtotalSoldPriceOfSellProduct - $totalDiscountAmountOfSellProduct;
-                $sellProduct->total_sold_price = $totalSoldPriceOfSellProduct;
-
-                $purchasePriceFromSellProductStock = $sellProductStockDetails->purchase_price;
-                $totalPurchasePriceFromSellProductStock = $purchasePriceFromSellProductStock * $currentQuantityOfSellProduct;
-
-                $sellProduct->total_purchase_price = $totalPurchasePriceFromSellProductStock;
-                $sellProduct->total_profit =  $totalSoldPriceOfSellProduct - $totalPurchasePriceFromSellProductStock;
-                //amount calculation
-
-                //sell product table
-                $sellProduct->quantity = $sellProduct->quantity - $returningQty;
-                $sellProduct->save();
-                //sell product table
-            //update some fields from sell product table 
-
-
-            //sell invoice
-            //sell product table
-            $invoiceData->total_quantity = $invoiceData->total_quantity - $returningQty;
-            $invoiceData->save();
-            //sell invoice
-            
-
-            //base stock increment quantity
-                $baseStockIncrementQuantity = 0;
-                if($deliveredQty == $returningQty && $deliveredQty > 0)
-                {
-                    $baseStockIncrementQuantity = $returningQty;
-                }
-                else if($deliveredQty > $returningQty && $deliveredQty > 0)
-                {
-                    $baseStockIncrementQuantity = $returningQty;
-                }
-                else if($deliveredQty < $returningQty && $deliveredQty > 0)
-                {
-                    $baseStockIncrementQuantity = $deliveredQty;
-                }
-                else if($deliveredQty == 0)
-                {
-                    $baseStockIncrementQuantity = 0;
-                }
-            //base stock increment quantity
-                
-            //increment stock from product stock
-            if($invoiceData->sell_type == 1 && $returningQty > 0 && $baseStockIncrementQuantity > 0)
-            {
-                $this->stock_id_FSCT = $sellProductStockDetails->stock_id;
-                $this->product_id_FSCT = $sellProductStockDetails->product_id;
-                $this->stock_quantity_FSCT = $baseStockIncrementQuantity;
-                $this->unit_id_FSCT = $sellProduct ? $sellProduct->unit_id:0;
-                $this->sellingReturnStockTypeIncrement();
-            }
-            //increment stock from product stock
-
-            return $this->sellReturnProductStore($returnInvoice,$invoiceData,$sellProductStockDetails,$returningQty);
-        */
-    }
 
     
 }

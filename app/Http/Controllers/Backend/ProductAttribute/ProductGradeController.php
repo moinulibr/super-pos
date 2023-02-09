@@ -145,7 +145,7 @@ class ProductGradeController extends Controller
 
     public function delete(ProductGrade $productGrade, Request $request)
     {
-        ProductGrade::findOrFail($request->id)->delete();
+        //ProductGrade::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

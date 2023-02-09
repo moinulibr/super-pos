@@ -217,7 +217,7 @@ class CustomerController extends Controller
     public function delete(Customer $customer, Request $request)
     {
         //Customer::findOrFail($request->id)->delete();
-        Customer::findOrFail($request->id)->update(['deleted_at'=>date('Y-m-d')]);
+        //Customer::findOrFail($request->id)->update(['deleted_at'=>date('Y-m-d')]);
         return response()->json([
             'status' => true,
             'type' => 'success',

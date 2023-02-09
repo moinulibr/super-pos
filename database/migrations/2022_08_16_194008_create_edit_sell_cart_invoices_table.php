@@ -22,7 +22,7 @@ class CreateEditSellCartInvoicesTable extends Migration
                 $table->integer('sell_invoice_id')->nullable();
                 $table->string('sell_invoice_no',30)->nullable();
 
-                $table->decimal('total_item',20,2)->default(0)->comment('total_sell_item_before_edit +- total_sell_item_after_edit');
+                $table->decimal('total_sell_item',20,2)->default(0)->comment('total_sell_item');
                 $table->decimal('subtotal',20,2)->default(0)->comment('only total product sell price, before discount and others cost');
                 $table->decimal('discount_amount',20,2)->default(0)->comment('before or after edit.. final field');
                 $table->string('discount_type',12)->nullable()->comment('percentage, fixed');
@@ -34,37 +34,20 @@ class CreateEditSellCartInvoicesTable extends Migration
                 $table->decimal('round_amount',20,2)->default(0)->comment('before or after edit.. final field');
                 $table->string('round_type',2)->nullable()->comment('plus(+), minus(-)');
                 
-                $table->decimal('total_paid_amount',20,2)->default(0)->comment('total_paid_amount_before_edit +- total_paid_amount_after_edit');
-                $table->decimal('total_due_amount',20,2)->default(0)->comment('total_due_amount_before_edit +- total_due_amount_after_edit');
+                $table->decimal('total_payable_amount',20,2)->default(0)->comment('total_payable_amount');
+                $table->decimal('total_paid_amount',20,2)->default(0)->comment('total_paid_amount +- total_paid_amount');
+                $table->decimal('total_due_amount',20,2)->default(0)->comment('total_due_amount +- total_due_amount');
                 $table->decimal('reference_amount',20,2)->default(0);
                 
-                $table->decimal('total_sold_amount',20,2)->default(0)->comment('total_selling_amount_after_edit - total_selling_amount_before_edit');
-                
-
-               $table->decimal('total_purchase_amount',20,2)->default(0)->comment('total_selling_purchase_amount_after_edit - total_selling_purchase_amount_before_edit');
-              
-
-                $table->decimal('total_profit',20,2)->default(0)->comment('total_selling_profit_before_edit +- total_selling_profit_after_edit');
-
+                $table->decimal('total_sold_amount',20,2)->default(0)->comment('total_selling_amount - total_selling_amount');
+                $table->decimal('total_purchase_amount',20,2)->default(0)->comment('total_selling_purchase_amount - total_selling_purchase_amount');
+                $table->decimal('total_profit_from_product',20,2)->default(0)->comment('total_selling_profit +- total_selling_profit');
+                $table->decimal('total_profit',20,2)->default(0)->comment('total_selling_profit +- total_selling_profit');
                  
-                $table->tinyInteger('qty_change_type')->default(0)->comment('update type : 1 = plus, 2= minus');
-                
-                $table->decimal('total_quantity',20,3)->default(0)->comment('total_sell_qty_after_edit + total_sell_qty_before_edit');
+                $table->decimal('total_quantity',20,3)->default(0)->comment('total_sell_qty + total_sell_qty');
                 
                 $table->decimal('total_delivered_qty',20,3)->default(0)->comment('');
                
-
-                $table->string('payment_status',50)->nullable()->comment('Full Paid, Full Due, Partial Paid');
-                $table->string('payment_type',20)->nullable()->comment('parital payment, full payment');
-                
-                $table->integer('customer_id')->nullable();
-                $table->string('customer_phone',20)->nullable();
-                $table->integer('customer_type_id')->nullable()->comment('1=Permanent, 2=Temporary');
-                $table->integer('shipping_id')->nullable();
-                $table->text('shipping_note')->nullable();
-                $table->text('receiver_details')->nullable();
-                $table->integer('reference_id')->nullable();
-                $table->text('sell_note')->nullable();
                 $table->string('sell_date',25)->nullable();
              
                 $table->tinyInteger('status')->nullable();

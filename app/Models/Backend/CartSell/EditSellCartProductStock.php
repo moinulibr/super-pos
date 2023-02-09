@@ -19,15 +19,17 @@ class EditSellCartProductStock extends Model
         return $this->belongsTo(ProductStock::class,'product_stock_id','id');
     }
 
-    //
-    public function editSellCartProduct()
-    {
-        return $this->belongsTo(EditSellCartProduct::class,'edit_sell_cart_product_id','id');
-    }
+    
     //only edit sell product related  
     public function editSellCartProductOnly()
     {
         return $this->belongsTo(EditSellCartProduct::class,'edit_sell_cart_product_id','id')->where('product_id',$this->product_id)->where('status',1);
+    }
+    
+    //all data .. like with deleted data
+    public function editSellCartProduct()
+    {
+        return $this->belongsTo(EditSellCartProduct::class,'edit_sell_cart_product_id','id');
     }
 
 }

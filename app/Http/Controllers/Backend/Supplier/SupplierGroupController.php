@@ -144,7 +144,7 @@ class SupplierGroupController extends Controller
     
     public function delete(SupplierGroup $supplierGroup, Request $request)
     {
-        SupplierGroup::findOrFail($request->id)->delete();
+        //SupplierGroup::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

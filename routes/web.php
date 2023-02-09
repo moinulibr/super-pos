@@ -610,9 +610,15 @@ Route::group(['middleware' => ['auth']], function ()
             Route::get('list','StockController@index')->name('index');
             Route::get('list/by/ajr','StockController@stockListByAjaxResponse')->name('list.ajaxresponse');
             
+            //initial stock
             Route::get('add/initial/stock','StockController@addInitialStock')->name('add.initial.stock');
             Route::get('render/single/product/details','StockController@renderSingleProductDetial')->name('render.single.product.details');
             Route::post('store/initial/stock','StockController@storeInitialStock')->name('store.initial.stock');
+            
+            //stock history
+            Route::get('stock/history/list','StockController@stockHistoryList')->name('stock.history.list');
+            Route::get('show/single/product/stock/history','StockController@showSingleProductStockHistory')->name('show.single.product.stock.history');
+
         });
     /*
     |-----------------------------------

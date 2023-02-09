@@ -73,12 +73,7 @@ $(document).on('change','.paginate,.supplier_filter_id,.ground_filter_id,.brand_
 
 //-----------------------------------------------------------------------
     //search 
-    var ctrlDown = false,
-    ctrlKey = 17,
-    cmdKey = 91,
-    vKey = 86,
-    cKey = 67;
-    xKey = 88;
+    var ctrlDown = false,ctrlKey = 17,cmdKey = 91,vKey = 86,cKey = 67;xKey = 88;
     $(document).on('keypress keyup','.search',function(e){
         if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
         if (ctrlDown && (e.keyCode == vKey || e.keyCode == cKey || e.keyCode == xKey)) return false;
@@ -126,6 +121,24 @@ $(document).on('click','.singleShowModal',function(e){
 });
 //-----------------------------------------------------------------------
 
+
+
+
+//single product stock history
+//-----------------------------------------------------------------------
+$(document).on('click','.singleProductStockHistoryShowModal',function(e){
+    e.preventDefault();
+    var url = $('.singleProductStockHistoryUrl').val();
+    var id = $(this).data('id');
+    $.ajax({
+        url:url,
+        data:{id:id},
+        success:function(response){
+            $('#showSingleProductStockHistoryModal').html(response.html).modal('show');
+        }
+    });
+});
+//-----------------------------------------------------------------------
 
 
 /* $(document).on('click','.singleDeleteModal',function(e){

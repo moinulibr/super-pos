@@ -152,7 +152,7 @@ class BrandController extends Controller
     }
     public function delete(Brand $brand, Request $request)
     {
-        Brand::findOrFail($request->id)->delete();
+        //Brand::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

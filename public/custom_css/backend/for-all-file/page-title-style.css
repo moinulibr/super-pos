@@ -22,6 +22,7 @@
 }
 .status_message_in_content_space{
     margin-top:2%;
+    text-align: center !important;
 }
 .real_space_in_content{
     margin-top:1%;

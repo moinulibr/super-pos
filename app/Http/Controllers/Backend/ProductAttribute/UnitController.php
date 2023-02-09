@@ -192,8 +192,8 @@ class UnitController extends Controller
      */
     public function delete(Unit $unit, Request $request)
     {
-        $unit = Unit::findOrFail($request->id);
-        $unit->delete();
+        //$unit = Unit::findOrFail($request->id);
+        //$unit->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

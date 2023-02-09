@@ -146,7 +146,7 @@ class CategoryController extends Controller
 
     public function delete(Category $unit, Request $request)
     {
-        Category::findOrFail($request->id)->delete();
+        //Category::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

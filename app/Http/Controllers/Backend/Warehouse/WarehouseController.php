@@ -144,7 +144,7 @@ class WarehouseController extends Controller
     
     public function delete(Warehouse $Warehouse, Request $request)
     {
-        Warehouse::findOrFail($request->id)->delete();
+        //Warehouse::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

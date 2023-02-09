@@ -39,8 +39,10 @@ use App\Traits\Backend\Pos\Create\StoreDataFromSellCartTrait;
 use App\Traits\Backend\Product\Request\ProductValidationTrait;
 use App\Traits\Backend\Sell\Edit\SellEditAddToCartProcessTrait;
 
+use App\Traits\Backend\Sell\Edit\SellUpdateDataFromSellEditCartTrait;
 class EditPosController extends Controller
 {
+    use SellUpdateDataFromSellEditCartTrait;
     use SellEditAddToCartProcessTrait;
 
     /**
@@ -79,19 +81,7 @@ class EditPosController extends Controller
      */
     public function create()
     {
-        // first time default sell session create
-        firstTimeDefaultMasterSellSessionCreate_hh();
-
-        $data['customers']      = Customer::latest()->get();
-        $data['references']     = Reference::latest()->get();
-
-        $data['categories']     = Category::latest()->get();
-        $data['allproducts']    = Product::select('name','id')->latest()->get();
-        $data['products']       = Product::select('name','id','photo','available_base_stock')
-                                ->latest()
-                                ->paginate(21);
-        return view('backend.sell.pos.landing.create_pos',$data);
-        return view('backend.sell.pos.zdesign.design_single_product',$data);
+        
     }
 
     /**
@@ -127,8 +117,8 @@ class EditPosController extends Controller
         $data['productStock'] = $product->productStockWithActivePriceByProductStockIdNORWhereStatusIsActiveWhenCreateSale($dafault->id);
         //default product stocks price
 
-        //$data['sell_invoice_id'] = session()->get('sell_invoice_id');
-        //$data['edit_sell_cart_invoice_id'] = session()->get('edit_sell_cart_invoice_id');
+        //$data['sell_invoice_id'] = session()->get('sell_invoice_id_for_edit');
+        //$data['edit_sell_cart_invoice_id'] = session()->get('edit_sell_cart_invoice_id_for_edit');
         
         $view = view('backend.sell.edit.ajax-response.single-product.single_product',$data)->render();
         $stock = view('backend.sell.edit.ajax-response.single-product.include.product_stock',$data)->render();
@@ -178,8 +168,7 @@ class EditPosController extends Controller
      */
     public function store(Request $request)
     {
-        session()->get('sell_invoice_id');
-        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
 
         $this->requestAllCartData = $request;
         $this->insetingDataInTheEditSellCartWhenSellEdit();
@@ -203,7 +192,7 @@ class EditPosController extends Controller
      */
     public function displaySellEditCreateAddedToCartProductList(Request $request)
     {
-        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
         $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
         $list = view('backend.sell.edit.ajax-response.landing.added-to-cart.list',compact('sellEditCart'))->render();
         return response()->json([
@@ -220,8 +209,8 @@ class EditPosController extends Controller
         $this->cartName   = sellCreateCartInvoiceSummerySessionName_hh();//"SellCartInvoiceSummery";
         $this->requestAllCartData = $request;
         $this->sellEditCartInvoiceSummery();
-        $cartName           = [];
-        $cartName           = session()->has($this->cartName) ? session()->get($this->cartName)  : [];
+        $cartName     = [];
+        $cartName     = session()->has($this->cartName) ? session()->get($this->cartName)  : [];
         return $cartName;
         return response()->json([
             'status'    => true,
@@ -265,7 +254,7 @@ class EditPosController extends Controller
     {
         $this->requestAllCartData = $request;
         $this->removeSingleItemFromSellEditCreateAddedToCartList();
-        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
         $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
         $list = view('backend.sell.edit.ajax-response.landing.added-to-cart.list',compact('sellEditCart'))->render();
         return response()->json([
@@ -315,7 +304,7 @@ class EditPosController extends Controller
     {
         $this->requestAllCartData = $request;
         $this->whenChangingQuantityFromSellEditCartList();
-        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
         $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
         $list = view('backend.sell.edit.ajax-response.landing.added-to-cart.list',compact('sellEditCart'))->render();
         return response()->json([
@@ -344,11 +333,11 @@ class EditPosController extends Controller
     //payment mmodal open with customer information and invoice information
     public function paymentModalOpen(Request $request)
     {
-        //sellCreateCartSessionName_hh();
-        $sellInvoiceSummeryCartName = sellCreateCartInvoiceSummerySessionName_hh();
-        $sellInvoiceSummeryCart = [];
-        $sellInvoiceSummeryCart = session()->has($sellInvoiceSummeryCartName) ? session()->get($sellInvoiceSummeryCartName)  : [];
-        $data['totalPayableAmount'] = $sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'];
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
+
+        $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
+
+        $data['totalPayableAmount'] = $sellEditCart->total_payable_amount;
         
         $data['customer'] = Customer::findOrFail($request->customer_id);
         $data['reference'] = $request->reference_id;
@@ -387,26 +376,35 @@ class EditPosController extends Controller
     }
     /*======================================================= */
     // store sell and quotation data from sell cart (pos)
-    public function storeDataFromSellCart(Request $request)
+    public function storeDataFromSellEditCart(Request $request)
     {   
         DB::beginTransaction();
         try {
-            $this->sellCreateFormData = $request;
-            $sellLastId = $this->storeSessionDataFromSellCart();  
-            $sellNormalPrintUrl = route('admin.sell.edit.regular.normal.print.from.sell.edit.list',$sellLastId); 
+            //$this->sellCreateFormData = $request;
+
+            $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
+            $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
+            
+            $sellType = session()->get('sell_type_for_edit');
+            $this->updateSellRelatedDataForEditCart($sellType,$sellEditCart->sell_invoice_no);
+            
+            //$sellNormalPrintUrl = route('admin.sell.edit.regular.normal.print.from.sell.edit.list',$sellLastId); 
             DB::commit();
             
-            session([sellCreateCartSessionName_hh() => []]);
-            session([sellCreateCartInvoiceSummerySessionName_hh() => []]);
-            session([sellCreateCartShippingAddressSessionName_hh() => []]);
-
-            $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
-            $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
+            session()->put('sellInvoice_for_edit',NULL);
+            session()->put('total_edit_count_for_edit',NULL);
+            session()->put('total_return_count_for_edit',NULL);
+            session()->put('total_delivered_count_for_edit',NULL);
+    
+            session()->put('sell_invoice_id_for_edit',NULL);
+            session()->put('edit_sell_cart_invoice_id_for_edit',NULL);
+            session()->put('sell_type_for_edit',NULL);
+            
             $list = view('backend.sell.pos.ajax-response.landing.added-to-cart.list',compact('sellEditCart'))->render();
             return response()->json([
                 'status'    => true,
                 'list'      => $list,
-                'normalPrintUrl'=> $sellNormalPrintUrl,
+                'normalPrintUrl'=> '',//$sellNormalPrintUrl,
                 'message'   => "Action submited successfully!",
                 'type'      => 'success'
             ]);

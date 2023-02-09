@@ -55,7 +55,9 @@
                         {{$product}}
                     </td> 
                     <td style="background-color: #ebebeb;text-align: center;">
+                        <span style="cursor:pointer;" class="singleProductStockHistoryShowModal" data-id="{{$item->id}}">
                         {{ $item->total_product_stock_with_remaining_delivery }}
+                        </span>
                     </td>
                     <td style="background-color: #ebebeb;text-align: center;">
                         {{ $item->total_product_stock_ready_for_delivery }}

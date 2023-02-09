@@ -6,50 +6,19 @@ use App\Models\Backend\CartSell\EditSellCartProduct;
 use App\Models\Backend\CartSell\EditSellCartProductStock;
 use App\Traits\Backend\Customer\Shipping\ShippingAddressTrait;
 
+use App\Traits\Backend\Sell\Edit\SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
 /**
  *  trait
  * 
  */
 trait SellEditAddToCartProcessTrait
 {
+    use SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
     use ShippingAddressTrait;
 
     protected $requestAllCartData;
     protected $cartName;
-    protected $product_id;
-    protected $product_name;
-    protected $custom_code;
 
-    protected $changeType;
-    protected $discountType;
-    protected $discountValue;
-    protected $discountAmount;
-    protected $totalSellingQuantity;
-    protected $mainProductStockQuantity;
-    protected $otherProductStockQuantityPurchasePrice;
-    protected $mainProductStockQuantityPurchasePrice;
-    protected $totalPurchasePriceOfAllQuantity;
-    protected $changingQuantity;
-
-
-    protected $saleDetails;
-    protected $singleCartId;
-    protected $available_status;
-    protected $saleUnitPrice;
-    protected $sale_unit_price;
-    protected $sale_quantity;
-    protected $sale_return_quantity;
-
-    protected $identityNumber;
-    protected $sale_from_stock_id;
-    protected $sale_type_id;
-    protected $sale_unit_id;
-    protected $purchase_price;
-    protected $sub_total;
-    protected $selling_unit_name;
-    protected $price_cat_id;
-
-   
 
     //adding to sell cart [session:SellCreateAddToCart]
     protected function insetingDataInTheEditSellCartWhenSellEdit()
@@ -89,8 +58,8 @@ trait SellEditAddToCartProcessTrait
         $mainProductStockQuantityPurchasePrice  = $mainProductStockQuantity * $this->requestAllCartData['purchase_price'];
         $totalPurchasePriceOfAllQuantity  = $mainProductStockQuantityPurchasePrice + $otherProductStockQuantityPurchasePrice;
 
-        $sell_invoice_id = session()->get('sell_invoice_id');
-        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
+        $sell_invoice_id = session()->get('sell_invoice_id_for_edit');
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
 
         $editSellCartInvoice = EditSellCartInvoice::where('sell_invoice_id',$sell_invoice_id)->first();
         $editSellCartProduct = EditSellCartProduct::where('sell_invoice_id',$sell_invoice_id)->where('branch_id',authBranch_hh())->where('product_id',$product_id)->where('status',1)->first();
@@ -105,6 +74,10 @@ trait SellEditAddToCartProcessTrait
                 $totalPurchasePriceOfAllQuantity,$mainProductStockQuantity
             );  
         }//end else
+
+        //update in the edit sell cart product table after added to cart
+        $this->updateSellEditCartProductCalculation($editSellCartProduct->id);
+        $this->updateSellEditCartInvoiceCalculation($editSellCartInvoice->id);
         return true;
     }
 
@@ -273,184 +246,191 @@ trait SellEditAddToCartProcessTrait
     //-----------------------------------------------------------------------------------------------------
     
     //good working..
-    private function insertOrUpdateDataInTheEditSellCartProductStockTable($editSellCartProduct){
-        
-        //if more quantity from others product stock equal to 1
-        if($this->requestAllCartData['more_quantity_from_others_product_stock'] == 1)
-        {
-            if(count($this->requestAllCartData['product_stock_id']) > 0)
+    //-----------------------------------------------------------------------------------------------------
+        private function insertOrUpdateDataInTheEditSellCartProductStockTable($editSellCartProduct){
+            
+            //if more quantity from others product stock equal to 1
+            if($this->requestAllCartData['more_quantity_from_others_product_stock'] == 1)
             {
-                foreach($this->requestAllCartData['product_stock_id'] as $productStockId)
+                if(count($this->requestAllCartData['product_stock_id']) > 0)
                 {
-                    $qtyOfCurrentStock = $this->requestAllCartData['product_stock_quantity_'.$productStockId] ;  
-                    $currentPurchasePrice = $this->requestAllCartData['product_stock_quantity_purchase_price_'.$productStockId] ;  
-                    $process_duration = $this->requestAllCartData['over_stock_quantity_process_duration_'.$productStockId] ;  
-                    $this->insertOrUpdateNewDataInTheEditSellCartProductStockTable($this->requestAllCartData,$editSellCartProduct,$productStockId,
-                        $qtyOfCurrentStock,$currentPurchasePrice
-                    );
+                    foreach($this->requestAllCartData['product_stock_id'] as $productStockId)
+                    {
+                        $qtyOfCurrentStock = $this->requestAllCartData['product_stock_quantity_'.$productStockId] ;  
+                        $currentPurchasePrice = $this->requestAllCartData['product_stock_quantity_purchase_price_'.$productStockId] ;  
+                        $process_duration = $this->requestAllCartData['over_stock_quantity_process_duration_'.$productStockId] ;  
+                        $this->insertOrUpdateNewDataInTheEditSellCartProductStockTable($this->requestAllCartData,$editSellCartProduct,$productStockId,
+                            $qtyOfCurrentStock,$currentPurchasePrice
+                        );
+                    }
                 }
-            }
-        }else{
-            //$mainProductStockQuantity  = $this->requestAllCartData['final_sell_quantity'];
-            $this->insertOrUpdateNewDataInTheEditSellCartProductStockTable($this->requestAllCartData,$editSellCartProduct,
-                $this->requestAllCartData['selling_main_product_stock_id'],
-                $this->requestAllCartData['final_sell_quantity'],$this->requestAllCartData['purchase_price']
-            );
-        }
-    }    
-    private function insertOrUpdateNewDataInTheEditSellCartProductStockTable($cart,object $editSellCartProduct,
-        $product_stock_id,$qty,$purchase_price
-    ){
-
-        $existingEditSellCartProductStock = EditSellCartProductStock::where('product_id',$editSellCartProduct->product_id)
-        ->where('product_stock_id',$product_stock_id)->where('edit_sell_cart_product_id',$editSellCartProduct->id)->where('status',1)->first();
-        //if existing product stock id == new product stock id, then update
-        if($existingEditSellCartProductStock){
-            //$editSellCartProductStock =  EditSellCartProductStock::where('');
-            //$existingEditSellCartProductStock->branch_id = authBranch_hh();
-            //$existingEditSellCartProductStock->edit_sell_cart_invoice_id  = $editSellCartProduct->edit_sell_cart_invoice_id;
-            //$existingEditSellCartProductStock->edit_sell_cart_product_id  = $editSellCartProduct->id;
-            //$existingEditSellCartProductStock->sell_invoice_id  = $editSellCartProduct->sell_invoice_id;
-            //$existingEditSellCartProductStock->sell_invoice_no  = $editSellCartProduct->sell_invoice_no;
-
-            //$existingEditSellCartProductStock->sell_product_id  = NULL;
-            //$existingEditSellCartProductStock->product_id  = $editSellCartProduct->product_id;
-
-            /* $pStock = productStockByProductStockId_hh($product_stock_id);
-            $stockId = regularStockId_hh();
-            if($pStock)
-            {
-                $availableBaseStock = $pStock->available_base_stock;
-                $stockId = $pStock->stock_id;
             }else{
-                $availableBaseStock = 0;
-            } */
-            //stock id 
-            //$existingEditSellCartProductStock->stock_id = $stockId;
-            //$existingEditSellCartProductStock->product_stock_id  = $product_stock_id;
-
-            $totalSoldPrice = $cart['final_sell_price'] * $qty;
-            $totalPurchasePrice = $purchase_price * $qty ;
-            $existingEditSellCartProductStock->mrp_price  = $cart['mrp_price'];
-            $existingEditSellCartProductStock->regular_sell_price  = $cart['sell_price'];
-            $existingEditSellCartProductStock->sold_price  = $cart['final_sell_price'];
-            $existingEditSellCartProductStock->purchase_price  = $purchase_price ;
-
-            $existingEditSellCartProductStock->total_quantity  = $qty;
-            
-            $existingEditSellCartProductStock->total_profit  = $totalSoldPrice - $totalPurchasePrice;;
-            $existingEditSellCartProductStock->total_delivered_qty  = 0;
-
-                //when insert in the  SellProductStock table from cart to final,
-            //$existingEditSellCartProductStock->reduced_base_stock_remaining_delivery  = $sellProductStock->reduced_base_stock_remaining_delivery;
-            //$existingEditSellCartProductStock->reduceable_delivered_qty  = $sellProductStock->reduceable_delivered_qty;
-            //$existingEditSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
-            //$existingEditSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
-            //$existingEditSellCartProductStock->remaining_delivery_unreduced_qty_date  = $sellProductStock->remaining_delivery_unreduced_qty_date;
-
-            $existingEditSellCartProductStock->created_by = authId_hh();
-
-            //when insert in the  SellProductStock table from cart to final,
-            $existingEditSellCartProductStock->sell_cart = json_encode([
-                'product_id' => $cart['product_id'],
-                'product_stock_id' => $product_stock_id,
-                'total_sell_qty' => $qty,
-                "total_quantity" => $qty,
-                'mrp_price' =>$cart['mrp_price'] ,
-                'regular_sell_price' => $cart['sell_price'],
-                'sold_price' => $cart['final_sell_price'],
-                'total_selling_amount' => $totalSoldPrice,
-                'total_sold_amount' => $totalSoldPrice,
-                'purchase_price' => $cart['purchase_price'],         
-                'total_purchase_amount' => $totalPurchasePrice,
-                'total_selling_purchase_amount' => $totalPurchasePrice,
-                'total_selling_profit' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
-                'total_profit_from_product' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
-                'total_profit' =>  number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
-                //when insert in the  SellProductStock table from cart to final,
-                'total_delivered_qty' => 0,
-                'remaining_delivery_qty' => 0,
-                'reduced_base_stock_remaining_delivery' =>  0,
-                'remaining_delivery_unreduced_qty' => 0,
-                'remaining_delivery_unreduced_qty_date' =>  0,
-            ]);
-            $existingEditSellCartProductStock->save();
-            return $existingEditSellCartProductStock;
-        }
-        //if not match with existing product stock id, then add new
-        else{
-            $editSellCartProductStock = new EditSellCartProductStock();
-            $editSellCartProductStock->branch_id = authBranch_hh();
-            $editSellCartProductStock->edit_sell_cart_invoice_id  = $editSellCartProduct->edit_sell_cart_invoice_id;
-            $editSellCartProductStock->edit_sell_cart_product_id  = $editSellCartProduct->id;
-            $editSellCartProductStock->sell_invoice_id  = $editSellCartProduct->sell_invoice_id;
-            $editSellCartProductStock->sell_invoice_no  = $editSellCartProduct->sell_invoice_no;
-
-            $editSellCartProductStock->sell_product_id  = NULL;
-            $editSellCartProductStock->product_id  = $editSellCartProduct->product_id;
-
-            $pStock = productStockByProductStockId_hh($product_stock_id);
-            $stockId = regularStockId_hh();
-            if($pStock)
-            {
-                $availableBaseStock = $pStock->available_base_stock;
-                $stockId = $pStock->stock_id;
-            }else{
-                $availableBaseStock = 0;
+                //$mainProductStockQuantity  = $this->requestAllCartData['final_sell_quantity'];
+                $this->insertOrUpdateNewDataInTheEditSellCartProductStockTable($this->requestAllCartData,$editSellCartProduct,
+                    $this->requestAllCartData['selling_main_product_stock_id'],
+                    $this->requestAllCartData['final_sell_quantity'],$this->requestAllCartData['purchase_price']
+                );
             }
-            //stock id 
-            $editSellCartProductStock->stock_id = $stockId;
-            $editSellCartProductStock->product_stock_id  = $product_stock_id;
+        }    
+        private function insertOrUpdateNewDataInTheEditSellCartProductStockTable($cart,object $editSellCartProduct,
+            $product_stock_id,$qty,$purchase_price
+        ){
 
-            $totalSoldPrice = $cart['final_sell_price'] * $qty;
-            $totalPurchasePrice = $purchase_price * $qty ;
-            $editSellCartProductStock->mrp_price  = $cart['mrp_price'];
-            $editSellCartProductStock->regular_sell_price  = $cart['sell_price'];
-            $editSellCartProductStock->sold_price  = $cart['final_sell_price'];
-            $editSellCartProductStock->purchase_price  = $purchase_price ;
+            $existingEditSellCartProductStock = EditSellCartProductStock::where('product_id',$editSellCartProduct->product_id)
+            ->where('product_stock_id',$product_stock_id)->where('edit_sell_cart_product_id',$editSellCartProduct->id)->where('status',1)->first();
+            //if existing product stock id == new product stock id, then update
+            if($existingEditSellCartProductStock){
+                //$editSellCartProductStock =  EditSellCartProductStock::where('');
+                //$existingEditSellCartProductStock->branch_id = authBranch_hh();
+                //$existingEditSellCartProductStock->edit_sell_cart_invoice_id  = $editSellCartProduct->edit_sell_cart_invoice_id;
+                //$existingEditSellCartProductStock->edit_sell_cart_product_id  = $editSellCartProduct->id;
+                //$existingEditSellCartProductStock->sell_invoice_id  = $editSellCartProduct->sell_invoice_id;
+                //$existingEditSellCartProductStock->sell_invoice_no  = $editSellCartProduct->sell_invoice_no;
 
-            $editSellCartProductStock->total_quantity  = $qty;
-            
-            $editSellCartProductStock->total_profit  = $totalSoldPrice - $totalPurchasePrice;;
-            //$editSellCartProductStock->total_delivered_qty  = 0;
+                //$existingEditSellCartProductStock->sell_product_id  = NULL;
+                //$existingEditSellCartProductStock->product_id  = $editSellCartProduct->product_id;
+
+                /* $pStock = productStockByProductStockId_hh($product_stock_id);
+                $stockId = regularStockId_hh();
+                if($pStock)
+                {
+                    $availableBaseStock = $pStock->available_base_stock;
+                    $stockId = $pStock->stock_id;
+                }else{
+                    $availableBaseStock = 0;
+                } */
+                //stock id 
+                //$existingEditSellCartProductStock->stock_id = $stockId;
+                //$existingEditSellCartProductStock->product_stock_id  = $product_stock_id;
+
+                $totalSoldPrice = $cart['final_sell_price'] * $qty;
+                $totalPurchasePrice = $purchase_price * $qty ;
+                $existingEditSellCartProductStock->mrp_price  = $cart['mrp_price'];
+                $existingEditSellCartProductStock->regular_sell_price  = $cart['sell_price'];
+                $existingEditSellCartProductStock->sold_price  = $cart['final_sell_price'];
+                $existingEditSellCartProductStock->purchase_price  = $purchase_price ;
+
+                $existingEditSellCartProductStock->total_quantity  = $qty;
+
+                $existingEditSellCartProductStock->total_sold_amount  = $totalSoldPrice ;
+                $existingEditSellCartProductStock->total_purchase_amount  = $totalPurchasePrice ;
+
+                $existingEditSellCartProductStock->total_profit  = $totalSoldPrice - $totalPurchasePrice;;
+                $existingEditSellCartProductStock->total_delivered_qty  = 0;
+
+                    //when insert in the  SellProductStock table from cart to final,
+                //$existingEditSellCartProductStock->reduced_base_stock_remaining_delivery  = $sellProductStock->reduced_base_stock_remaining_delivery;
+                //$existingEditSellCartProductStock->reduceable_delivered_qty  = $sellProductStock->reduceable_delivered_qty;
+                //$existingEditSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
+                //$existingEditSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
+                //$existingEditSellCartProductStock->remaining_delivery_unreduced_qty_date  = $sellProductStock->remaining_delivery_unreduced_qty_date;
+
+                $existingEditSellCartProductStock->created_by = authId_hh();
 
                 //when insert in the  SellProductStock table from cart to final,
-            //$editSellCartProductStock->reduced_base_stock_remaining_delivery  = $sellProductStock->reduced_base_stock_remaining_delivery;
-            //$editSellCartProductStock->reduceable_delivered_qty  = $sellProductStock->reduceable_delivered_qty;
-            //$editSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
-            //$editSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
-            //$editSellCartProductStock->remaining_delivery_unreduced_qty_date  = $sellProductStock->remaining_delivery_unreduced_qty_date;
+                $existingEditSellCartProductStock->sell_cart = json_encode([
+                    'product_id' => $cart['product_id'],
+                    'product_stock_id' => $product_stock_id,
+                    'total_sell_qty' => $qty,
+                    "total_quantity" => $qty,
+                    'mrp_price' =>$cart['mrp_price'] ,
+                    'regular_sell_price' => $cart['sell_price'],
+                    'sold_price' => $cart['final_sell_price'],
+                    'total_selling_amount' => $totalSoldPrice,
+                    'total_sold_amount' => $totalSoldPrice,
+                    'purchase_price' => $cart['purchase_price'],         
+                    'total_purchase_amount' => $totalPurchasePrice,
+                    'total_selling_purchase_amount' => $totalPurchasePrice,
+                    'total_selling_profit' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                    'total_profit_from_product' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                    'total_profit' =>  number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                    //when insert in the  SellProductStock table from cart to final,
+                    'total_delivered_qty' => 0,
+                    'remaining_delivery_qty' => 0,
+                    'reduced_base_stock_remaining_delivery' =>  0,
+                    'remaining_delivery_unreduced_qty' => 0,
+                    'remaining_delivery_unreduced_qty_date' =>  0,
+                ]);
+                $existingEditSellCartProductStock->save();
+                return $existingEditSellCartProductStock;
+            }
+            //if not match with existing product stock id, then add new
+            else{
+                $editSellCartProductStock = new EditSellCartProductStock();
+                $editSellCartProductStock->branch_id = authBranch_hh();
+                $editSellCartProductStock->edit_sell_cart_invoice_id  = $editSellCartProduct->edit_sell_cart_invoice_id;
+                $editSellCartProductStock->edit_sell_cart_product_id  = $editSellCartProduct->id;
+                $editSellCartProductStock->sell_invoice_id  = $editSellCartProduct->sell_invoice_id;
+                $editSellCartProductStock->sell_invoice_no  = $editSellCartProduct->sell_invoice_no;
 
-            $editSellCartProductStock->created_by = authId_hh();
+                $editSellCartProductStock->sell_product_id  = NULL;
+                $editSellCartProductStock->product_id  = $editSellCartProduct->product_id;
 
-            //when insert in the  SellProductStock table from cart to final,
-            $editSellCartProductStock->sell_cart = json_encode([
-                'product_id' => $cart['product_id'],
-                'product_stock_id' => $product_stock_id,
-                'total_sell_qty' => $qty,
-                "total_quantity" => $qty,
-                'mrp_price' =>$cart['mrp_price'] ,
-                'regular_sell_price' => $cart['sell_price'],
-                'sold_price' => $cart['final_sell_price'],
-                'total_selling_amount' => $totalSoldPrice,
-                'total_sold_amount' => $totalSoldPrice,
-                'purchase_price' => $cart['purchase_price'],         
-                'total_purchase_amount' => $totalPurchasePrice,
-                'total_selling_purchase_amount' => $totalPurchasePrice,
-                'total_selling_profit' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
-                'total_profit_from_product' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
-                'total_profit' =>  number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                $pStock = productStockByProductStockId_hh($product_stock_id);
+                $stockId = regularStockId_hh();
+                if($pStock)
+                {
+                    $availableBaseStock = $pStock->available_base_stock;
+                    $stockId = $pStock->stock_id;
+                }else{
+                    $availableBaseStock = 0;
+                }
+                //stock id 
+                $editSellCartProductStock->stock_id = $stockId;
+                $editSellCartProductStock->product_stock_id  = $product_stock_id;
+
+                $totalSoldPrice = $cart['final_sell_price'] * $qty;
+                $totalPurchasePrice = $purchase_price * $qty ;
+                $editSellCartProductStock->mrp_price  = $cart['mrp_price'];
+                $editSellCartProductStock->regular_sell_price  = $cart['sell_price'];
+                $editSellCartProductStock->sold_price  = $cart['final_sell_price'];
+                $editSellCartProductStock->purchase_price  = $purchase_price ;
+
+                $editSellCartProductStock->total_quantity  = $qty;
+
+                $editSellCartProductStock->total_sold_amount  = $totalSoldPrice ;
+                $editSellCartProductStock->total_purchase_amount  = $totalPurchasePrice ;
+                
+                $editSellCartProductStock->total_profit  = $totalSoldPrice - $totalPurchasePrice;;
+                //$editSellCartProductStock->total_delivered_qty  = 0;
+
+                    //when insert in the  SellProductStock table from cart to final,
+                //$editSellCartProductStock->reduced_base_stock_remaining_delivery  = $sellProductStock->reduced_base_stock_remaining_delivery;
+                //$editSellCartProductStock->reduceable_delivered_qty  = $sellProductStock->reduceable_delivered_qty;
+                //$editSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
+                //$editSellCartProductStock->remaining_delivery_unreduced_qty  = $sellProductStock->remaining_delivery_unreduced_qty;
+                //$editSellCartProductStock->remaining_delivery_unreduced_qty_date  = $sellProductStock->remaining_delivery_unreduced_qty_date;
+
+                $editSellCartProductStock->created_by = authId_hh();
+
                 //when insert in the  SellProductStock table from cart to final,
-                'total_delivered_qty' => 0,
-                'remaining_delivery_qty' => 0,
-                'reduced_base_stock_remaining_delivery' =>  0,
-                'remaining_delivery_unreduced_qty' => 0,
-                'remaining_delivery_unreduced_qty_date' =>  0,
-            ]);
-            $editSellCartProductStock->save();
-            return $editSellCartProductStock;
+                $editSellCartProductStock->sell_cart = json_encode([
+                    'product_id' => $cart['product_id'],
+                    'product_stock_id' => $product_stock_id,
+                    'total_sell_qty' => $qty,
+                    "total_quantity" => $qty,
+                    'mrp_price' =>$cart['mrp_price'] ,
+                    'regular_sell_price' => $cart['sell_price'],
+                    'sold_price' => $cart['final_sell_price'],
+                    'total_selling_amount' => $totalSoldPrice,
+                    'total_sold_amount' => $totalSoldPrice,
+                    'purchase_price' => $cart['purchase_price'],         
+                    'total_purchase_amount' => $totalPurchasePrice,
+                    'total_selling_purchase_amount' => $totalPurchasePrice,
+                    'total_selling_profit' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                    'total_profit_from_product' => number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                    'total_profit' =>  number_format($totalSoldPrice - $totalPurchasePrice,2,'.',''),
+                    //when insert in the  SellProductStock table from cart to final,
+                    'total_delivered_qty' => 0,
+                    'remaining_delivery_qty' => 0,
+                    'reduced_base_stock_remaining_delivery' =>  0,
+                    'remaining_delivery_unreduced_qty' => 0,
+                    'remaining_delivery_unreduced_qty_date' =>  0,
+                ]);
+                $editSellCartProductStock->save();
+                return $editSellCartProductStock;
+            }
         }
-    }
     //-----------------------------------------------------------------------------------------------------
 
 
@@ -461,8 +441,8 @@ trait SellEditAddToCartProcessTrait
      * @return boolean
      */
     public function removeSingleItemFromSellEditCreateAddedToCartList() : bool {
-        $this->requestAllCartData['remove_edit_sell_cart_product_stock_id'];
-        $this->requestAllCartData['remove_edit_sell_cart_product_id'];
+        //$this->requestAllCartData['remove_edit_sell_cart_product_stock_id'];
+        //$this->requestAllCartData['remove_edit_sell_cart_product_id'];
         //if edit sell cart product stock id is found
         if(isset($this->requestAllCartData['remove_edit_sell_cart_product_stock_id'])){
             $data = EditSellCartProductStock::find($this->requestAllCartData['remove_edit_sell_cart_product_stock_id']);
@@ -478,6 +458,9 @@ trait SellEditAddToCartProcessTrait
                         $editSellCartSingleProduct->save();
                     }
                 }
+                //update in the edit sell cart product table after added to cart
+                $this->updateSellEditCartProductCalculation($data->edit_sell_cart_product_id);
+                $this->updateSellEditCartInvoiceCalculation($data->edit_sell_cart_invoice_id);
             }
         }
         //if edit sell cart product id is found
@@ -487,8 +470,12 @@ trait SellEditAddToCartProcessTrait
                 $data->editSellCartProductStocks()->update(['status'=>2]);
                 $data->status = 2;
                 $data->save();
+                //update in the edit sell cart product table after added to cart
+                $this->updateSellEditCartProductCalculation($this->requestAllCartData['remove_edit_sell_cart_product_id']);
+                $this->updateSellEditCartInvoiceCalculation($data->edit_sell_cart_invoice_id);
             }
         }
+
         return true;
     }//*Remove Single item From  Cart Working Properly
 
@@ -501,27 +488,34 @@ trait SellEditAddToCartProcessTrait
      */
     public function removeAllItemFromSellEditCreateAddedToCartList() :bool
     {
-        $sell_invoice_id = session()->get('sell_invoice_id');
-        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id');
+        $sell_invoice_id = session()->get('sell_invoice_id_for_edit');
+        $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
 
         $editSellCartInvoice = EditSellCartInvoice::where('id',$edit_sell_cart_invoice_id)->first();
         $editSellCartInvoice->editSellCartAllProducts()->delete();
         $editSellCartInvoice->editSellCartAllProductsStock()->delete();
         $editSellCartInvoice->delete();
-        session()->put('sell_invoice_id',NULL);
-        session()->put('edit_sell_cart_invoice_id',NULL);
-        session()->put('sell_type',NULL);
+
+        session()->put('sellInvoice_for_edit',NULL);
+        session()->put('total_edit_count_for_edit',NULL);
+        session()->put('total_return_count_for_edit',NULL);
+        session()->put('total_delivered_count_for_edit',NULL);
+
+        session()->put('sell_invoice_id_for_edit',NULL);
+        session()->put('edit_sell_cart_invoice_id_for_edit',NULL);
+        session()->put('sell_type_for_edit',NULL);
         return true;
     }/*Remove All item From Cart Working Properly*/
 
 
     /*When changing quantity*/
-    public function whenChangingQuantityFromSellEditCartList()
+    /**
+     * changing quantity function
+     * from this method, we can change quantity from added cart list
+     * @return object
+     */
+    public function whenChangingQuantityFromSellEditCartList() : object
     {   
-        //never minus below 1,
-        //add more , no problem, 
-        //change total qty, and calculation
-
         $edit_sell_cart_product_stock_id  = $this->requestAllCartData['edit_sell_cart_product_stock_id'];
         $changeType = $this->requestAllCartData['change_type'];
         $changingQuantity = $this->requestAllCartData['quantity'];
@@ -550,9 +544,16 @@ trait SellEditAddToCartProcessTrait
         //$existingEditSellCartProductStock->regular_sell_price  = $cart['sell_price'];
         //$existingEditSellCartProductStock->sold_price  = $cart['final_sell_price'];
         //$existingEditSellCartProductStock->purchase_price  = $purchase_price ;
+
+        $existingEditSellCartProductStock->total_sold_amount  = $totalSoldPrice ;
+        $existingEditSellCartProductStock->total_purchase_amount  = $totalPurchasePrice ;
         
         $existingEditSellCartProductStock->total_profit  = $totalSoldPrice - $totalPurchasePrice;
         $existingEditSellCartProductStock->save();
+
+        //update in the edit sell cart product table after added to cart
+        $this->updateSellEditCartProductCalculation($existingEditSellCartProductStock->edit_sell_cart_product_id);
+        $this->updateSellEditCartInvoiceCalculation($existingEditSellCartProductStock->edit_sell_cart_invoice_id);
         return $existingEditSellCartProductStock;
     } /*When changing quantity*/
 

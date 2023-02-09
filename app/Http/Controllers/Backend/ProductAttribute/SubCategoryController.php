@@ -149,7 +149,7 @@ class SubCategoryController extends Controller
     
     public function delete(Category $unit, Request $request)
     {
-        SubCategory::findOrFail($request->id)->delete();
+        //SubCategory::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',

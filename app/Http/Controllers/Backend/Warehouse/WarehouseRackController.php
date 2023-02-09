@@ -144,7 +144,7 @@ class WarehouseRackController extends Controller
 
     public function delete(WarehouseRack $WarehouseRack, Request $request)
     {
-        WarehouseRack::findOrFail($request->id)->delete();
+        //WarehouseRack::findOrFail($request->id)->delete();
         return response()->json([
             'status' => true,
             'type' => 'success',
