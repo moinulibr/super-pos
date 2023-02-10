@@ -52,7 +52,9 @@
                                 $product = $product ."...";
                             }
                         @endphp
+                        <span style="cursor:pointer;" class="singleProductStockHistoryShowModal" data-id="{{$item->id}}">
                         {{$product}}
+                        </span>
                     </td> 
                     <td style="background-color: #ebebeb;text-align: center;">
                         <span style="cursor:pointer;" class="singleProductStockHistoryShowModal" data-id="{{$item->id}}">

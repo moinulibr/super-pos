@@ -76,7 +76,9 @@ trait SellEditAddToCartProcessTrait
         }//end else
 
         //update in the edit sell cart product table after added to cart
-        $this->updateSellEditCartProductCalculation($editSellCartProduct->id);
+        if($editSellCartProduct){
+            $this->updateSellEditCartProductCalculation($editSellCartProduct->id);
+        }
         $this->updateSellEditCartInvoiceCalculation($editSellCartInvoice->id);
         return true;
     }

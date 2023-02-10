@@ -49,8 +49,16 @@ trait SellUpdateDataFromSellEditCartTrait
     private $totalPreviousReduceableDeliveredQuantity;
     private $totalPreviousRemainingDeliveryUnreducedQuantity;
 
-
-    protected function updateSellRelatedDataForEditCart(int $sellType, string $invoiceNo){
+    //******************make sure that, when product delete, or qty change, then stock will be change, plus or minus)
+    
+    /**
+     * update sell related data for edit function
+     *
+     * @param integer $sellType
+     * @param string $invoiceNo
+     * @return boolean
+     */
+    protected function updateSellRelatedDataForEditCart(int $sellType, string $invoiceNo):bool{
 
         $this->updateSellProduct($sellType,$invoiceNo);
         //$this->updateSellProductStock($sellType,$invoiceNo);
@@ -68,123 +76,141 @@ trait SellUpdateDataFromSellEditCartTrait
         return true;
         //last of all have to call sellCalculation trait 
     }
-    //update sell product
-    private function updateSellProduct($sellType,$invoiceNo){
 
-        $editSellCartProducts = EditSellCartProduct::where('branch_id',authBranch_hh())->where('sell_invoice_no',$invoiceNo)->get();//->where('status',1)
+    /**
+     * update sell product function
+     *
+     * @param integer $sellType
+     * @param string $invoiceNo
+     * @return boolean
+     */
+    private function updateSellProduct(int $sellType, string $invoiceNo) : bool{
+
+        $editSellCartProducts = EditSellCartProduct::with('editSellCartProductAllStocks')->where('branch_id',authBranch_hh())->where('sell_invoice_no',$invoiceNo)->get();//->where('status',1)
         
         foreach($editSellCartProducts as $editSellProduct){
-            $existingSellProduct = SellProduct::where('product_id',$editSellProduct->product_id)->where('branch_id',authBranch_hh())->where('sell_invoice_id',$editSellProduct->sell_invoice_id)->first();//->where('main_product_stock_id',$editSellProduct->main_product_stock_id)
+            //only not deleted sell product data
+            $existingSellProduct = SellProduct::where('product_id',$editSellProduct->product_id)->where('branch_id',authBranch_hh())->where('sell_invoice_id',$editSellProduct->sell_invoice_id)->whereNull('deleted_at')->first();//->where('main_product_stock_id',$editSellProduct->main_product_stock_id)
             //if this product is exist, then execute 
             if($existingSellProduct){
-                //update sell product stock
-                $this->updateSellProductStock($sellType,$editSellProduct);
-            
-                //sell product table update by this method
-                $this->updateSingleSellProductCalculation($sellType,$existingSellProduct->id);
-            }else{
-                //if this product is not exist, then insert this product first  
-                $newSellProduct = $this->addNewSellProductFromSellEditCart($sellType, $editSellProduct);
-               
-                //update sell product stock
-                $this->updateSellProductStock($sellType,$editSellProduct);
+                //if edit sell product is active
+                if($editSellProduct->status == 1){
 
-                //sell product table update by this method
-                $this->updateSingleSellProductCalculation($sellType,$newSellProduct->id);
+                    //update sell product stock
+                    $this->updateSellProductStock($sellType,$editSellProduct,$existingSellProduct);
+                
+                    //sell product table update by this method
+                    $this->updateSingleSellProductCalculation($sellType,$existingSellProduct->id);
+                }
+                //if edit sell product is delete, then this product and product stock related data
+                //have to delete 
+                else{
+                    //delete sell product stock
+                    $this->deleteSellProductWithProductStock($sellType,$existingSellProduct);
+                }
+            }else{
+                //though this edit sell product is newly added to the cart, and finally its not deleted in the cart..
+                if($editSellProduct->status == 1){
+                    //if this product is not exist, then insert this product first  
+                    $newSellProduct = $this->addNewSellProductFromSellEditCart($sellType, $editSellProduct);
+                   
+                    //update sell product stock
+                    $this->updateSellProductStock($sellType,$editSellProduct,$newSellProduct);
+    
+                    //sell product table update by this method
+                    $this->updateSingleSellProductCalculation($sellType,$newSellProduct->id);
+                }
             }
         }//end foreach
         return true;
     }
 
-    //update sell product stock
-    private function updateSellProductStock(int $sellType, object $editSellProduct){
-        
-        foreach($editSellProduct->editSellCartProductAllStocks as $singleEditSellProductStock){
+
+    /**
+     * update sell product stock function
+     *
+     * @param integer $sellType
+     * @param object $editSellProduct
+     * @param object $sellProduct
+     * @return boolean
+     */
+    private function updateSellProductStock(int $sellType, object $editSellProduct, object $sellProduct) : bool{
+    
+        foreach($editSellProduct->editSellCartProductAllStocks as $editSingleSellProductStock){
             
             $existingSellProductStock = SellProductStock::where('branch_id',authBranch_hh())
-                ->where('stock_id',$singleEditSellProductStock->stock_id)->where('product_stock_id',$singleEditSellProductStock->product_stock_id)->first();
+                //->where('stock_id',$editSingleSellProductStock->stock_id)
+                ->where('product_stock_id',$editSingleSellProductStock->product_stock_id)->whereNull('deleted_at')->first();
             
             //if existing data found in the SellProductStock table
             //update all value which come from sell edit cart
             if($existingSellProductStock){
                 //if this data is not deleted in the cart :- status = 1
-                if($singleEditSellProductStock->status == 1){
+                if($editSingleSellProductStock->status == 1){
                     //update data in the SellProductStock table
-                    $this->updateSellProductStockFromSellEditCart($sellType,$singleEditSellProductStock,$existingSellProductStock);
+                    $this->updateSellProductStockFromSellEditCart($sellType,$editSingleSellProductStock,$existingSellProductStock);
                 }
                 //if this data is deleted in the cart :- status = 2
                 else{
                     //stock refunded process then deleted
-                    //$existingSellProductStock->deleted_at = date('Y-m-d');
-                    //$existingSellProductStock->save();
-                    $this->deleteSellProductStockFromSellEditCart($sellType,$existingSellProductStock);
+                    $this->deleteSellProductStockBasedOnSellEditCart($sellType,$existingSellProductStock);
+                    $existingSellProductStock->deleted_at = date('Y-m-d');
+                    $existingSellProductStock->save();
                 }
             }
             //existing data not found
             //store new data in the SellProductStock table which come from sell edit cart
             else{
-                $this->addNewSellProductStockFromSellEditCart($sellType,$singleEditSellProductStock);
+                //though this item is newly added in the cart, and finally it's not deleted in the cart..
+                if($editSingleSellProductStock->status == 1){
+                    $this->addNewSellProductStockFromSellEditCart($sellType,$editSingleSellProductStock,$sellProduct);
+                }
             }
         }
         return true;
-
-        /* $sellProductStockCarts = EditSellCartProductStock::where('branch_id',authBranch_hh())->where('sell_invoice_no',$invoiceNo)->get();//->where('status',1)
-        $sellProductId = NULL;
-        foreach($sellProductStockCarts as $singleSellProductStockCart){
-
-            $existingSellProductStock = SellProductStock::where('product_id',$singleSellProductStockCart->product_id)->where('branch_id',authBranch_hh())->where('sell_invoice_id',$singleSellProductStockCart->sell_invoice_id)
-                            ->where('stock_id',$singleSellProductStockCart->stock_id)->where('product_stock_id',$singleSellProductStockCart->product_stock_id)->first();
-            
-            //if existing data found in the SellProductStock table
-            //update all value which come from sell edit cart
-            if($existingSellProductStock){
-                //if this data is not deleted in the cart :- status = 1
-                if($singleSellProductStockCart->status == 1){
-                    //update data in the SellProductStock table
-                    $this->updateSellProductStockFromSellEditCart($sellType,$singleSellProductStockCart,$existingSellProductStock);
-                }
-                //if this data is deleted in the cart :- status = 2
-                else{
-                    //stock refunded process then deleted
-                    //$existingSellProductStock->deleted_at = date('Y-m-d');
-                    //$existingSellProductStock->save();
-                    $this->deleteSellProductStockFromSellEditCart($sellType,$existingSellProductStock);
-                }
-                $sellProductId = $existingSellProductStock->sell_product_id;
-            }
-            //existing data not found
-            //store new data in the SellProductStock table which come from sell edit cart
-            else{
-                $newSellProduct = $this->addNewSellProductFromSellEditCart($sellType,$singleSellProductStockCart);
-                $sellProductId = $newSellProduct->id;
-                $this->addNewSellProductStockFromSellEditCart($sellType,$singleSellProductStockCart);
-            }
-
-        }//endforeach
-        return true; */
     }
+
+    /**
+     * delete sell product with product stock function
+     *
+     * @param [type] $sellType
+     * @param object $existingSellProduct
+     * @return object
+     */
+    private function deleteSellProductWithProductStock($sellType,object $existingSellProduct) : object {
+
+        //$existingSellProduct->sellProductStocksAllData()->update(['deleted_at'=>date('Y-m-d h:i:s')]);
+        foreach($existingSellProduct->sellProductStocks as $sellProductStock){
+            $this->deleteSellProductStockBasedOnSellEditCart($sellType,$sellProductStock);
+        }
+        
+        $existingSellProduct->deleted_at = date('Y-m-d h:i:s');
+        $existingSellProduct->save();
+        return $existingSellProduct;
+    }
+
 
     /**
      * update sell product stock from sell edit cart function
      *
      * @param integer $sellType
-     * @param object $singleSellProductStockCart
+     * @param object $editSellCartProductStock
      * @param object $existingSellProductStock
      * @return object
      */
-    private function updateSellProductStockFromSellEditCart(int $sellType = 1,object $singleSellProductStockCart, object $existingSellProductStock) : object {
+    private function updateSellProductStockFromSellEditCart(int $sellType = 1,object $editSellCartProductStock, object $existingSellProductStock) : object {
 
-        $unitId = $singleSellProductStockCart->editSellCartProductOnly ? $singleSellProductStockCart->editSellCartProductOnly->unit_id : NULL; 
+        $unitId = $editSellCartProductStock->editSellCartProductOnly ? $editSellCartProductStock->editSellCartProductOnly->unit_id : NULL; 
         
         $sellProductStock  =  $existingSellProductStock;
         $sellProductStock->branch_id = authBranch_hh();
-        $sellProductStock->sell_invoice_id  = $singleSellProductStockCart->sell_invoice_id;
-        $sellProductStock->sell_product_id  = $singleSellProductStockCart->sell_product_id;
-        $sellProductStock->product_id  = $singleSellProductStockCart->product_id;
-        $sellProductStock->stock_id  = $singleSellProductStockCart->stock_id;
-        $sellProductStock->product_stock_id  = $singleSellProductStockCart->product_stock_id;
+        $sellProductStock->sell_invoice_id  = $editSellCartProductStock->sell_invoice_id;
+        $sellProductStock->sell_product_id  = $editSellCartProductStock->sell_product_id;
+        $sellProductStock->product_id  = $editSellCartProductStock->product_id;
+        $sellProductStock->stock_id  = $editSellCartProductStock->stock_id;
+        $sellProductStock->product_stock_id  = $editSellCartProductStock->product_stock_id;
         
-            $totalQty = $singleSellProductStockCart->total_quantity;
+            $totalQty = $editSellCartProductStock->total_quantity;
 
             $previousTotalQty = $existingSellProductStock->total_quantity;
             $previousTotalReducedBaseStockRemainingDeliveryQty = $existingSellProductStock->reduced_base_stock_remaining_delivery;
@@ -223,17 +249,17 @@ trait SellUpdateDataFromSellEditCartTrait
         }
         
         $sellProductStock->total_sell_qty  = $totalQty;
-        $sellProductStock->mrp_price  = $singleSellProductStockCart->mrp_price;
-        $sellProductStock->regular_sell_price  = $singleSellProductStockCart->regular_sell_price;
-        $sellProductStock->sold_price  = $singleSellProductStockCart->sold_price;
-        $sellProductStock->purchase_price  = $singleSellProductStockCart->purchase_price;
+        $sellProductStock->mrp_price  = $editSellCartProductStock->mrp_price;
+        $sellProductStock->regular_sell_price  = $editSellCartProductStock->regular_sell_price;
+        $sellProductStock->sold_price  = $editSellCartProductStock->sold_price;
+        $sellProductStock->purchase_price  = $editSellCartProductStock->purchase_price;
 
-        $totalSellingAmount = $singleSellProductStockCart->sold_price * $totalQty;
+        $totalSellingAmount = $editSellCartProductStock->sold_price * $totalQty;
         $sellProductStock->total_selling_amount  = $totalSellingAmount;
         //$sellProductStock->total_refunded_amount  = 0;
         $sellProductStock->total_sold_amount  = $totalSellingAmount;
         
-        $totalSellingPurchaseAmount = $singleSellProductStockCart->purchase_price * $totalQty;
+        $totalSellingPurchaseAmount = $editSellCartProductStock->purchase_price * $totalQty;
         $sellProductStock->total_selling_purchase_amount  =  $totalSellingPurchaseAmount;
         //$sellProductStock->total_refunding_purchase_amount  = 0;
         $sellProductStock->total_purchase_amount =  $totalSellingPurchaseAmount;
@@ -312,7 +338,7 @@ trait SellUpdateDataFromSellEditCartTrait
         //if sell_type==1, then reduce stock from product stocks table 
         if($sellType  == 1 && $instantlyProcessedQty > 0){
             $this->stock_id_FSCT = $stockId;
-            $this->product_id_FSCT = $singleSellProductStockCart->product_id;
+            $this->product_id_FSCT = $editSellCartProductStock->product_id;
             $this->stock_quantity_FSCT = $instantlyProcessedQty;
             $this->unit_id_FSCT = $unitId;
             $this->sellingFromPossStockTypeDecrement();
@@ -338,7 +364,7 @@ trait SellUpdateDataFromSellEditCartTrait
             $sellProductStock->delivered_total_qty  = 0;//$totalDeliverdQty;
         }
 
-        $sellProductStock->sell_cart  = $singleSellProductStockCart->sell_cart;
+        $sellProductStock->sell_cart  = $editSellCartProductStock->sell_cart;
         $sellProductStock->created_by = authId_hh();
         $sellProductStock->status = 1;
         $sellProductStock->delivery_status = 1;
@@ -444,6 +470,7 @@ trait SellUpdateDataFromSellEditCartTrait
 
 
     private function addNewSellProductFromSellEditCart(int $sellType, object $singleEditSellProduct) : object {
+        
         $sellProduct = new SellProduct();
         $sellProduct->branch_id = authBranch_hh();
         $sellProduct->sell_invoice_id = $singleEditSellProduct->sell_invoice_id;
@@ -503,33 +530,36 @@ trait SellUpdateDataFromSellEditCartTrait
      * add new SellProductStock data function, which is under updateSellProductStock function
      *
      * @param integer $sellType
-     * @param object $singleSellProductStockCart
+     * @param object $editSellCartProductStock
      * @return boolean
      */
-    private function addNewSellProductStockFromSellEditCart(int $sellType, object $singleSellProductStockCart) : bool {
-        $unitId = $singleSellProductStockCart->editSellCartProductOnly ? $singleSellProductStockCart->editSellCartProductOnly->unit_id : NULL; 
+    private function addNewSellProductStockFromSellEditCart(int $sellType, object $editSellCartProductStock,
+        object $sellProduct) : bool 
+    {
+        
+        $unitId = $editSellCartProductStock->editSellCartProductOnly ? $editSellCartProductStock->editSellCartProductOnly->unit_id : NULL; 
         
         $sellProductStock  =  new SellProductStock();
         $sellProductStock->branch_id = authBranch_hh();
-        $sellProductStock->sell_invoice_id  = $singleSellProductStockCart->sell_invoice_id;
-        $sellProductStock->sell_product_id  = $singleSellProductStockCart->sell_product_id ?? NULL;
-        $sellProductStock->product_id  = $singleSellProductStockCart->product_id;
-        $sellProductStock->stock_id  = $singleSellProductStockCart->stock_id;
-        $sellProductStock->product_stock_id  = $singleSellProductStockCart->product_stock_id;
+        $sellProductStock->sell_invoice_id  = $editSellCartProductStock->sell_invoice_id;
+        $sellProductStock->sell_product_id  = $sellProduct->id;
+        $sellProductStock->product_id  = $editSellCartProductStock->product_id;
+        $sellProductStock->stock_id  = $editSellCartProductStock->stock_id;
+        $sellProductStock->product_stock_id  = $editSellCartProductStock->product_stock_id;
             
-        $totalQty = $singleSellProductStockCart->total_quantity;
+        $totalQty = $editSellCartProductStock->total_quantity;
         $sellProductStock->total_sell_qty  = $totalQty;
-        $sellProductStock->mrp_price  = $singleSellProductStockCart->mrp_price;
-        $sellProductStock->regular_sell_price  = $singleSellProductStockCart->regular_sell_price;
-        $sellProductStock->sold_price  = $singleSellProductStockCart->sold_price;
-        $sellProductStock->purchase_price  = $singleSellProductStockCart->purchase_price;
+        $sellProductStock->mrp_price  = $editSellCartProductStock->mrp_price;
+        $sellProductStock->regular_sell_price  = $editSellCartProductStock->regular_sell_price;
+        $sellProductStock->sold_price  = $editSellCartProductStock->sold_price;
+        $sellProductStock->purchase_price  = $editSellCartProductStock->purchase_price;
 
-        $totalSellingAmount = $singleSellProductStockCart->sold_price * $totalQty;
+        $totalSellingAmount = $editSellCartProductStock->sold_price * $totalQty;
         $sellProductStock->total_selling_amount  = $totalSellingAmount;
         //$sellProductStock->total_refunded_amount  = 0;
         $sellProductStock->total_sold_amount  = $totalSellingAmount;
         
-        $totalSellingPurchaseAmount = $singleSellProductStockCart->purchase_price * $totalQty;
+        $totalSellingPurchaseAmount = $editSellCartProductStock->purchase_price * $totalQty;
         $sellProductStock->total_selling_purchase_amount  =  $totalSellingPurchaseAmount;
         //$sellProductStock->total_refunding_purchase_amount  = 0;
         $sellProductStock->total_purchase_amount =  $totalSellingPurchaseAmount;
@@ -592,7 +622,7 @@ trait SellUpdateDataFromSellEditCartTrait
         //if sell_type==1, then reduce stock from product stocks table 
         if($sellType  == 1 && $instantlyProcessedQty > 0){
             $this->stock_id_FSCT = $stockId;
-            $this->product_id_FSCT = $singleSellProductStockCart->product_id;
+            $this->product_id_FSCT = $editSellCartProductStock->product_id;
             $this->stock_quantity_FSCT = $instantlyProcessedQty;
             $this->unit_id_FSCT = $unitId;//$cart['unit_id'];
             $this->sellingFromPossStockTypeDecrement();
@@ -618,7 +648,7 @@ trait SellUpdateDataFromSellEditCartTrait
             $sellProductStock->delivered_total_qty  = $totalDeliverdQty;
         }
 
-        $sellProductStock->sell_cart  = $singleSellProductStockCart->sell_cart;
+        $sellProductStock->sell_cart  = $editSellCartProductStock->sell_cart;
         $sellProductStock->created_by = authId_hh();
         $sellProductStock->status = 1;
         $sellProductStock->delivery_status = 1;
@@ -633,7 +663,7 @@ trait SellUpdateDataFromSellEditCartTrait
      * @param object $existingSellProductStock
      * @return boolean
      */
-    private function deleteSellProductStockFromSellEditCart(int $sellType, object $existingSellProductStock):bool {
+    private function deleteSellProductStockBasedOnSellEditCart(int $sellType, object $existingSellProductStock):bool {
         /* 
             $previousMrp = $existingSellProductStock->mrp_price;
             $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
