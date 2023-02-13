@@ -43,6 +43,7 @@
                 <tr class="" style="border-bottom: 0.05px dashed #dddfe0;">
                     <td style="width:3%;text-align:center;padding-top:1%;padding-bottom:1%;background-color: #f5f5f5">
                         {{$loop->iteration}}
+                        <span  data-value="1" class="all_item_count"></span>
                     </td>
                     <td style="width:30%;text-align:center;padding-top:1%;padding-bottom:1%;">
                          @php

@@ -23,7 +23,7 @@
                             <div class="col-md-6">
                                 <label class="text-body">Shipping Charges</label>
                                 <fieldset class="form-group mb-3">
-                                    <input type="text" name="invoice_shipping_cost" class="invoice_shipping_cost form-control inputFieldValidatedOnlyNumeric" placeholder="Enter Shipping Charges" style="padding-left:5px;background-color:#9dd1c2;color:#0d0c10" />
+                                    <input type="text" name="invoice_shipping_cost" value="{{$editSellInvoice->shipping_cost}}" class="invoice_shipping_cost form-control inputFieldValidatedOnlyNumeric" placeholder="Enter Shipping Charges" style="padding-left:5px;background-color:#9dd1c2;color:#0d0c10" />
                                 </fieldset>
                             </div>
                             <div class="col-md-6">

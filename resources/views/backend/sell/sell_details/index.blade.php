@@ -171,6 +171,11 @@
             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">
             <!-------Single Sell receive payment Modal------> 
 
+            <!------Single Sell overall adjustment discount Modal------> 
+            <div class="modal fade" id="sellViewSingleInvoiceOverallAdjustmentDiscountModal"  aria-modal="true"></div>
+            <input type="hidden" class="sellViewSingleInvoiceOverallAdjustmentDiscountModalRoute" value="{{route('admin.sell.regular.sell.view.single.invoice.for.overall.adjustment.discount')}}">
+            <!-------Single Sell overall adjustment discount Modal------> 
+
              <!------view Single Sell payment Modal------> 
              <div class="modal fade" id="viewSellSingleInvoiceReceivePaymentModal"  aria-modal="true"></div>
              <input type="hidden" class="viewSellSingleInvoiceReceivePaymentModalRoute" value="{{route('admin.sell.regular.sell.view.single.invoice.wise.payment.details.modal')}}">

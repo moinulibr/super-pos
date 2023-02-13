@@ -58,9 +58,9 @@ trait SellUpdateDataFromSellEditCartTrait
      * @param string $invoiceNo
      * @return boolean
      */
-    protected function updateSellRelatedDataForEditCart(int $sellType, string $invoiceNo):bool{
+    protected function updateSellRelatedDataFromSellEditCart(int $sellType, string $invoiceNo):bool{
 
-        $this->updateSellProduct($sellType,$invoiceNo);
+        $this->updateSellProductAndProductStock($sellType,$invoiceNo);
         //$this->updateSellProductStock($sellType,$invoiceNo);
 
         $editSellInvoice = EditSellCartInvoice::where('sell_invoice_no',$invoiceNo)->first();
@@ -84,7 +84,7 @@ trait SellUpdateDataFromSellEditCartTrait
      * @param string $invoiceNo
      * @return boolean
      */
-    private function updateSellProduct(int $sellType, string $invoiceNo) : bool{
+    private function updateSellProductAndProductStock(int $sellType, string $invoiceNo) : bool{
 
         $editSellCartProducts = EditSellCartProduct::with('editSellCartProductAllStocks')->where('branch_id',authBranch_hh())->where('sell_invoice_no',$invoiceNo)->get();//->where('status',1)
         
@@ -210,43 +210,10 @@ trait SellUpdateDataFromSellEditCartTrait
         $sellProductStock->stock_id  = $editSellCartProductStock->stock_id;
         $sellProductStock->product_stock_id  = $editSellCartProductStock->product_stock_id;
         
-            $totalQty = $editSellCartProductStock->total_quantity;
-
-            $previousTotalQty = $existingSellProductStock->total_quantity;
-            $previousTotalReducedBaseStockRemainingDeliveryQty = $existingSellProductStock->reduced_base_stock_remaining_delivery;
-            $previousTotalRemainingDeliveryUnreducedQty = $existingSellProductStock->remaining_delivery_unreduced_qty;
-            /* 
-                $previousTotalDeliveredQty = $existingSellProductStock->total_delivered_qty;
-                $previousTotalRemaininDeliveryQty = $existingSellProductStock->remaining_delivery_qty;
-                $previousTotalReduceableDeliveredQty = $existingSellProductStock->reduceable_delivered_qty;
-                $previousTotalRemainingDeliveryQtyDate = $existingSellProductStock->remaining_delivery_unreduced_qty_date; */
-                
-                /* $previousMrp = $existingSellProductStock->mrp_price;
-                $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
-                $previousSoldPrice = $existingSellProductStock->sold_price;
-                $previousPurchasePrice = $existingSellProductStock->purchase_price;
-                $previousTotalSellingAmount = $existingSellProductStock->total_selling_amount;
-                $previousTotalSoldAmount = $existingSellProductStock->total_sold_amount;
-                $previousTotalSellingPurchaseAmount = $existingSellProductStock->total_selling_purchase_amount;
-                $previousTotalPurchaseAmount = $existingSellProductStock->total_purchase_amount;
-                $previousTotalProfitFromProduct = $existingSellProductStock->total_profit_from_product;
-                $previousTotalProfit = $existingSellProductStock->total_profit; 
-            */
-        
-        //compare total_quantity, if previous qty is more then current qty  
-        $directMinusQtyFromProcessLaterQty = 0;
-        $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock = 0;
-        $decrementQtyFromMainStockAsRegularProcess = 0;
-        
-        if($sellType == 1){
-            $stockProcessing =  $this->getQtyRelatedDataAfterComparePreviousAndCurrentQty(
-                $previousTotalQty,$totalQty,$previousTotalReducedBaseStockRemainingDeliveryQty,
-                $previousTotalRemainingDeliveryUnreducedQty
-            );
-            $directMinusQtyFromProcessLaterQty =  $stockProcessing['direct_minus_qty_from_process_later_qty'];
-            $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock = $stockProcessing['minus_qty_from_reduced_remaining_delivery_and_increment_to_main_stock'];
-            $decrementQtyFromMainStockAsRegularProcess =  $stockProcessing['decrement_from_main_stock_as_regular_process'];
-        }
+        $totalQty = $editSellCartProductStock->total_quantity;
+       
+        //minus / return stock qty from sell product stock to main product stock
+        $this->minusSellProductStockAndMainProductStockBasedOnPreviousSellProductStock($sellType, $existingSellProductStock);
         
         $sellProductStock->total_sell_qty  = $totalQty;
         $sellProductStock->mrp_price  = $editSellCartProductStock->mrp_price;
@@ -271,98 +238,91 @@ trait SellUpdateDataFromSellEditCartTrait
         $sellProductStock->total_profit_from_product = $totalSellingAmount - $totalSellingPurchaseAmount;
         $sellProductStock->total_profit = $totalSellingAmount - $totalSellingPurchaseAmount;
 
-        
-        $sellProductStock->reduced_base_stock_remaining_delivery = $sellProductStock->reduced_base_stock_remaining_delivery - $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock;
-        $sellProductStock->remaining_delivery_unreduced_qty = $sellProductStock->remaining_delivery_unreduced_qty - $directMinusQtyFromProcessLaterQty;
         $sellProductStock->save();
+    
+        //$sellProductStock->reduced_base_stock_remaining_delivery = $sellProductStock->reduced_base_stock_remaining_delivery - $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock;
+        //$sellProductStock->remaining_delivery_unreduced_qty = $sellProductStock->remaining_delivery_unreduced_qty - $directMinusQtyFromProcessLaterQty;
         //$sellProductStock->reduceable_delivered_qty = $sellProductStock->reduceable_delivered_qty - $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock;
         //$sellProductStock->remaining_delivery_unreduced_qty_date = $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock;
         //$decrementQtyFromMainStockAsRegularProcess = 0;
 
+        //---------------------------------------------------------------
+            $pStock = productStockByProductStockId_hh($sellProductStock->product_stock_id);
+            $stockId = regularStockId_hh();
+            if($pStock)
+            {
+                $availableBaseStock = $pStock->available_base_stock;
+                $stockId = $pStock->stock_id;
+            }else{
+                $availableBaseStock = 0;
+            }
+            //stock id 
+            $sellProductStock->stock_id = $stockId;
 
-
-        $pStock = productStockByProductStockId_hh($sellProductStock->product_stock_id);
-        $stockId = regularStockId_hh();
-        $process_duration = 2;
-        if($pStock)
-        {
-            //store for previous minus qty from stock
-            $pStock->available_base_stock = (($pStock->available_base_stock) + ($minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock));
-            $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) - ($minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock));
-            $pStock->negative_sold_base_stock = (($pStock->negative_sold_base_stock) - ($directMinusQtyFromProcessLaterQty));//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
-            $pStock->save();
-            
-            //it's uses for next sept
-            $availableBaseStock = $pStock->available_base_stock;
-            $stockId = $pStock->stock_id;
-        }else{
-            $availableBaseStock = 0;
-        }
-        //stock id 
-        $sellProductStock->stock_id = $stockId;
-
-        $stockProcessLaterQty  = 0;
-        $instantlyProcessedQty = 0;
-        if($decrementQtyFromMainStockAsRegularProcess > 0  && $sellType  == 1){
-            if($availableBaseStock > $decrementQtyFromMainStockAsRegularProcess)
+            $process_duration = 1;
+            $stockProcessLaterQty  = 0;
+            if($availableBaseStock > $totalQty)
             {
                 //instantly processed all qty
-                $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess;
+                $instantlyProcessedQty = $totalQty;
                 $stockProcessLaterDate = ""; 
                 $stockProcessLaterQty  = 0;
             }
-            else if($availableBaseStock == $decrementQtyFromMainStockAsRegularProcess)
+            else if($availableBaseStock == $totalQty)
             {
                 //instantly processed all qty
-                $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess;
+                $instantlyProcessedQty = $totalQty;
                 $stockProcessLaterDate = ""; 
                 $stockProcessLaterQty  = 0;
             }
-            else if($availableBaseStock < $decrementQtyFromMainStockAsRegularProcess)
+            else if($availableBaseStock < $totalQty)
             {
                 //instantly processed all qty
-                $overStock = $decrementQtyFromMainStockAsRegularProcess - $availableBaseStock;
-                $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess - $overStock;
+                $overStock = $totalQty - $availableBaseStock;
+                $instantlyProcessedQty = $totalQty - $overStock;
                 $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
                 $stockProcessLaterQty  = $overStock;
             }
             else 
             {   
                 //instantly processed qty
-                $overStock = $decrementQtyFromMainStockAsRegularProcess - $availableBaseStock;
-                $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess - $overStock;
+                $overStock = $totalQty - $availableBaseStock;
+                $instantlyProcessedQty = $totalQty - $overStock;
                 $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
                 $stockProcessLaterQty  = $overStock;
             }
-        }
-        //if sell_type==1, then reduce stock from product stocks table 
-        if($sellType  == 1 && $instantlyProcessedQty > 0){
-            $this->stock_id_FSCT = $stockId;
-            $this->product_id_FSCT = $editSellCartProductStock->product_id;
-            $this->stock_quantity_FSCT = $instantlyProcessedQty;
-            $this->unit_id_FSCT = $unitId;
-            $this->sellingFromPossStockTypeDecrement();
-        }
-        if($pStock && $sellType  == 1)
-        {
-            //product_stocks table
-            $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) + ($instantlyProcessedQty));
-            $pStock->negative_sold_base_stock = (($pStock->negative_sold_base_stock) + ($stockProcessLaterQty));//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
-            $pStock->save();
-        }
 
-        //delivery quantity
-        if($sellType  == 1){
-            $totalDeliverdQty = 0;
-            $sellProductStock->total_delivered_qty = $totalDeliverdQty;
-            $sellProductStock->remaining_delivery_qty = $totalQty - $totalDeliverdQty;
-    
-            //$productStock->reduceable_delivered_qty = 0;//new field
-            $sellProductStock->reduced_base_stock_remaining_delivery = (($sellProductStock->reduced_base_stock_remaining_delivery) +  ($instantlyProcessedQty));//new field
-            $sellProductStock->remaining_delivery_unreduced_qty = (($sellProductStock->remaining_delivery_unreduced_qty) + ($stockProcessLaterQty));//new
-            $sellProductStock->remaining_delivery_unreduced_qty_date = date('Y-m-d',strtotime("+2 day"));//new
-            $sellProductStock->delivered_total_qty  = 0;//$totalDeliverdQty;
-        }
+            
+            //if sell_type==1, then reduce stock from product stocks table 
+            if($sellType  == 1 && $instantlyProcessedQty > 0){
+                $this->stock_id_FSCT = $stockId;
+                $this->product_id_FSCT = $sellProductStock->product_id;
+                $this->stock_quantity_FSCT = $instantlyProcessedQty;
+                $this->unit_id_FSCT = $unitId ;
+                $this->stock_changing_history_process_FSCT = 2;//later
+                $this->sellingFromPossStockTypeDecrement();
+            }
+            if($pStock && $sellType  == 1)
+            {
+                //product_stocks table
+                $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) + ($instantlyProcessedQty));
+                $pStock->negative_sold_base_stock = (($pStock->negative_sold_base_stock) + ($stockProcessLaterQty));//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
+                $pStock->save();
+            }
+
+            //delivery quantity
+            if($sellType  == 1){
+                $totalDeliverdQty = 0;
+                $sellProductStock->total_delivered_qty = $totalDeliverdQty;
+                $sellProductStock->remaining_delivery_qty = $totalQty - $totalDeliverdQty;
+
+                //$productStock->reduceable_delivered_qty = 0;//new field
+                $sellProductStock->reduced_base_stock_remaining_delivery = $instantlyProcessedQty;//new field
+                $sellProductStock->remaining_delivery_unreduced_qty = $stockProcessLaterQty;//new
+                $sellProductStock->remaining_delivery_unreduced_qty_date = $stockProcessLaterDate;//new
+            }
+        //---------------------------------------------------------------
+
 
         $sellProductStock->sell_cart  = $editSellCartProductStock->sell_cart;
         $sellProductStock->created_by = authId_hh();
@@ -370,6 +330,127 @@ trait SellUpdateDataFromSellEditCartTrait
         $sellProductStock->delivery_status = 1;
         $sellProductStock->save();
         return $sellProductStock;
+
+        /* 
+            $previousTotalDeliveredQty = $existingSellProductStock->total_delivered_qty;
+            $previousTotalRemaininDeliveryQty = $existingSellProductStock->remaining_delivery_qty;
+            $previousTotalReduceableDeliveredQty = $existingSellProductStock->reduceable_delivered_qty;
+            $previousTotalRemainingDeliveryQtyDate = $existingSellProductStock->remaining_delivery_unreduced_qty_date; */
+            
+            /* $previousMrp = $existingSellProductStock->mrp_price;
+            $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
+            $previousSoldPrice = $existingSellProductStock->sold_price;
+            $previousPurchasePrice = $existingSellProductStock->purchase_price;
+            $previousTotalSellingAmount = $existingSellProductStock->total_selling_amount;
+            $previousTotalSoldAmount = $existingSellProductStock->total_sold_amount;
+            $previousTotalSellingPurchaseAmount = $existingSellProductStock->total_selling_purchase_amount;
+            $previousTotalPurchaseAmount = $existingSellProductStock->total_purchase_amount;
+            $previousTotalProfitFromProduct = $existingSellProductStock->total_profit_from_product;
+            $previousTotalProfit = $existingSellProductStock->total_profit; 
+        */
+
+        /* 
+            $previousTotalQty = $existingSellProductStock->total_quantity;
+            $previousTotalReducedBaseStockRemainingDeliveryQty = $existingSellProductStock->reduced_base_stock_remaining_delivery;
+            $previousTotalRemainingDeliveryUnreducedQty = $existingSellProductStock->remaining_delivery_unreduced_qty;
+            //compare total_quantity, if previous qty is more then current qty  
+            $directMinusQtyFromProcessLaterQty = 0;
+            $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock = 0;
+            $decrementQtyFromMainStockAsRegularProcess = 0;
+
+            if($sellType == 1){
+                $stockProcessing =  $this->getQtyRelatedDataAfterComparePreviousAndCurrentQty(
+                    $previousTotalQty,$totalQty,$previousTotalReducedBaseStockRemainingDeliveryQty,
+                    $previousTotalRemainingDeliveryUnreducedQty
+                );
+                $directMinusQtyFromProcessLaterQty =  $stockProcessing['direct_minus_qty_from_process_later_qty'];
+                $minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock = $stockProcessing['minus_qty_from_reduced_remaining_delivery_and_increment_to_main_stock'];
+                $decrementQtyFromMainStockAsRegularProcess =  $stockProcessing['decrement_from_main_stock_as_regular_process'];
+            }
+            
+            $pStock = productStockByProductStockId_hh($sellProductStock->product_stock_id);
+            $stockId = regularStockId_hh();
+            $process_duration = 2;
+            if($pStock)
+            {
+                //store for previous minus qty from stock
+                $pStock->available_base_stock = (($pStock->available_base_stock) + ($minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock));
+                $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) - ($minusQtyFromReducedRemainingDeliveryAndIncrementToMainStock));
+                $pStock->negative_sold_base_stock = (($pStock->negative_sold_base_stock) - ($directMinusQtyFromProcessLaterQty));//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
+                $pStock->save();
+                
+                //it's uses for next sept
+                $availableBaseStock = $pStock->available_base_stock;
+                $stockId = $pStock->stock_id;
+            }else{
+                $availableBaseStock = 0;
+            }
+            //stock id 
+            $sellProductStock->stock_id = $stockId;
+
+            $stockProcessLaterQty  = 0;
+            $instantlyProcessedQty = 0;
+            if($decrementQtyFromMainStockAsRegularProcess > 0  && $sellType  == 1){
+                if($availableBaseStock > $decrementQtyFromMainStockAsRegularProcess)
+                {
+                    //instantly processed all qty
+                    $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess;
+                    $stockProcessLaterDate = ""; 
+                    $stockProcessLaterQty  = 0;
+                }
+                else if($availableBaseStock == $decrementQtyFromMainStockAsRegularProcess)
+                {
+                    //instantly processed all qty
+                    $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess;
+                    $stockProcessLaterDate = ""; 
+                    $stockProcessLaterQty  = 0;
+                }
+                else if($availableBaseStock < $decrementQtyFromMainStockAsRegularProcess)
+                {
+                    //instantly processed all qty
+                    $overStock = $decrementQtyFromMainStockAsRegularProcess - $availableBaseStock;
+                    $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess - $overStock;
+                    $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
+                    $stockProcessLaterQty  = $overStock;
+                }
+                else 
+                {   
+                    //instantly processed qty
+                    $overStock = $decrementQtyFromMainStockAsRegularProcess - $availableBaseStock;
+                    $instantlyProcessedQty = $decrementQtyFromMainStockAsRegularProcess - $overStock;
+                    $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
+                    $stockProcessLaterQty  = $overStock;
+                }
+            }
+            //if sell_type==1, then reduce stock from product stocks table 
+            if($sellType  == 1 && $instantlyProcessedQty > 0){
+                $this->stock_id_FSCT = $stockId;
+                $this->product_id_FSCT = $editSellCartProductStock->product_id;
+                $this->stock_quantity_FSCT = $instantlyProcessedQty;
+                $this->unit_id_FSCT = $unitId;
+                $this->sellingFromPossStockTypeDecrement();
+            }
+            if($pStock && $sellType  == 1)
+            {
+                //product_stocks table
+                $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) + ($instantlyProcessedQty));
+                $pStock->negative_sold_base_stock = (($pStock->negative_sold_base_stock) + ($stockProcessLaterQty));//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
+                $pStock->save();
+            }
+
+            //delivery quantity
+            if($sellType  == 1){
+                $totalDeliverdQty = 0;
+                $sellProductStock->total_delivered_qty = $totalDeliverdQty;
+                $sellProductStock->remaining_delivery_qty = $totalQty - $totalDeliverdQty;
+        
+                //$productStock->reduceable_delivered_qty = 0;//new field
+                $sellProductStock->reduced_base_stock_remaining_delivery = (($sellProductStock->reduced_base_stock_remaining_delivery) +  ($instantlyProcessedQty));//new field
+                $sellProductStock->remaining_delivery_unreduced_qty = (($sellProductStock->remaining_delivery_unreduced_qty) + ($stockProcessLaterQty));//new
+                $sellProductStock->remaining_delivery_unreduced_qty_date = date('Y-m-d',strtotime("+2 day"));//new
+                $sellProductStock->delivered_total_qty  = 0;//$totalDeliverdQty;
+            } 
+        */
     }
     
     /**
@@ -467,8 +548,92 @@ trait SellUpdateDataFromSellEditCartTrait
         ];
     }
 
+    
+    /**
+     * delete sell product stock from sell edit cart function
+     *
+     * @param integer $sellType
+     * @param object $existingSellProductStock
+     * @return boolean
+     */
+    private function minusSellProductStockAndMainProductStockBasedOnPreviousSellProductStock(int $sellType, object $existingSellProductStock):bool {
+        
+        $previousReducedBaseStockDecrementQty = $existingSellProductStock->reduced_base_stock_remaining_delivery;
+        $previousRemainingDeliveryUnreducedQty = $existingSellProductStock->remaining_delivery_unreduced_qty;
+
+        //delivery quantity
+        if($sellType  == 1){
+            $existingSellProductStock->total_delivered_qty = 0;
+            $existingSellProductStock->remaining_delivery_qty = 0;
+    
+            $existingSellProductStock->reduceable_delivered_qty = 0;//new field
+            $existingSellProductStock->reduced_base_stock_remaining_delivery = 0;//new field
+            $existingSellProductStock->remaining_delivery_unreduced_qty = 0;//new
+            $existingSellProductStock->remaining_delivery_unreduced_qty_date = NULL;//new
+            $existingSellProductStock->delivered_total_qty = 0;
+        }
+        $existingSellProductStock->save();
+
+        $pStock = productStockByProductStockId_hh($existingSellProductStock->product_stock_id);
+        if($pStock && $sellType  == 1)
+        {
+            $pStock->available_base_stock = $pStock->available_base_stock + $previousReducedBaseStockDecrementQty;
+
+            $reducedBaseStockSoldQtyRemainingDelivery = $pStock->reduced_base_stock_remaining_delivery;
+            $reducedBaseStockNewQtyAfterMinus = 0;
+            if($reducedBaseStockSoldQtyRemainingDelivery  == 0){
+                $reducedBaseStockNewQtyAfterMinus = 0;
+            } else if($reducedBaseStockSoldQtyRemainingDelivery  == $previousReducedBaseStockDecrementQty){
+                $reducedBaseStockNewQtyAfterMinus = 0;
+            }else if($reducedBaseStockSoldQtyRemainingDelivery  < $previousReducedBaseStockDecrementQty){
+                $reducedBaseStockNewQtyAfterMinus = 0;
+            }else if($reducedBaseStockSoldQtyRemainingDelivery > $previousReducedBaseStockDecrementQty){
+                $reducedBaseStockNewQtyAfterMinus = $reducedBaseStockSoldQtyRemainingDelivery - $previousReducedBaseStockDecrementQty;
+            }
+            $pStock->reduced_base_stock_remaining_delivery = $reducedBaseStockNewQtyAfterMinus;
+            
+
+            $negativeSoldStock = $pStock->negative_sold_base_stock;
+            $negativeNewQtyAfterMinus = 0;
+            if($negativeSoldStock  == 0){
+                $negativeNewQtyAfterMinus = 0;
+            } else if($negativeSoldStock  == $previousRemainingDeliveryUnreducedQty){
+                $negativeNewQtyAfterMinus = 0;
+            }else if($negativeSoldStock  < $previousRemainingDeliveryUnreducedQty){
+                $negativeNewQtyAfterMinus = 0;
+            }else if($negativeSoldStock > $previousRemainingDeliveryUnreducedQty){
+                $negativeNewQtyAfterMinus = $negativeSoldStock - $previousRemainingDeliveryUnreducedQty;
+            }
+            $pStock->negative_sold_base_stock = $negativeNewQtyAfterMinus;//sold this stock, but not available then. so it's negative stock. when purchase product and received stock, then this stock have to minus, but not effect on main base stock - just minus from this stock - available_base_stock
+            $pStock->save();
+        }
+
+        return true;
+        /* 
+            $previousMrp = $existingSellProductStock->mrp_price;
+            $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
+            $previousSoldPrice = $existingSellProductStock->sold_price;
+            $previousPurchasePrice = $existingSellProductStock->purchase_price;
+            $previousTotalSellingAmount = $existingSellProductStock->total_selling_amount;
+            $previousTotalSoldAmount = $existingSellProductStock->total_sold_amount;
+            $previousTotalSellingPurchaseAmount = $existingSellProductStock->total_selling_purchase_amount;
+            $previousTotalPurchaseAmount = $existingSellProductStock->total_purchase_amount;
+            $previousTotalProfitFromProduct = $existingSellProductStock->total_profit_from_product;
+            $previousTotalProfit = $existingSellProductStock->total_profit;
+            $totalQty = $existingSellProductStock->total_quantity;
+        */
+    }
 
 
+
+
+    /**
+     * add new sell product from sell edit cart function
+     *
+     * @param integer $sellType
+     * @param object $singleEditSellProduct
+     * @return object
+     */
     private function addNewSellProductFromSellEditCart(int $sellType, object $singleEditSellProduct) : object {
         
         $sellProduct = new SellProduct();
@@ -625,6 +790,7 @@ trait SellUpdateDataFromSellEditCartTrait
             $this->product_id_FSCT = $editSellCartProductStock->product_id;
             $this->stock_quantity_FSCT = $instantlyProcessedQty;
             $this->unit_id_FSCT = $unitId;//$cart['unit_id'];
+            $this->stock_changing_history_process_FSCT = 2;//later
             $this->sellingFromPossStockTypeDecrement();
         }
         if($pStock && $sellType  == 1)
@@ -664,20 +830,7 @@ trait SellUpdateDataFromSellEditCartTrait
      * @return boolean
      */
     private function deleteSellProductStockBasedOnSellEditCart(int $sellType, object $existingSellProductStock):bool {
-        /* 
-            $previousMrp = $existingSellProductStock->mrp_price;
-            $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
-            $previousSoldPrice = $existingSellProductStock->sold_price;
-            $previousPurchasePrice = $existingSellProductStock->purchase_price;
-            $previousTotalSellingAmount = $existingSellProductStock->total_selling_amount;
-            $previousTotalSoldAmount = $existingSellProductStock->total_sold_amount;
-            $previousTotalSellingPurchaseAmount = $existingSellProductStock->total_selling_purchase_amount;
-            $previousTotalPurchaseAmount = $existingSellProductStock->total_purchase_amount;
-            $previousTotalProfitFromProduct = $existingSellProductStock->total_profit_from_product;
-            $previousTotalProfit = $existingSellProductStock->total_profit;
-            $totalQty = $existingSellProductStock->total_quantity;
-        */
-
+        
         $previousReducedBaseStockDecrementQty = $existingSellProductStock->reduced_base_stock_remaining_delivery;
         $previousRemainingDeliveryUnreducedQty = $existingSellProductStock->remaining_delivery_unreduced_qty;
 
@@ -692,16 +845,28 @@ trait SellUpdateDataFromSellEditCartTrait
             $existingSellProductStock->remaining_delivery_unreduced_qty_date = NULL;//new
             $existingSellProductStock->delivered_total_qty = 0;
         }
-        $existingSellProductStock->deleted_at = date('Y-m-d');
+        $existingSellProductStock->deleted_at = date('Y-m-d h:i:s');
         $existingSellProductStock->save();
 
         $pStock = productStockByProductStockId_hh($existingSellProductStock->product_stock_id);
         if($pStock && $sellType  == 1)
         {
-            $pStock->available_base_stock = $pStock->available_base_stock - $previousReducedBaseStockDecrementQty;
-     
-            $pStock->reduced_base_stock_remaining_delivery = (($pStock->reduced_base_stock_remaining_delivery) - ($previousReducedBaseStockDecrementQty));
+            $pStock->available_base_stock = $pStock->available_base_stock + $previousReducedBaseStockDecrementQty;
+
+            $reducedBaseStockSoldQtyRemainingDelivery = $pStock->reduced_base_stock_remaining_delivery;
+            $reducedBaseStockNewQtyAfterMinus = 0;
+            if($reducedBaseStockSoldQtyRemainingDelivery  == 0){
+                $reducedBaseStockNewQtyAfterMinus = 0;
+            } else if($reducedBaseStockSoldQtyRemainingDelivery  == $previousReducedBaseStockDecrementQty){
+                $reducedBaseStockNewQtyAfterMinus = 0;
+            }else if($reducedBaseStockSoldQtyRemainingDelivery  < $previousReducedBaseStockDecrementQty){
+                $reducedBaseStockNewQtyAfterMinus = 0;
+            }else if($reducedBaseStockSoldQtyRemainingDelivery > $previousReducedBaseStockDecrementQty){
+                $reducedBaseStockNewQtyAfterMinus = $reducedBaseStockSoldQtyRemainingDelivery - $previousReducedBaseStockDecrementQty;
+            }
+            $pStock->reduced_base_stock_remaining_delivery = $reducedBaseStockNewQtyAfterMinus;
             
+
             $negativeSoldStock = $pStock->negative_sold_base_stock;
             $negativeNewQtyAfterMinus = 0;
             if($negativeSoldStock  == 0){
@@ -718,6 +883,19 @@ trait SellUpdateDataFromSellEditCartTrait
         }
 
         return true;
+        /* 
+            $previousMrp = $existingSellProductStock->mrp_price;
+            $previousRegularSellPrice = $existingSellProductStock->regular_sell_price;
+            $previousSoldPrice = $existingSellProductStock->sold_price;
+            $previousPurchasePrice = $existingSellProductStock->purchase_price;
+            $previousTotalSellingAmount = $existingSellProductStock->total_selling_amount;
+            $previousTotalSoldAmount = $existingSellProductStock->total_sold_amount;
+            $previousTotalSellingPurchaseAmount = $existingSellProductStock->total_selling_purchase_amount;
+            $previousTotalPurchaseAmount = $existingSellProductStock->total_purchase_amount;
+            $previousTotalProfitFromProduct = $existingSellProductStock->total_profit_from_product;
+            $previousTotalProfit = $existingSellProductStock->total_profit;
+            $totalQty = $existingSellProductStock->total_quantity;
+        */
     }
 
 

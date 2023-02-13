@@ -458,6 +458,8 @@ Route::group(['middleware' => ['auth']], function ()
                 Route::get('sell/list/by/ajr','SellController@sellListByAjaxResponse')->name('list.ajaxresponse');//->middleware(['permissions:unit|index']);
                 Route::get('sell/single/view','SellController@singleView')->name('single.view');//->middleware(['permissions:unit|index']);
                 Route::get('sell/single/invoice/profit/loss','SellController@viewSingleInvoiceProfitLoss')->name('view.single.invoice.profit.loss');
+                //over all invoice adjustment discount
+                Route::get('sell/single/invoice/overall/adjustment/discount','SellController@viewSingleInvoiceForOverallAdjustmentDiscount')->name('view.single.invoice.for.overall.adjustment.discount');
                 
                 //payment
                 Route::get('sell/receive/payment/','SellController@receiveSingleInvoiceWisePayment')->name('view.single.invoice.receive.payment.modal');

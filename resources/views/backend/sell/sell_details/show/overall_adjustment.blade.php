@@ -88,7 +88,12 @@
                                             <span style="font-size:14px;"> {{$data->total_profit}}</span>
                                         </th>
                                     </tr>
-
+                                    <tr>
+                                        <th colspan="2" style="text-align:right">Adjustment Amount</th>
+                                        <th colspan="2">
+                                            <input type="text" class="form-control">
+                                        </th>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

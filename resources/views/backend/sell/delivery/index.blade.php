@@ -47,7 +47,7 @@
                             <div class="mb-2">
                                 <label>
                                     <strong>Payment Status: </strong>
-                                    {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefund(),$data->total_paid_amount)}}
+                                    {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefundAfterDiscount(),$data->total_paid_amount)}}
                                 </label>
                             </div>
                         </div>

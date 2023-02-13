@@ -339,7 +339,7 @@
                                                         @if (($stockHistory->stockChangingType ? $stockHistory->stockChangingType->id : 0) > 1)
                                                         {{$stockHistory->stockChangingType ? $stockHistory->stockChangingType->label_name : NULL}}
                                                         @else
-                                                        <label  style="color:red">
+                                                        <label style="color:red">
                                                             {{$stockHistory->stockChangingType ? $stockHistory->stockChangingType->label_name : NULL}}
                                                         </label>
                                                         @endif

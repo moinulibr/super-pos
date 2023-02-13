@@ -213,20 +213,25 @@
             if (String.fromCharCode(e.keyCode).match(/[^0-9\.]/g)) return false;
         });
         
+        jQuery(document).on('keyup keypress','.quantity',function(e){
+            totalQutantity();
+        });
+        
         $(document).on('click','.cancelInsertStock',function(e){
             $('.search').val('');
             $('.search').focus();
             searchFunctional(e);
+            totalQutantity();
         });
         //search 
         var ctrlDown = false,ctrlKey = 17,cmdKey = 91,vKey = 86,cKey = 67;xKey = 88;
         $(document).on('keypress keyup','.search',function(e){
             searchFunctional(e);
         });
-
+       
         function searchFunctional(e)
         {
-            $('.addButton').attr('disabled',true);
+            $('.enableDisableActionOfSubmitButton').attr('disabled',true);
             $('.disabledAllInputField').attr('disabled',true);
             if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
             if (ctrlDown && (e.keyCode == vKey || e.keyCode == cKey || e.keyCode == xKey)) return false;
@@ -250,10 +255,10 @@
                     }
                     if(response.action == true)
                     {
-                        $('.addButton').removeAttr('disabled');
+                        //$('.enableDisableActionOfSubmitButton').removeAttr('disabled');
                         $('.disabledAllInputField').removeAttr('disabled');
                     }else{
-                        $('.addButton').attr('disabled',true);
+                        //$('.enableDisableActionOfSubmitButton').attr('disabled',true);
                         $('.disabledAllInputField').attr('disabled',true);
                     }
                 },
@@ -263,6 +268,7 @@
         
         $(document).on("submit",'.storeInitialProductStock',function(e){
             e.preventDefault();
+            $('.enableDisableActionOfSubmitButton').attr('disabled',true);
             var form = $(this);
             $('.color-red').text('');
             $.ajax({
@@ -274,6 +280,7 @@
                 contentType: false,
                 beforeSend:function(){
                     $('.processing').fadeIn();
+                    $('.submit_button_processing_gif').fadeIn();
                 },
                 success: function(response){
                     if(response.status == 'errors')
@@ -300,6 +307,7 @@
                 },
                 complete:function(){
                     $('.processing').fadeOut();
+                    $('.submit_button_processing_gif').fadeOut();
                 },
             });
             //end ajax
@@ -312,6 +320,29 @@
             }
         });
         //-----------------------------------------------------------------------
+        function totalQutantity(){
+            var total = 0;
+            $(".quantity").each(function() {
+                total += nanCheck($(this).val());
+            });
+            if(total > 0){
+                $('.enableDisableActionOfSubmitButton').removeAttr('disabled');
+            }else{
+                $('.enableDisableActionOfSubmitButton').attr('disabled',true);
+            }
+        }
+
+        
+    function nanCheck(value)
+    {
+        if(isNaN(value))
+        {
+            return 0;
+        }
+        else{
+            return value;
+        }
+    }
 
 
     </script>

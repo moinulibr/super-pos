@@ -45,7 +45,7 @@
                         <div class="mb-2">
                             <label>
                                 <strong>Payment Status: </strong>
-                                {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefund(),$data->total_paid_amount)}}
+                                {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefundAfterDiscount(),$data->total_paid_amount)}}
                             </label>
                         </div>
                     </div>
@@ -228,18 +228,9 @@
                                         <td colspan="2">
                                             <strong>Sub Total</strong>
                                         </td>
-                                        <td><small>(before return)</small></td>
+                                        <td><small></small></td>
                                         <td style="text-align:right;">
                                             <span style="font-size:14px;"> {{$data->subtotal}}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" >
-                                            <strong>Less Amount</strong>
-                                        </td>
-                                        <td>(-)</td>
-                                        <td style="text-align:right;">
-                                            <span style="font-size:14px;"> {{$data->total_discount}}</span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -278,15 +269,35 @@
                                             <span style="font-size:14px;"> {{$data->round_amount}}</span>
                                         </td>
                                     </tr> 
+                                    
                                     <tr>
                                         <td colspan="2">
-                                            <strong>Total Payable</strong>
+                                            <strong>Total Payable  Amount<small> (Before Less)</small></strong>
                                         </td>
-                                        <td><small style="color:rgb(113, 22, 22)">(before return)</small></td>
+                                        <td><small style="color:rgb(113, 22, 22)"> (before return)</small></td>
                                         <td style="text-align:right;">
-                                            {{$data->total_selling_amount}}
+                                            {{$data->totalInvoicePayableAmountBeforeReturnWithoutDiscount()}}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td colspan="2" >
+                                            <strong>Less Amount</strong>
+                                        </td>
+                                        <td>(-)</td>
+                                        <td style="text-align:right;">
+                                            <span style="font-size:14px;">{{$data->total_discount}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Total Payable Amount  (After Less)</small></strong>
+                                        </td>
+                                        <td><small style="color:rgb(113, 22, 22)"> (before return)</small></td>
+                                        <td style="text-align:right;">
+                                            {{$data->totalInvoicePayableAmountBeforeRefundAfterDiscount()}}
+                                        </td>
+                                    </tr>
+                                    
                                     <tr>
                                         <td colspan="2"  style="background-color: #c19696;color:#ffff;">
                                             <strong>Return Amount</strong>
@@ -298,12 +309,11 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2" style="background-color:#7ab57a;color:#ffff;">
-                                            <strong>Total Payable</strong>
+                                            <strong>Total Payable Amount</strong>
                                         </td>
                                         <td><small style="color:green">(after return)</small></td>
                                         <td style="text-align:right;right;background-color:#7ab57a;color:#ffff;">
-                                            {{-- {{ number_format($data->total_payable_amount - $data->total_refunded_amount,2,'.','') }} --}}
-                                            {{$data->totalInvoicePayableAmountAfterRefund()}}
+                                            {{$data->totalInvoicePayableAmountAfterRefundAfterDiscount()}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -322,6 +332,15 @@
                                         <td></td>
                                         <td style="text-align:right;">
                                             {{$data->total_due_amount}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Total Invoice Overall Less</strong>
+                                        </td>
+                                        <td>(Adjustment)</td>
+                                        <td style="text-align:right;">
+                                            {{$data->adjustment_amount}}
                                         </td>
                                     </tr>
                                 </tbody>

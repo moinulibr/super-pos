@@ -93,6 +93,7 @@ class SellProductReturnController extends Controller
                 $makeInvoice = date("iHsymd").$rand;
                 $invoiceData = SellInvoice::where('id',$request->sell_invoice_id)->first();
                 $invoiceData->total_return_count = (($invoiceData->total_return_count) + 1);
+                $invoiceData->refund_charge = $invoiceData->refund_charge + $request->return_invoice_total_discount_amount;
                 $invoiceData->save();
                 
                 $returnInvoice  = $this->sellReturnProductInvoice($makeInvoice,$invoiceData,$dataRequest);
@@ -295,6 +296,7 @@ class SellProductReturnController extends Controller
                 $this->product_id_FSCT = $sellProductStockDetails->product_id;
                 $this->stock_quantity_FSCT = $baseStockIncrementQuantity;
                 $this->unit_id_FSCT = $sellProduct ? $sellProduct->unit_id:0;
+                $this->stock_changing_history_process_FSCT = 1;//now
                 $this->sellingReturnStockTypeIncrement();
             }
             //increment stock quantity to the particular's stock  from product stock

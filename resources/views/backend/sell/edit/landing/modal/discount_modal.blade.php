@@ -25,7 +25,7 @@
                     <div class="col-12"  style="padding-left: 20px;">
                         <label class="text-body">Less Amount </label>
                         <fieldset class="form-group mb-3 d-flex">
-                            <input type="text" name="invoice_discount_amount" class="invoice_discount_amount form-control bg-white inputFieldValidatedOnlyNumeric" placeholder="Enter Discount" />
+                            <input type="text" value="{{$editSellInvoice->discount_amount}}" name="invoice_discount_amount" class="invoice_discount_amount form-control bg-white inputFieldValidatedOnlyNumeric" placeholder="Enter Discount" />
                         </fieldset>
                         <span class="invoice_discount_amount_error_message" style="color:red;margin: auto 40%;"></span>
                     </div>
@@ -33,12 +33,12 @@
                         <label class="text-body">Less Type</label>
                         <fieldset class="form-group mb-3 d-flex">
                             <select name="invoice_discount_type" class="invoice_discount_type form-control bg-white"  style="width: 65%;">
-                                <option value="">No Less</option>
-                                <option value="percentage">Percentage</option>
-                                <option value="fixed">Fixed</option>
+                                <option {{$editSellInvoice->discount_type == '' ? 'selected' : ''}} value="">No Less</option>
+                                <option {{$editSellInvoice->discount_type == 'percentage' ? 'selected' : ''}} value="percentage">Percentage</option>
+                                <option {{$editSellInvoice->discount_type == 'fixed' ? 'selected' : ''}} value="fixed">Fixed</option>
                             </select>
                             <span class="bg-light-dark  btn ml-2  pt-1 pb-1 d-flex align-items-center justify-content-center" style="width: 35%;">
-                                <strong class="invoice_total_discount_amount">0</strong>
+                                <strong class="invoice_total_discount_amount">{{$editSellInvoice->total_amount}}</strong>
                             </span>
                         </fieldset>
                         <span class="invoice_discount_amount_error_message" style="color:red;margin: auto 40%;"></span>

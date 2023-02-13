@@ -209,6 +209,7 @@ class SellProductDeliveryController extends Controller
             $this->product_id_FSCT = $sellProductStockDetails->product_id;
             $this->stock_quantity_FSCT = $stockReduceFromMainBaseStock;
             $this->unit_id_FSCT = $sellProduct ? $sellProduct->unit_id:0;
+            $this->stock_changing_history_process_FSCT = 1;//now
             $this->sellingFromPossStockTypeDecrement();
         }
         $this->sellDeliveryQuantity += $stockReduceFromMainBaseStock;

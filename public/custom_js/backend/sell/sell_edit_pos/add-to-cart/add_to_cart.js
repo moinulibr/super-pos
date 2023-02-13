@@ -219,7 +219,8 @@
             success:function(response){
                 jQuery.notify(response.message, response.type);
                 jQuery('#removeAllItemFromSellAddedToCartModal').modal('hide');
-                $(location).prop('href', response.redirectUrl);
+                //$(location).prop('href', response.redirectUrl);
+                window.location = response.redirectUrl;
             },
             complete:function(){
                 jQuery('#removeAllItemFromSellAddedToCartModal').modal('hide');
@@ -305,8 +306,16 @@
     //total item from cart list
     function totalItemFromCartList()
     {
-       var totalItme = (nanCheck(parseFloat(jQuery(".total_item_from_cartlist").val())).toFixed(2));
-       jQuery('.totalItemFromSellCartList').text(totalItme);
+        var totalItem = 0;
+        jQuery(".all_item_count").each(function() {
+            totalItem += nanCheck(parseFloat(jQuery(this).data('value')));
+        });
+        jQuery('.totalItemFromSellCartList').text(totalItem);
+        return totalItem;
+        
+        //not using from 12-02-2023
+        var totalItme = (nanCheck(parseFloat(jQuery(".total_item_from_cartlist").val())).toFixed(2));
+        jQuery('.totalItemFromSellCartList').text(totalItme);
        return totalItme;
     }
 
@@ -1311,7 +1320,7 @@
     | finally submit sell (final sell and quotation)
     |----------------------------------------------
     */ 
-        jQuery(document).on("submit",'.storeDataFromSellCart',function(e){
+        jQuery(document).on("submit",'.storeDataFromSellEditCart',function(e){
             e.preventDefault();
             normalPrintAfterSellIsDisabled();              
             var form = jQuery(this);
@@ -1338,7 +1347,8 @@
                         makingZeroInShippingCostOtherCostDiscountAndVat();
                         finalCalculationForThisInvoice();
                         jQuery.notify(response.message, response.type);
-
+                        //redirect to url after action    
+                        window.location = response.redirectUrl;
                         normalPrintAfterSellIsEnabled();
                         jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
                     }

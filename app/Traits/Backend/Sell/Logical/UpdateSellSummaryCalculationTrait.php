@@ -164,7 +164,6 @@ trait UpdateSellSummaryCalculationTrait
         //total sold amount
         $totalSoldAmount = $existingData->sellProducts->sum('total_sold_amount');
         $existingData->subtotal = $totalSoldAmount; 
-        $existingData->total_payable_amount = $totalSoldAmount; 
         $existingData->total_sold_amount = $totalSoldAmount; 
 
         //total sold amount
@@ -188,11 +187,28 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_profit_from_product = $totalSellingProfit - $totalRefundedReducedProfit;
         $existingData->total_profit = ($totalSellingProfit - $totalRefundedReducedProfit) - (0);//-(0)==others
         
-        //total due and paid section
-        //total_discount ,total_vat, shipping_cost,others_cost,round_amount
-        //total_payable_amount,paid_amount,due_amount,adjustment_amount
-        //refund_charge,reference_amount,total_paid_amount,total_due_amount, total_sell_item ,total_refunded_item ,total_item   
-        $totalPayableAmount = $totalSoldAmount - $totalRefundedAmount;// $existingData->total_payable_amount - $totalRefundedAmount;
+
+        $totalSoldAmountAmountAfterRefunded = $totalSoldAmount - $totalRefundedAmount;
+        //total_discount ,total_vat, shipping_cost,others_cost,round_amount//total_payable_amount,paid_amount,due_amount,adjustment_amount//refund_charge,reference_amount,total_paid_amount,total_due_amount, total_sell_item ,total_refunded_item ,total_item   
+        //total payable amount calculation
+        $invoicePlusableCharge = $existingData->total_vat + $existingData->shipping_cost + $existingData->others_cost + $existingData->refund_charge;
+        $invoiceMinusableCost = $existingData->total_discount + $existingData->reference_amount;
+        if($existingData->round_type ==	'+'){
+            $invoicePlusableCharge = $invoicePlusableCharge + $existingData->round_amount;
+        }else{
+            $invoiceMinusableCost = $invoiceMinusableCost + $existingData->round_amount;
+        }
+
+        if($existingData->adjustment_type = '+'){
+            $invoicePlusableCharge = $invoicePlusableCharge + $existingData->adjustment_amount;
+        }else{
+            $invoiceMinusableCost = $invoiceMinusableCost + $existingData->adjustment_amount;
+        }
+        $totalPayableAmount = (($totalSoldAmountAmountAfterRefunded + $invoicePlusableCharge) - ($invoiceMinusableCost));
+        $existingData->total_payable_amount	 = $totalPayableAmount ;
+        //total payable amount calculation
+
+
         $totalPaidAmount = $existingData->total_paid_amount;
         //$totalDueAmount = $existingData->total_due_amount;
         $overPaidAmount = 0;
@@ -217,7 +233,27 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_due_amount = $nowNewDueAmount;
         //total due and paid section
 
+
         
+        
+        //total profit calculation
+        $invoicePlusableChargeForInvoiceProfit = $existingData->refund_charge;
+        $invoiceMinusableCostForInvoiceProfit  = $existingData->total_discount + $existingData->reference_amount;
+        if($existingData->round_type ==	'+'){
+            $invoicePlusableChargeForInvoiceProfit = $invoicePlusableChargeForInvoiceProfit + $existingData->round_amount;
+        }else{
+            $invoiceMinusableCostForInvoiceProfit = $invoiceMinusableCostForInvoiceProfit + $existingData->round_amount;
+        }
+
+        if($existingData->adjustment_type = '+'){
+            $invoicePlusableChargeForInvoiceProfit = $invoicePlusableChargeForInvoiceProfit + $existingData->adjustment_amount;
+        }else{
+            $invoiceMinusableCostForInvoiceProfit = $invoiceMinusableCostForInvoiceProfit + $existingData->adjustment_amount;
+        }
+        $existingData->total_profit = number_format((($existingData->total_profit_from_product + $invoicePlusableChargeForInvoiceProfit) - ($invoiceMinusableCostForInvoiceProfit)),2,'.','');
+        //total profit calculation
+        
+
         //payment status and payment type
         $paymentStatus = "";
         $payment_type = "";
@@ -237,7 +273,6 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->payment_status = $paymentStatus;
         $existingData->payment_type	 = $payment_type;
         //payment status and payment type
-
 
         $existingData->save();
         return true;

@@ -1,7 +1,7 @@
 <div class="modal fade text-left" id="payment-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel11" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document" >
         <div class="modal-content" style="overflow-y: auto !important">
-            <form action="{{route('admin.sell.edit.regular.pos.store.data.from.sell.edit.cart')}}" method="POST"  class="storeDataFromSellCart">
+            <form action="{{route('admin.sell.edit.regular.pos.store.data.from.sell.edit.cart')}}" method="POST"  class="storeDataFromSellEditCart">
                 @csrf
                 <div class="modal-header">
                     <h3 class="modal-title" id="myModalLabel11">Payment</h3>

@@ -163,13 +163,13 @@ html {
                                                     Other :  {{$data->others_cost}},     
                                                 </span>  
                                                 <span style="margin-left:8px;margin-right:2px;">
-                                                    Total :  {{$data->totalInvoicePayableAmountAfterRefund()}}     
+                                                    Total :  {{$data->totalInvoicePayableAmountAfterRefundAfterDiscount()}}     
                                                 </span> 
                                             </th>
                                             <th colspan="2" style="text-align: right;">
                                                 Subtotal
                                             </th>
-                                            <th style="text-align: right;">{{$data->totalInvoicePayableAmountAfterRefund()}}</th>
+                                            <th style="text-align: right;">{{$data->subtotal}}</th>
                                         </tr>
                                         <tr>
                                             <th colspan="2">

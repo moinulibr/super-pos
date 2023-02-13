@@ -163,6 +163,25 @@
 //-----------------------------------------------------------------------
 
 
+//-----------------------------------------------------------------------
+    $(document).on('click','.singleViewSellInvoiceOverallAjdustmentDiscountDetailsModal',function(e){
+        e.preventDefault();
+        var url = $('.sellViewSingleInvoiceOverallAdjustmentDiscountModalRoute').val();
+        var id = $(this).data('id');
+        $.ajax({
+            url:url,
+            data:{id:id},
+            success:function(response){
+                if(response.status == true)
+                {
+                    $('#sellViewSingleInvoiceOverallAdjustmentDiscountModal').html(response.html).modal('show');
+                }
+            }
+        });
+    });
+//-----------------------------------------------------------------------
+
+
 
 
 /* $(document).on('click','.singleDeleteModal',function(e){

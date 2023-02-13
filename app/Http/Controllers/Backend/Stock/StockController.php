@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Faker\Provider\vi_VN\Color;
+use Illuminate\Support\Facades\DB;
 use App\Models\Backend\Price\Price;
 use App\Models\Backend\Stock\Stock;
 use App\Http\Controllers\Controller;
@@ -28,7 +29,7 @@ class StockController extends Controller
         $data['suppliers'] = Supplier::latest()->get();
         //$data['colors'] = Color::latest()->get();
 
-        $data['datas']  = Product::latest()->paginate(50);
+        $data['datas']  = Product::orderBy('custom_code', 'desc')->latest()->paginate(10);
         $data['page_no'] = 1;
         $data['stocks'] = Stock::where('status',1)
                         ->where('branch_id',authBranch_hh())
@@ -135,11 +136,11 @@ class StockController extends Controller
         {
             if($request->search)
             {
-                $product  = Product::where('name','like','%'.$search.'%')
+                $product  = Product::where('custom_code','like','%'.$search.'%')
                         ->orWhere('sku','like','%'.$search.'%')
                         ->orWhere('bacode','like','%'.$search.'%')
-                        ->orWhere('custom_code','like','%'.$search.'%')
                         ->orWhere('company_code','like','%'.$search.'%')
+                        ->orWhere('name','like','%'.$search.'%')
                         ->first();
                 if($product)
                 {
@@ -190,53 +191,67 @@ class StockController extends Controller
     //store initial stock
     public function storeInitialStock(Request $request)
     {
-        $totalInititalStock = 0;
-        $totalAlertStock = 0;
-        foreach($request->stock_id as $stockId)
-        {
-            $totalInititalStock += $request->input('quantity_stock_id_'.$stockId) ?? 0;
-            $totalAlertStock += $request->input('alert_stock_id_'.$stockId) ?? 0;
-            //check product stock is exist or not,
-                //if not exist, then add in the product stock table 
-            $podctStock = ProductStock::where('stock_id',$stockId)   
-                ->where('product_id',$request->product_id)
-                ->where('branch_id',authBranch_hh()) 
-                ->where('status',1)
-                ->first();
-            if(!$podctStock)
-            {
-                $nps = new ProductStock();
-                $nps->product_id        = $request->product_id;
-                $nps->branch_id         = authBranch_hh();
-                $nps->stock_id          = $stockId;
-                $nps->status            = 1;
-                $nps->available_base_stock = $request->input('quantity_stock_id_'.$stockId) ?? 0;
-                $nps->alert_quantity = $request->input('alert_stock_id_'.$stockId) ?? 0;
-                $nps->used_stock        = 0;
-                $nps->used_base_stock   = 0;
-                $nps->save();
-                $this->storeProductStockHistoryWhenInitialStockIsAdded($stockId,$nps->id,$request->product_id, $request->input('quantity_stock_id_'.$stockId) ?? 0);
-            }else{
-                $podctStock->available_base_stock = $request->input('quantity_stock_id_'.$stockId) ?? 0;
-                $podctStock->alert_quantity = $request->input('alert_stock_id_'.$stockId) ?? 0;
-                $podctStock->save();
-                $this->storeProductStockHistoryWhenInitialStockIsAdded($stockId,$podctStock->id,$request->product_id,$request->input('quantity_stock_id_'.$stockId) ?? 0);
-            }
-        }//end foreach
+        //have to process later :- if initial stock is more then 0, then it will be store, or not 
+        DB::beginTransaction();
+        try {
+                $totalInititalStock = 0;
+                $totalAlertStock = 0;
+                foreach($request->stock_id as $stockId)
+                {
+                    $totalInititalStock += $request->input('quantity_stock_id_'.$stockId) ?? 0;
+                    $totalAlertStock += $request->input('alert_stock_id_'.$stockId) ?? 0;
+                    //check product stock is exist or not,
+                        //if not exist, then add in the product stock table 
+                    $podctStock = ProductStock::where('stock_id',$stockId)   
+                        ->where('product_id',$request->product_id)
+                        ->where('branch_id',authBranch_hh()) 
+                        ->where('status',1)
+                        ->first();
+                    if(!$podctStock)
+                    {
+                        $nps = new ProductStock();
+                        $nps->product_id        = $request->product_id;
+                        $nps->branch_id         = authBranch_hh();
+                        $nps->stock_id          = $stockId;
+                        $nps->status            = 1;
+                        $nps->available_base_stock = $request->input('quantity_stock_id_'.$stockId) ?? 0;
+                        $nps->alert_quantity = $request->input('alert_stock_id_'.$stockId) ?? 0;
+                        $nps->used_stock        = 0;
+                        $nps->used_base_stock   = 0;
+                        $nps->save();
+                        $this->storeProductStockHistoryWhenInitialStockIsAdded($stockId,$nps->id,$request->product_id, $request->input('quantity_stock_id_'.$stockId) ?? 0);
+                    }else{
+                        $podctStock->available_base_stock = $request->input('quantity_stock_id_'.$stockId) ?? 0;
+                        $podctStock->alert_quantity = $request->input('alert_stock_id_'.$stockId) ?? 0;
+                        $podctStock->save();
+                        $this->storeProductStockHistoryWhenInitialStockIsAdded($stockId,$podctStock->id,$request->product_id,$request->input('quantity_stock_id_'.$stockId) ?? 0);
+                    }
+                }//end foreach
 
-        $product = Product::select('id','initial_stock','alert_stock','available_base_stock')->where('id',$request->product_id)->first();
-        if($product)
-        {
-            $product->initial_stock = $totalInititalStock;
-            $product->alert_stock = $totalAlertStock;
-            $product->available_base_stock = $totalInititalStock;
-            $product->save();
+                $product = Product::select('id','initial_stock','alert_stock','available_base_stock')->where('id',$request->product_id)->first();
+                if($product)
+                {
+                    $product->initial_stock = $totalInititalStock;
+                    $product->alert_stock = $totalAlertStock;
+                    $product->available_base_stock = $totalInititalStock;
+                    $product->save();
+                }
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'type' => 'success',
+                'message' => "Initial Stock Added successfully"
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+            return response()->json([
+                'status'    => false,
+                'message'   => "Something went wrong fasedfdfa",
+                'type'      => 'error'
+            ]);
         }
-        return response()->json([
-            'status' => true,
-            'type' => 'success',
-            'message' => "Initial Stock Added successfully"
-        ]);
+        
     }
 
 

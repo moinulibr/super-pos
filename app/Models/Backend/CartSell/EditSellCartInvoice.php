@@ -64,7 +64,7 @@ class EditSellCartInvoice extends Model
         return $this->hasMany(AccountPayment::class,'module_invoice_id','id')->where('module_id',getModuleIdBySingleModuleLebel_hh("Sell"));
     }
 
-    //after refunded amount
+    //after refunded amount ; no need
     public function totalInvoicePayableAmountAfterRefund()
     {
         return number_format($this->total_payable_amount - $this->total_refunded_amount,2,'.','');

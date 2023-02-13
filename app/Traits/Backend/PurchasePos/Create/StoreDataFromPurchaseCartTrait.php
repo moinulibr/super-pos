@@ -136,6 +136,7 @@ trait StoreDataFromPurchaseCartTrait
             $this->product_id_FSCT = $cart['product_id'];
             $this->stock_quantity_FSCT = $receiving_qty;
             $this->unit_id_FSCT = $cart['unit_id'];
+            $this->stock_changing_history_process_FSCT = 1;//now
             $this->purchaseRegularStockTypeIncrement();
         }
         //stock changes

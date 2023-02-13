@@ -45,6 +45,7 @@
                                 <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Return Product</a>
                                 <a class="dropdown-item singleSellInvoiceReceivePaymentModalView" data-id="{{$item->id}}" style="cursor: pointer;">Make Payment</a> {{--singleSellInvoiceReceivePaymentModalView  cursor: not-allowed !important;--}}
                                 <a class="dropdown-item singleViewSellInvoiceWisePaymentDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
+                                <a class="dropdown-item singleViewSellInvoiceOverallAjdustmentDiscountDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">Adjustment Less (Over All)</a>
                                 @if ($item->total_return_count == 0 && $item->total_delivered_count == 0)
                                     <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list')}}?seid={{\Crypt::encrypt($item->id)}}" style="cursor: pointer">Edit Sell</a>
                                     @else
@@ -64,16 +65,16 @@
                         </a>
                     </td>
                     <td>{{$item->customer?$item->customer->name:NULL}}</td>
-                    <td>{{$item->totalInvoicePayableAmountAfterRefund()}}</td>
+                    <td>{{$item->totalInvoicePayableAmountAfterRefundAfterDiscount()}}</td>
                     <td>{{$item->total_paid_amount}}</td>
                     <td>{{$item->total_due_amount}}</td>
                     <td>{{$item->total_discount}}</td>
-                    <td>{{paymentStatus_hh($item->totalInvoicePayableAmountAfterRefund(),$item->total_paid_amount)}}</td>
+                    <td>{{paymentStatus_hh($item->totalInvoicePayableAmountAfterRefundAfterDiscount(),$item->total_paid_amount)}}</td>
                     <td>{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                     <td>{{$item->totalSellItemAfterRefund()}}</td>
                     <td>{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
                     @php
-                        $totalSellAmount += $item->totalInvoicePayableAmountAfterRefund();
+                        $totalSellAmount += $item->totalInvoicePayableAmountAfterRefundAfterDiscount();
                         $totalPaidAmount += $item->total_paid_amount;
                         $totalDueAmount += $item->total_due_amount;
                         $totalLessAmount += $item->total_discount;

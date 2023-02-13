@@ -257,6 +257,20 @@ class SellController extends Controller
 
 
 
+
+
+    
+    public function viewSingleInvoiceForOverallAdjustmentDiscount(Request $request)
+    {
+        $data['data']  =  SellInvoice::where('id',$request->id)->first();
+        $html = view('backend.sell.sell_details.show.overall_adjustment',$data)->render();
+        return response()->json([
+            'status' => true,
+            'html' => $html
+        ]);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

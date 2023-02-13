@@ -33,14 +33,14 @@
             <th class="border-0" style="text-align: left !important;background-color:#f5f5f5;width:25%">
                 <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark" style="padding-left:4px;">
                     Shipping Cost
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceShippingCostApplyModal" data-toggle="modal" data-target="#shippingCostPopUpModal" style="cursor: pointer">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceShippingCostApplyModal" {{-- data-toggle="modal" data-target="#shippingCostPopUpModal" --}} style="cursor: pointer">
                         <i class="fa fa-plus"></i>
                     </span>
                 </div>
                 @include('backend.sell.edit.landing.modal.shipping_cost_modal')
             </th>
             <td class="border-0 " style="width:25%;text-align: left !important;">
-               <strong class="invoiceFinalShippingCostAmount">0.0</strong>
+               <strong class="invoiceFinalShippingCostAmount">{{$editSellInvoice->shipping_cost}}</strong>
             </td>
 
             <th class="border-0" style="width:25%;text-align: left !important;margin-left:0px;padding-left:0px">
@@ -50,14 +50,14 @@
                         (<span class="invoiceDiscountAmount">0</span>
                         <span class="invoiceDiscountType" style="margin-left: -3px;"></span>)
                     </span>
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceDiscountApplyModal" data-toggle="modal" data-target="#discountPopUpModal" style="cursor: pointer;">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceDiscountApplyModal" {{-- data-toggle="modal" data-target="#discountPopUpModal" --}} style="cursor: pointer;">
                         <i class="fa fa-minus"></i>
                     </span>
                 </div>
                 @include('backend.sell.edit.landing.modal.discount_modal')
             </th>
             <td class="border-0  d-flex text-dark font-size-base" >
-                <strong class="invoiceFinalTotalDiscountAmount">0</strong>
+                <strong class="invoiceFinalTotalDiscountAmount">{{$editSellInvoice->total_discount}}</strong>
             </td>
         </tr>
 
@@ -65,14 +65,14 @@
             <th class="border-0" style="background-color:#f5f5f5;width:25%;text-align:left !important">
                 <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark" style="padding-left:4px;">
                     Others Cost
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceOtherCostApplyModal" data-toggle="modal" data-target="#otherCostPopUpModal" style="cursor: pointer">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceOtherCostApplyModal" {{-- data-toggle="modal" data-target="#otherCostPopUpModal" --}} style="cursor: pointer">
                         <i class="fa fa-plus"></i>
                     </span>
                 </div>
                 @include('backend.sell.edit.landing.modal.other_cost_modal')
             </th>
             <td  class="border-0"  style="text-align: left !important;width:25%;">
-                <strong  class="invoiceFinalTotalOtherCostAmount" style="padding-left: 25%;">0.0</strong>
+                <strong  class="invoiceFinalTotalOtherCostAmount" style="padding-left: 25%;">{{$editSellInvoice->others_cost}}</strong>
             </td>
             
             <th class="border-0"  style="text-align: left !important;width:30%;">
@@ -82,14 +82,14 @@
                         (<span class="invoiceVatAmount">0</span>
                         <span class="invoiceVatType" style="margin-left: -3px;"></span>)
                     </span>
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceVatApplyModal" data-toggle="modal" data-target="#vatPopUpModal" style="cursor: pointer">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceVatApplyModal"{{--  data-toggle="modal" data-target="#vatPopUpModal" --}} style="cursor: pointer">
                         <i class="fa fa-plus"></i>
                     </span>
                 </div>
                 @include('backend.sell.edit.landing.modal.vat_modal')
             </th>
             <td class="border-0 justify-content-end d-flex text-dark font-size-base" style="width:20%;">
-                <strong  class="invoiceFinalTotalVatAmount">0.0</strong>
+                <strong  class="invoiceFinalTotalVatAmount">{{$editSellInvoice->total_vat}}</</strong>
             </td>
         </tr>
       

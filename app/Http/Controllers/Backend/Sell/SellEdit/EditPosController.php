@@ -288,8 +288,14 @@ class EditPosController extends Controller
      */
     public function removeAllItemFromSellEditAddedToCartList()
     {
+        $sellType = session()->get('sell_type_for_edit');
+        $redirectUrl = NULL;
+        if($sellType == 1){
+            $redirectUrl = route('admin.sell.regular.sell.index');
+        }else{
+            $redirectUrl = route('admin.sell.regular.quotation.index');
+        }
         $this->removeAllItemFromSellEditCreateAddedToCartList();
-        $redirectUrl = route('admin.sell.regular.sell.index');
         return response()->json([
             'status'    => true,
             'list'     => '',
@@ -386,11 +392,16 @@ class EditPosController extends Controller
             $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
             
             $sellType = session()->get('sell_type_for_edit');
-            $this->updateSellRelatedDataForEditCart($sellType,$sellEditCart->sell_invoice_no);
+            $this->updateSellRelatedDataFromSellEditCart($sellType,$sellEditCart->sell_invoice_no);
             
             //$sellNormalPrintUrl = route('admin.sell.edit.regular.normal.print.from.sell.edit.list',$sellLastId); 
             DB::commit();
-            
+            $redirectUrl = NULL;
+            if($sellType == 1){
+                 $redirectUrl = route('admin.sell.regular.sell.index');
+            }else{
+                 $redirectUrl = route('admin.sell.regular.quotation.index');
+            }
             session()->put('sellInvoice_for_edit',NULL);
             session()->put('total_edit_count_for_edit',NULL);
             session()->put('total_return_count_for_edit',NULL);
@@ -404,6 +415,7 @@ class EditPosController extends Controller
             return response()->json([
                 'status'    => true,
                 'list'      => $list,
+                'redirectUrl'      => $redirectUrl,
                 'normalPrintUrl'=> '',//$sellNormalPrintUrl,
                 'message'   => "Action submited successfully!",
                 'type'      => 'success'

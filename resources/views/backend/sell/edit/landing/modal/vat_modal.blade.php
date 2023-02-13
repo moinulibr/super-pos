@@ -30,7 +30,7 @@
                                 <strong class="invoice_total_vat_amount">0</strong>
                             </span>
                         </fieldset>
-                        <span class="invoice_vat_amount_error_message" style="color:red;margin: auto 40%;"></span>
+                        <span class="invoice_vat_amount_error_message" style="color:red;margin: auto 40%;">{{$editSellInvoice->vat_amount}}</span>
                     </div>
                    
                     <div class="col-12">

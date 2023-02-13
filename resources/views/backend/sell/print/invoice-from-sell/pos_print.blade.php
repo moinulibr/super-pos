@@ -247,7 +247,7 @@
                 </td>
                 <td class="Rate grand-total-title"style="padding-top:5px;padding-bottom:5px;">:</td>
                 <td class="payment sub-total-amount" style="text-align:right;padding-top:5px;padding-bottom:5px;" colspan="2">
-                    {{$data->totalInvoicePayableAmountAfterRefund()}}
+                    {{$data->totalInvoicePayableAmountAfterRefundAfterDiscount()}}
                 </td>
             </tr>
             <tr class="tabletitle">
@@ -268,7 +268,7 @@
             <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                   {{ $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount }}
+                   {{ $data->totalInvoicePayableAmountAfterRefundAfterDiscount() - $data->total_discount }}
                 </td>
             </tr>
             <!-- -->
@@ -289,7 +289,7 @@
              <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount ) + $data->total_vat),2,'.', '') }} 
+                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefundAfterDiscount() - $data->total_discount ) + $data->total_vat),2,'.', '') }} 
                 </td>
             </tr>
             <!-- -->
@@ -311,7 +311,7 @@
             <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount ) + $data->total_vat + $data->shipping_cost),2,'.', '') }} 
+                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefundAfterDiscount() - $data->total_discount ) + $data->total_vat + $data->shipping_cost),2,'.', '') }} 
                 </td>
             </tr>
             <!-- -->
@@ -333,7 +333,7 @@
              <tr>
                 <td colspan="1"></td>
                 <td colspan="3"  style="text-align:right;padding-top:5px">
-                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefund() - $data->total_discount ) + $data->total_vat + $data->shipping_cost + $data->others_cost ),2,'.', '') }} 
+                    {{ number_format((( $data->totalInvoicePayableAmountAfterRefundAfterDiscount() - $data->total_discount ) + $data->total_vat + $data->shipping_cost + $data->others_cost ),2,'.', '') }} 
                 </td>
             </tr>
             <!-- -->
@@ -361,7 +361,7 @@
                 <td class="Rate grand-total-title" style="padding-top:15px">:</td>
                 <td class="payment grand-total-amount" style="text-align:right;padding-top:15px" colspan="2">
                     <strong style="font-size:14px;">
-                        {{ $data->totalInvoicePayableAmountAfterRefund() }}
+                        {{ $data->totalInvoicePayableAmountAfterRefundAfterDiscount() }}
                     </strong>
                 </td>
             </tr>

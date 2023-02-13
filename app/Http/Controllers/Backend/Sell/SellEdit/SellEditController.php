@@ -16,14 +16,6 @@ use App\Models\Backend\Customer\Customer;
 use App\Models\Backend\Reference\Reference;
 use App\Models\Backend\Sell\SellProductStock;
 use App\Models\Backend\ProductAttribute\Category;
-use App\Traits\Backend\Payment\PaymentProcessTrait;
-use App\Models\Backend\SellReturn\SellReturnProduct;
-use App\Models\Backend\SellDelivery\SellProductDelivery;
-use App\Traits\Backend\Stock\Logical\StockChangingTrait;
-use App\Models\Backend\SellReturn\SellReturnProductInvoice;
-use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
-use App\Traits\Backend\Sell\Logical\UpdateSellSummaryCalculationTrait;
-use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
 
 use App\Traits\Backend\Sell\Edit\SellUpdateDataFromSellEditCartTrait;
 
@@ -33,9 +25,6 @@ class SellEditController extends Controller
 {
     use SellUpdateDataFromSellEditCartTrait;
     use SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
-    
-    use StockChangingTrait, PaymentProcessTrait;
-    use CustomerPaymentProcessTrait, ManagingCalculationOfCustomerSummaryTrait , UpdateSellSummaryCalculationTrait;
 
     private $invoiceTotalQuantity;
     private $invoiceTotalPayableAmount;
@@ -99,7 +88,15 @@ class SellEditController extends Controller
         if(!$sellInvoice){
             return redirect()->back()->with('error','Data Not Found!');
         }
-       
+        
+        $data['customers'] = Customer::latest()->get();
+        $data['references'] = Reference::latest()->get();
+
+        $data['categories'] = Category::latest()->get();
+        $data['allproducts'] = Product::select('name','id')->latest()->get();
+        $data['products'] = Product::select('name','id','photo','available_base_stock')->latest()->paginate(21);
+    
+
         DB::beginTransaction();
         try {
             if($sellInvoice)
@@ -120,7 +117,11 @@ class SellEditController extends Controller
                 
                 //update edit sell cart invoice table : all calculation
                 $this->updateSellEditCartInvoiceCalculation($editSellCartInvoice->id);
+                
                 DB::commit();
+
+                $data['editSellInvoice'] = $editSellCartInvoice;
+                return view('backend.sell.edit.index',$data);
             }else{
                 return redirect()->back()->with('error','Invalid Data!');
             }
@@ -130,14 +131,6 @@ class SellEditController extends Controller
             throw $e;
             return redirect()->back()->with('error','Something went wrong!');
         }
-
-        $data['customers'] = Customer::latest()->get();
-        $data['references'] = Reference::latest()->get();
-
-        $data['categories'] = Category::latest()->get();
-        $data['allproducts'] = Product::select('name','id')->latest()->get();
-        $data['products'] = Product::select('name','id','photo','available_base_stock')->latest()->paginate(21);
-        return view('backend.sell.edit.index',$data);
 
         return view('backend.sell.edit.cart_product_list');
         $dkd = session()->get('sellInvoice_for_edit');
@@ -332,7 +325,7 @@ class SellEditController extends Controller
     private function sellProductStockChangesData($returnInvoice,$invoiceData,$sell_product_stock_id, $returningQty){
            
         $sellProductStockDetails = SellProductStock::select('id','reduceable_delivered_qty','reduced_base_stock_remaining_delivery','product_id','stock_id','sell_product_id','product_stock_id','sold_price','total_quantity','total_delivered_qty')->where('id',$sell_product_stock_id)->first();
-        $sellProduct =  SellProduct::select('id','unit_id',)->where('id',$sellProductStockDetails->sell_product_id)->first();
+        $sellProduct =  SellProduct::select('id','unit_id')->where('id',$sellProductStockDetails->sell_product_id)->first();
         
         /*
         |-----------------------------------------------------------------------------------

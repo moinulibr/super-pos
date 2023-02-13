@@ -27,7 +27,7 @@
                         <fieldset class="form-group mb-3 d-flex">
                             <input type="text" name="invoice_other_cost_amount" class="invoice_other_cost_amount form-control bg-white inputFieldValidatedOnlyNumeric" placeholder="Enter other cost amount" />
                             <span class="bg-light-dark  btn ml-2  pt-1 pb-1 d-flex align-items-center justify-content-center" style="width: 35%;">
-                                <strong class="invoice_total_other_cost_amount">0</strong>
+                                <strong class="invoice_total_other_cost_amount">{{$editSellInvoice->others_cost}}</strong>
                             </span>
                         </fieldset>
                         <span class="invoice_other_cost_amount_error_message" style="color:red;margin: auto 40%;"></span>

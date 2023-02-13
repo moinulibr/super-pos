@@ -26,6 +26,7 @@ trait StockChangingTrait
     protected $stock_changing_type_id_FSCT;
     protected $stock_changing_sign_FSCT;
     protected $stock_changing_history_FSCT;
+    protected $stock_changing_history_process_FSCT;//'1=now','2=later',
 
     private $current_available_stock_FSCT;
     private $current_available_base_stock_FSCT;
@@ -379,7 +380,9 @@ trait StockChangingTrait
                 $available_stock                     = $stock->available_stock;
                 $this->product_stock_id_FSCT         = $stock->id;
             }
-            $this->storeProductStockHistoryWhenStockQuantityChanging();
+            if($this->stock_changing_history_process_FSCT == 1){
+                $this->storeProductStockHistoryWhenStockQuantityChanging();
+            }
             return $available_stock;
         }
 
@@ -737,7 +740,10 @@ trait StockChangingTrait
            $available_stock                     = $stock->available_stock;
            $this->product_stock_id_FSCT         = $stock->id;
         }
-        $this->storeProductStockHistoryWhenStockQuantityChanging();
+
+        //if($this->stock_changing_history_process_FSCT ==1){
+            $this->storeProductStockHistoryWhenStockQuantityChanging();
+        //}
         $this->productRealStockUpdate();
         return $available_stock;
     }
