@@ -179,9 +179,36 @@
             }
         });
     });
+    
+    $(document).on('click','.receivingOverallAdjustmentLessAmount',function(e){
+        e.preventDefault();
+        var url = $('.sellViewSingleInvoiceOverallAdjustmentDiscountReceivingRouteUrl').val();
+        var amount = $('.receivingOverallAdjustmentAmount').val();
+        var id = $('.receivingOverallAdjustmentAmountId').val();
+        $('.receivingOverallAdjustmentLessAmount').attr('disabled',true);
+        if(!amount){
+            alert('Amount is required');
+            return;
+        }
+        $.ajax({
+            url:url,
+            data:{id:id,amount:amount},
+            beforeSend:function(){
+                jQuery('.submit_button_processing_gif').fadeIn();
+            },
+            success:function(response){
+                $.notify(response.message, response.type);
+                setTimeout(function(){
+                    sellList();
+                    $('#sellViewSingleInvoiceOverallAdjustmentDiscountModal').modal('hide');//hide modal
+                },500);
+            },
+            complete:function(){
+                jQuery('.submit_button_processing_gif').fadeOut();
+            },
+        });
+    }); 
 //-----------------------------------------------------------------------
-
-
 
 
 /* $(document).on('click','.singleDeleteModal',function(e){

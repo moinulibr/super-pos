@@ -14,13 +14,21 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Route::get('clear', function() {
-    $exitCode = Artisan::call('config:clear');
-    $exitCode = Artisan::call('cache:clear');
-    $exitCode = Artisan::call('config:cache');
-    $exitCode = Artisan::call('storage:link');
-    return 'DONE'; //Return anything
+Route::get('cache-clear', function() {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:cache');
+    Artisan::call('view:clear');
+    Artisan::call('route:clear');
+    return 'Configuration, Cache, View, Route clear';
 });
+
+Route::get('storage-link', function() {
+    Artisan::call('storage:link');
+    return redirect()->route('home')->with('success', 'Created Storage Link');
+});
+
+
 Route::get('/', 'Landing\LandingController@index')->name('landing');
 
 Auth::routes();
@@ -460,6 +468,7 @@ Route::group(['middleware' => ['auth']], function ()
                 Route::get('sell/single/invoice/profit/loss','SellController@viewSingleInvoiceProfitLoss')->name('view.single.invoice.profit.loss');
                 //over all invoice adjustment discount
                 Route::get('sell/single/invoice/overall/adjustment/discount','SellController@viewSingleInvoiceForOverallAdjustmentDiscount')->name('view.single.invoice.for.overall.adjustment.discount');
+                Route::get('sell/single/invoice/overall/adjustment/discount/receiving','SellController@viewSingleInvoiceForOverallAdjustmentDiscountReceiving')->name('view.single.invoice.for.overall.adjustment.discount.receiving');
                 
                 //payment
                 Route::get('sell/receive/payment/','SellController@receiveSingleInvoiceWisePayment')->name('view.single.invoice.receive.payment.modal');

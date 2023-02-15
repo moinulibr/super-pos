@@ -174,6 +174,7 @@
             <!------Single Sell overall adjustment discount Modal------> 
             <div class="modal fade" id="sellViewSingleInvoiceOverallAdjustmentDiscountModal"  aria-modal="true"></div>
             <input type="hidden" class="sellViewSingleInvoiceOverallAdjustmentDiscountModalRoute" value="{{route('admin.sell.regular.sell.view.single.invoice.for.overall.adjustment.discount')}}">
+            <input type="hidden" class="sellViewSingleInvoiceOverallAdjustmentDiscountReceivingRouteUrl" value="{{route('admin.sell.regular.sell.view.single.invoice.for.overall.adjustment.discount.receiving')}}">
             <!-------Single Sell overall adjustment discount Modal------> 
 
              <!------view Single Sell payment Modal------> 

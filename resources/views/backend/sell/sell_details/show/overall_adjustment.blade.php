@@ -83,16 +83,43 @@
                                         <th style="width: 25%;">
                                             <span style="font-size:14px;"> {{$data->round_amount}}</span>
                                         </th>
-                                        <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
-                                        <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
-                                            <span style="font-size:14px;"> {{$data->total_profit}}</span>
+                                        <th style="width: 25%;text-align:right;background-color: #5bcf5b;color:#ffff;">Profit <small>From Product</small></th>
+                                        <th style="text-align:right;width: 25%;background-color: #5bcf5b;color:#ffff;">
+                                            <span style="font-size:14px;"> {{$data->total_profit_from_product}}</span>
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th colspan="2" style="text-align:right">Adjustment Amount</th>
-                                        <th colspan="2">
-                                            <input type="text" class="form-control">
+                                        <th  style="width: 25%;">
+                                             <strong>Overall Less <small>(Adjustment)</small></strong>
                                         </th>
+                                        <th style="width: 25%;">
+                                            <span style="font-size:14px;"> {{$data->adjustment_amount}}</span>
+                                        </th>
+                                        <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
+                                        <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
+                                            <span style="font-size:14px;"> {{$data->totalInvoiceProfit()}}</span>
+                                        </th>
+                                    </tr>
+                                    <tr> <th colspan="4"></th></tr>
+                                    <tr>
+                                        <th style="text-align:left"><small>Total Invoice Less </small> : {{number_format($data->adjustment_amount + $data->total_discount,2,'.','')}}</th>
+                                        <th style="text-align:right">Overall Less <small>(Adjustment) Amount</small></th>
+                                        <th>
+                                            <input type="text" 
+                                            @if ($data->adjustment_amount && $data->adjustment_amount > 0)
+                                                class="form-control receivingOverallAdjustmentAmount" disabled
+                                                @else class="form-control receivingOverallAdjustmentAmount"
+                                            @endif >
+                                            <input type="hidden" class="receivingOverallAdjustmentAmountId" value="{{$data->id}}">
+                                        </th>
+                                        <th>
+                                        <strong style="cursor: pointer;" @if ($data->adjustment_amount && $data->adjustment_amount > 0)
+                                            class="form-control form-control btn btn-sm btn-danger" disabled
+                                            @else  class="receivingOverallAdjustmentLessAmount form-control btn btn-sm btn-primary"
+                                        @endif >
+                                            Receive Adjustment Amount <img class="submit_button_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                        </strong>
+                                    </th>
                                     </tr>
                                 </tbody>
                             </table>

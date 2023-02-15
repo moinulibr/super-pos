@@ -185,7 +185,7 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_selling_profit = $totalSellingProfit;
         $existingData->total_refunded_reduced_profit = $totalRefundedReducedProfit;
         $existingData->total_profit_from_product = $totalSellingProfit - $totalRefundedReducedProfit;
-        $existingData->total_profit = ($totalSellingProfit - $totalRefundedReducedProfit) - (0);//-(0)==others
+        //$existingData->total_profit = ($totalSellingProfit - $totalRefundedReducedProfit) - (0);//-(0)==others
         
 
         $totalSoldAmountAmountAfterRefunded = $totalSoldAmount - $totalRefundedAmount;
@@ -199,13 +199,9 @@ trait UpdateSellSummaryCalculationTrait
             $invoiceMinusableCost = $invoiceMinusableCost + $existingData->round_amount;
         }
 
-        if($existingData->adjustment_type = '+'){
-            $invoicePlusableCharge = $invoicePlusableCharge + $existingData->adjustment_amount;
-        }else{
-            $invoiceMinusableCost = $invoiceMinusableCost + $existingData->adjustment_amount;
-        }
+        //$existingData->adjustment_amount
         $totalPayableAmount = (($totalSoldAmountAmountAfterRefunded + $invoicePlusableCharge) - ($invoiceMinusableCost));
-        $existingData->total_payable_amount	 = $totalPayableAmount ;
+        $existingData->total_payable_amount = $totalPayableAmount ;
         //total payable amount calculation
 
 
@@ -234,22 +230,16 @@ trait UpdateSellSummaryCalculationTrait
         //total due and paid section
 
 
-        
-        
+    
         //total profit calculation
         $invoicePlusableChargeForInvoiceProfit = $existingData->refund_charge;
-        $invoiceMinusableCostForInvoiceProfit  = $existingData->total_discount + $existingData->reference_amount;
+        $invoiceMinusableCostForInvoiceProfit  = $existingData->total_discount + $existingData->reference_amount + $existingData->adjustment_amount;
         if($existingData->round_type ==	'+'){
             $invoicePlusableChargeForInvoiceProfit = $invoicePlusableChargeForInvoiceProfit + $existingData->round_amount;
         }else{
             $invoiceMinusableCostForInvoiceProfit = $invoiceMinusableCostForInvoiceProfit + $existingData->round_amount;
         }
 
-        if($existingData->adjustment_type = '+'){
-            $invoicePlusableChargeForInvoiceProfit = $invoicePlusableChargeForInvoiceProfit + $existingData->adjustment_amount;
-        }else{
-            $invoiceMinusableCostForInvoiceProfit = $invoiceMinusableCostForInvoiceProfit + $existingData->adjustment_amount;
-        }
         $existingData->total_profit = number_format((($existingData->total_profit_from_product + $invoicePlusableChargeForInvoiceProfit) - ($invoiceMinusableCostForInvoiceProfit)),2,'.','');
         //total profit calculation
         

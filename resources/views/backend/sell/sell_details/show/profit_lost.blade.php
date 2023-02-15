@@ -83,11 +83,23 @@
                                         <th style="width: 25%;">
                                             <span style="font-size:14px;"> {{$data->round_amount}}</span>
                                         </th>
-                                        <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
-                                        <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
-                                            <span style="font-size:14px;"> {{$data->total_profit}}</span>
+                                        <th style="width: 25%;text-align:right;background-color: #5bcf5b;color:#ffff;">Profit <small>From Product</small></th>
+                                        <th style="text-align:right;width: 25%;background-color: #5bcf5b;color:#ffff;">
+                                            <span style="font-size:14px;"> {{$data->total_profit_from_product}}</span>
                                         </th>
                                     </tr>
+                                    <tr>
+                                        <th  style="width: 25%;">
+                                             <strong>Overall Less <small>(Adjustment)</small></strong>
+                                        </th>
+                                        <th style="width: 25%;">
+                                            <span style="font-size:14px;"> {{$data->adjustment_amount}}</span>
+                                        </th>
+                                        <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
+                                        <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
+                                            <span style="font-size:14px;"> {{$data->totalInvoiceProfit()}}</span>
+                                        </th>
+                                    </tr>   
 
                                 </tbody>
                             </table>

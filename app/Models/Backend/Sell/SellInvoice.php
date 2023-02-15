@@ -71,7 +71,7 @@ class SellInvoice extends Model
         $invoiceMinusableCost = $this->total_discount;
         return number_format((($this->total_sold_amount + $invoicePlusableCharge + $this->total_refunded_amount)-( $invoiceMinusableCost)),2,'.','');
     
-        /* //total_discount, total_vat	, shipping_cost, others_cost, round_amount, round_type//total_payable_amount, adjustment_amount, refund_charge, adjustment_type, reference_amount//total_refunded_amount, 
+        /* //total_discount, total_vat	, shipping_cost, others_cost, round_amount, round_type//total_payable_amount, adjustment_amount, refund_charge, reference_amount//total_refunded_amount, 
             //formula:- 
             $invoicePlusableCharge = $this->total_vat + $this->shipping_cost + $this->others_cost + $this->refund_charge;
             $invoiceMinusableCost = $this->total_discount + $this->reference_amount;
@@ -80,12 +80,6 @@ class SellInvoice extends Model
                 $invoicePlusableCharge = $invoicePlusableCharge + $this->round_amount;
             }else{
                 $invoiceMinusableCost = $invoiceMinusableCost + $this->round_amount;
-            }
-
-            if($this->adjustment_type = '+'){
-                $invoicePlusableCharge = $invoicePlusableCharge + $this->adjustment_amount;
-            }else{
-                $invoiceMinusableCost = $invoiceMinusableCost + $this->adjustment_amount;
             }
             return number_format((($this->total_selling_amount + $invoicePlusableCharge) - ($invoiceMinusableCost)),2,'.','');
         *///total_sold_amount ==total_selling_amount - total_refunded_amount
@@ -106,7 +100,7 @@ class SellInvoice extends Model
     public function totalInvoiceProfit()
     {
         $invoicePlusableCharge = $this->refund_charge;//$this->total_vat + $this->shipping_cost + $this->others_cost + $this->refund_charge;
-        $invoiceMinusableCost  = $this->total_discount + $this->reference_amount;
+        $invoiceMinusableCost  = $this->total_discount + $this->reference_amount + $this->adjustment_amount;
         
         if($this->round_type ==	'+'){
             $invoicePlusableCharge = $invoicePlusableCharge + $this->round_amount;
@@ -114,11 +108,6 @@ class SellInvoice extends Model
             $invoiceMinusableCost = $invoiceMinusableCost + $this->round_amount;
         }
 
-        if($this->adjustment_type = '+'){
-            $invoicePlusableCharge = $invoicePlusableCharge + $this->adjustment_amount;
-        }else{
-            $invoiceMinusableCost = $invoiceMinusableCost + $this->adjustment_amount;
-        }
         return number_format((($this->total_profit_from_product + $invoicePlusableCharge) - ($invoiceMinusableCost)),2,'.','');
     }
 
@@ -131,18 +120,12 @@ class SellInvoice extends Model
     //total invoice discount with adjustment
     public function totalInvoiceDiscountAmountWithAdjustment()
     {
-        $invoiceMinusableCost  = $this->total_discount + $this->reference_amount;
+        $invoiceMinusableCost  = $this->total_discount + $this->reference_amount + $this->adjustment_amount;
         
         if($this->round_type ==	'+'){
             $invoiceMinusableCost = $invoiceMinusableCost + $this->round_amount;
         }else{
             $invoiceMinusableCost = $invoiceMinusableCost - $this->round_amount;
-        }
-
-        if($this->adjustment_type = '+'){
-            $invoiceMinusableCost = $invoiceMinusableCost + $this->adjustment_amount;
-        }else{
-            $invoiceMinusableCost = $invoiceMinusableCost - $this->adjustment_amount;
         }
         return number_format($invoiceMinusableCost,2,'.','');
     }

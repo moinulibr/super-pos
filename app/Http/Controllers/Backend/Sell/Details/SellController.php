@@ -270,6 +270,102 @@ class SellController extends Controller
         ]);
     }
 
+    //store receiving single invoice swise payment
+    public function viewSingleInvoiceForOverallAdjustmentDiscountReceiving(Request $request)
+    {
+        //return $request;
+        DB::beginTransaction();
+        try {
+            //payment process
+            if(($request->amount ?? 0) > 0)
+            {
+                $invoiceData = SellInvoice::findOrFail($request->id);
+                /* //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => $invoiceData->invoice_no,
+                    'main_module_invoice_id' => $invoiceData->id,
+                    'module_invoice_no' => $invoiceData->invoice_no,
+                    'module_invoice_id' => $invoiceData->id,
+                    'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->invoice_total_paying_amount ?? 0 ;
+                $this->processingPayment();
+
+                //customer transaction statement history
+                $requestCTSData = [];
+                $requestCTSData['amount'] = $request->invoice_total_paying_amount ?? 0 ;
+                $requestCTSData['ledger_page_no'] = NULL;
+                $requestCTSData['next_payment_date'] = NULL;
+                $requestCTSData['short_note'] = "Sell Due Payment";
+                $requestCTSData['sell_amount'] = 0;
+                $requestCTSData['sell_paid'] = 0;
+                $requestCTSData['sell_due'] = 0;
+                $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
+                $this->amount = $request->invoice_total_paying_amount ?? 0 ;
+                
+                $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Due Payment');
+                $this->ctsCustomerId = $invoiceData->customer_id;
+                $ttModuleInvoics = [
+                    'invoice_no' => $invoiceData->invoice_no,
+                    'invoice_id' => $invoiceData->id
+                ];
+                $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+                $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
+                $this->processingOfAllCustomerTransaction();
+                //customer transaction statement history  
+                
+                //calculation in the customer table
+                //$dbField = 24;'current_paid_return';
+                //$calType = 1='plus', 2='minus'
+                //$this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 24 ,$calType = 2,$request->invoice_total_paying_amount ?? 0 );
+                //calculation in the customer table 
+                                 */
+                //change amount from sellinvoice 
+                //$invoiceData->paid_amount = $invoiceData->paid_amount + $request->invoice_total_paying_amount ?? 0;
+                //$invoiceData->due_amount = $invoiceData->due_amount - $request->invoice_total_paying_amount ?? 0;
+                $invoiceData->adjustment_amount =  $request->amount ?? 0;
+                $invoiceData->save();
+                $this->updateSellInvoiceCalculation($invoiceData->id);
+
+                //$dbField = 21;'current_paid_due';
+                //$calType = 1='plus', 2='minus'
+                //$this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 21 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
+            } 
+            DB::commit();
+            return response()->json([
+                'status'    => true,
+                'message'   => "Received successfully!",
+                'type'      => 'success',
+            ]);
+
+            $data['data'] = SellInvoice::findOrFail($request->sell_invoice_id);
+            $data['cashAccounts'] = cashAccounts_hh();
+            $data['advanceAccounts'] = advanceAccounts_hh();
+            $html = view('backend.sell.payment.single_payment',$data)->render();
+            return response()->json([
+                'status'    => true,
+                'message'   => "Payment received successfully!",
+                'type'      => 'success',
+                'html'     => $html,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+            return response()->json([
+                'status'    => true,
+                'message'   => "Something went wrong",
+                'type'      => 'error'
+            ]);
+        }
+    }
+
+
+
 
     /**
      * Show the form for creating a new resource.

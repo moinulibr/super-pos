@@ -45,17 +45,12 @@
                                 <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Return Product</a>
                                 <a class="dropdown-item singleSellInvoiceReceivePaymentModalView" data-id="{{$item->id}}" style="cursor: pointer;">Make Payment</a> {{--singleSellInvoiceReceivePaymentModalView  cursor: not-allowed !important;--}}
                                 <a class="dropdown-item singleViewSellInvoiceWisePaymentDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
-                                <a class="dropdown-item singleViewSellInvoiceOverallAjdustmentDiscountDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">Adjustment Less (Over All)</a>
-                                @if ($item->total_return_count == 0 && $item->total_delivered_count == 0)
+                                <a class="dropdown-item singleViewSellInvoiceOverallAjdustmentDiscountDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">Overall Less (Adjustment)</a>
+                                @if ($item->total_return_count == 0 && $item->total_delivered_count == 0 &&  $item->adjustment_amount == 0)
                                     <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list')}}?seid={{\Crypt::encrypt($item->id)}}" style="cursor: pointer">Edit Sell</a>
                                     @else
                                     <a class="dropdown-item" data-id="{{$item->id}}" href="#" style="cursor: not-allowed !important;">Edit Sell</a>
                                 @endif
-                                {{-- <a class="dropdown-item singleEditModal" data-id="{{$item->id}}" href="javascript:void(0)">Edit</a>
-                                <a class="dropdown-item singleDeleteModal" data-id="{{$item->id}}" data-name="{{$item->name}}" href="javascript:void(0)">Delete</a> --}}
-                            {{-- <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void(0)">Separated link</a>
-                            </div> --}}
                         </div>
                     </td>
                     <td> <a  class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">{{$item->invoice_no}} </a> </td>
@@ -68,7 +63,7 @@
                     <td>{{$item->totalInvoicePayableAmountAfterRefundAfterDiscount()}}</td>
                     <td>{{$item->total_paid_amount}}</td>
                     <td>{{$item->total_due_amount}}</td>
-                    <td>{{$item->total_discount}}</td>
+                    <td>{{($item->total_discount + $item->adjustment_amount)}}</td>
                     <td>{{paymentStatus_hh($item->totalInvoicePayableAmountAfterRefundAfterDiscount(),$item->total_paid_amount)}}</td>
                     <td>{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                     <td>{{$item->totalSellItemAfterRefund()}}</td>
@@ -77,7 +72,7 @@
                         $totalSellAmount += $item->totalInvoicePayableAmountAfterRefundAfterDiscount();
                         $totalPaidAmount += $item->total_paid_amount;
                         $totalDueAmount += $item->total_due_amount;
-                        $totalLessAmount += $item->total_discount;
+                        $totalLessAmount += ($item->total_discount + $item->adjustment_amount);
                         $totalItem += $item->totalSellItemAfterRefund();
                     @endphp
                 </tr>
