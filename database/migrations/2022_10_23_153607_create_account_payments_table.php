@@ -32,6 +32,7 @@ class CreateAccountPaymentsTable extends Migration
                 $table->tinyInteger('cdf_type_id')->nullable()->comment('c=credit,d=debit,f=fund');
                 $table->decimal('payment_amount',20,2)->default(0);
                 $table->decimal('cdc_amount',20,2)->default(0)->comment('after credit/debit calculation amount');
+                $table->decimal('datewise_cdc_amount',20,2)->default(0)->comment('This field is used for every day wise credit debit calculation amount');
                 
                 $table->string('transaction_no',250)->nullable()->comment('all transaction no/id');
                 $table->text('payment_options')->nullable()->comment('payment method,payment option, bank option, mobile banking, card ,bank transfer etc details , array json format');

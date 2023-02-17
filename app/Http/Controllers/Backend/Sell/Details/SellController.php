@@ -158,7 +158,7 @@ class SellController extends Controller
                 $invoiceData = SellInvoice::findOrFail($request->sell_invoice_id);
                 //for payment processing 
                 $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Sell Due');
                 $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
                 $moduleRelatedData = [
                     'main_module_invoice_no' => $invoiceData->invoice_no,

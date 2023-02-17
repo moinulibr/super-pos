@@ -114,8 +114,16 @@ trait PaymentProcessTrait
         //required parameter 2 : $this->paymentCdfTypeId, $this->currentPaymentAmount
         $this->currentPaymentAmount = $payingAmountNow;
         $cdcAmountBeforeInsertingThisPayment = $this->currentCdcAmountAfterCalculationByCdfType();
-
         $ap->cdc_amount = $cdcAmountBeforeInsertingThisPayment;
+
+        //required parameter 2 : $this->paymentCdfTypeId, $this->currentPaymentAmount
+        $this->currentPaymentAmount = $payingAmountNow;
+        $datewiseCdcAmountBeforeInsertingThisPayment = $this->datewiseCurrentCdcAmountAfterCalculationByCdfType();
+        $ap->datewise_cdc_amount = $datewiseCdcAmountBeforeInsertingThisPayment;
+       
+       
+        
+
 
         $options = currentPaymentOptionMethod_hh($paymentOptionId, $this->paymentProcessingRelatedOfAllRequestData['payment_method_id'],$this->paymentProcessingRelatedOfAllRequestData);
         //$ap->payment_options = json_encode($this->paymentProcessingRelatedOfAllRequestData['payment_method_details']);
@@ -151,4 +159,125 @@ trait PaymentProcessTrait
         return $cdcAmount;
     }
 
+    //current cdc amount after culculation by cdf type id
+    private function datewiseCurrentCdcAmountAfterCalculationByCdfType()
+    {
+        //required parameter 2 : $this->paymentCdfTypeId, $this->currentPaymentAmount
+
+        $lastPaymentAmount = AccountPayment::select('cdf_type_id','datewise_cdc_amount','payment_date')->where('payment_date','=',date('Y-m-d'))->latest()->first();
+        if($lastPaymentAmount)
+        {
+            $lastAmount = $lastPaymentAmount->datewise_cdc_amount;
+        }else{
+            $lastAmount = 0;
+        }
+        $cdcAmount = 0;
+        if($this->paymentCdfTypeId == 1)
+        {
+            $cdcAmount = $lastAmount + $this->currentPaymentAmount;
+        }else{
+            $cdcAmount = $lastAmount - $this->currentPaymentAmount;
+        }
+        return $cdcAmount;
+    }
+
+
+
+
+    //=================================================================================
+    //=================================================================================
+    protected function defaultCashPaymentProcessing(){
+        $this->insertCashAccountPaymentInvoice();
+        return true;
+    }
+    
+    //insert account payment invoice
+    protected function insertCashAccountPaymentInvoice()
+    {
+        $ap = new AccountPaymentInvoice();
+        $rand = rand(01,99);
+        $makeInvoice = date("iHsymd").$rand;
+        $ap->branch_id = authBranch_hh();
+        //$ap->payment_invoice_no = $makeInvoice;;
+        $ap->payment_reference_no = "";
+        $ap->main_module_id = $this->mainPaymentModuleId;
+        $ap->module_id = $this->paymentModuleId;
+        $ap->main_module_invoice_no = $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData['main_module_invoice_no'];
+        $ap->main_module_invoice_id = $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData['main_module_invoice_id'];
+        $ap->module_invoice_no = $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData['module_invoice_no'];
+        $ap->module_invoice_id = $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData['module_invoice_id'];
+
+        $ap->cdf_type_id = $this->paymentCdfTypeId;
+        $ap->payment_amount = $this->invoiceTotalPayingAmount;
+        $ap->user_id = $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData['user_id'];
+        $ap->received_by = authId_hh();
+        $ap->payment_date = date('Y-m-d');
+
+        $ap->payment_method_details = json_encode($this->paymentProcessingRelatedOfAllRequestData['payment_method_details']);
+
+        $ap->next_payment_date = $this->paymentProcessingRelatedOfAllRequestData['next_payment_date'];
+        $ap->payment_note = $this->paymentProcessingRelatedOfAllRequestData['payment_note'];
+        $ap->sms_send = $this->paymentProcessingRelatedOfAllRequestData['sms_send'];
+        $ap->email_send = $this->paymentProcessingRelatedOfAllRequestData['email_send'];
+        $ap->save();
+        $ap->payment_invoice_no = sprintf("%'.08d", $ap->id);
+        $ap->save();
+
+        $this->insertCashAccountPaymentInformation($ap,$paymentOptionId = 1);//cash
+
+        return $ap;
+    }
+
+    //insert account payment information
+    protected function insertCashAccountPaymentInformation($accPymntInvoice,$paymentOptionId)
+    {
+        $ap = new AccountPayment();
+        $ap->branch_id = $accPymntInvoice->branch_id;
+        $ap->account_payment_invoice_id = $accPymntInvoice->id;
+        $ap->payment_invoice_no = $accPymntInvoice->payment_invoice_no;
+        $ap->payment_reference_no = $accPymntInvoice->payment_reference_no;
+        $ap->main_module_id = $accPymntInvoice->main_module_id;
+        $ap->main_module_invoice_no = $accPymntInvoice->main_module_invoice_no;
+        $ap->main_module_invoice_id = $accPymntInvoice->main_module_invoice_id;
+        $ap->module_id = $accPymntInvoice->module_id;
+        $ap->module_invoice_no = $accPymntInvoice->module_invoice_no;
+        $ap->module_invoice_id = $accPymntInvoice->module_invoice_id;
+
+        $ap->cdf_type_id = $accPymntInvoice->cdf_type_id;
+        $ap->payment_date = $accPymntInvoice->payment_date;
+        $ap->cdf_type_id = $this->paymentCdfTypeId;
+        $ap->user_id = $accPymntInvoice->user_id;
+       
+        
+        $ap->account_id = 1;
+        $ap->payment_method_id = 1;
+      
+        $payingAmountNow = $accPymntInvoice->payment_amount;
+        
+        $ap->payment_amount = $payingAmountNow;
+
+        //required parameter 2 : $this->paymentCdfTypeId, $this->currentPaymentAmount
+        $this->currentPaymentAmount = $payingAmountNow;
+        $cdcAmountBeforeInsertingThisPayment = $this->currentCdcAmountAfterCalculationByCdfType();
+        $ap->cdc_amount = $cdcAmountBeforeInsertingThisPayment;
+        
+        //required parameter 2 : $this->paymentCdfTypeId, $this->currentPaymentAmount
+        $this->currentPaymentAmount = $payingAmountNow;
+        $datewiseCdcAmountBeforeInsertingThisPayment = $this->datewiseCurrentCdcAmountAfterCalculationByCdfType();
+        $ap->datewise_cdc_amount = $datewiseCdcAmountBeforeInsertingThisPayment;
+        
+
+        //$options = currentPaymentOptionMethod_hh($paymentOptionId, $this->paymentProcessingRelatedOfAllRequestData['payment_method_id'],$this->paymentProcessingRelatedOfAllRequestData);
+        //$ap->payment_options = json_encode($this->paymentProcessingRelatedOfAllRequestData['payment_method_details']);
+        $ap->payment_options = json_encode(['payment_method_id' => 1,'account_id_1' => 1]);
+        $ap->transaction_no = NULL;
+        
+
+        $ap->received_by = authId_hh();
+        $ap->save();
+        return $ap;
+    }
+
+    
+    //=================================================================================
 }

@@ -12,9 +12,11 @@ use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
 
 use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
 
+use App\Traits\Backend\Payment\PaymentProcessTrait;
+
 class CustomerTransactionalController extends Controller
 {
-    use CustomerPaymentProcessTrait, ManagingCalculationOfCustomerSummaryTrait;
+    use CustomerPaymentProcessTrait, PaymentProcessTrait, ManagingCalculationOfCustomerSummaryTrait;
 
 
     public function history($id)
@@ -98,13 +100,35 @@ class CustomerTransactionalController extends Controller
         ]);
     }
     //store loan data
-    public function soteAddLoanDate(Request $request)
+    public function soteAddLoanData(Request $request)
     {
         DB::beginTransaction();
         try {
             //$data['customer'] = Customer::select('id','next_payment_date')->findOrFail($request->customer_id);
             //$data['customer']->update(['next_payment_date'=>$request->next_payment_date]);
     
+            //payment process
+            if(($request->amount ?? 0) > 0){
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Customer Loan');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Customer Loan');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Debit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => NULL,
+                    'main_module_invoice_id' => NULL,
+                    'module_invoice_no' => NULL,
+                    'module_invoice_id' => NULL,
+                    'user_id' => $request->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->amount ;
+                $this->defaultCashPaymentProcessing();
+                //for payment processing 
+            } //payment process
+
+
+            //customer transaction process
             $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
             $this->amount = $request->amount;
             $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Loan');
@@ -116,6 +140,7 @@ class CustomerTransactionalController extends Controller
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');
             $this->processingOfAllCustomerTransaction();
+            //customer transaction process
 
             //calculation in the customer table
             //$dbField = 19;'current_loan';
@@ -159,7 +184,29 @@ class CustomerTransactionalController extends Controller
         try {
             //$data['customer'] = Customer::select('id','total_advance')->findOrFail($request->customer_id);
             //$data['customer']->update(['next_payment_date'=>$request->next_payment_date]);
-    
+            
+            //payment process
+            if(($request->amount ?? 0) > 0){
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Customer Advance');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Customer Advance');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => NULL,
+                    'main_module_invoice_id' => NULL,
+                    'module_invoice_no' => NULL,
+                    'module_invoice_id' => NULL,
+                    'user_id' => $request->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->amount ;
+                $this->defaultCashPaymentProcessing();
+                //for payment processing 
+            } //payment process
+
+
+            //customer transaction
             $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
             $this->amount = $request->amount;
             $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Advance');
@@ -215,6 +262,28 @@ class CustomerTransactionalController extends Controller
             //$data['customer'] = Customer::select('id')->findOrFail($request->customer_id);
             //$data['customer']->update(['next_payment_date'=>$request->next_payment_date]);
     
+            //payment process
+            if(($request->amount ?? 0) > 0){
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => NULL,
+                    'main_module_invoice_id' => NULL,
+                    'module_invoice_no' => NULL,
+                    'module_invoice_id' => NULL,
+                    'user_id' => $request->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->amount ;
+                $this->defaultCashPaymentProcessing();
+                //for payment processing 
+            } //payment process
+
+
+            //customer transaction
             $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
             $this->amount = $request->amount;
             $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due Payment');

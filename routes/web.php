@@ -255,7 +255,7 @@ Route::group(['middleware' => ['auth']], function ()
             Route::post('store/next/payment/date','CustomerTransactionalController@soteNextPaymentDate')->name('store.next.payment.date');
             //render add loan modal
             Route::get('render/add/loan/modal','CustomerTransactionalController@renderAddLoanModal')->name('render.add.loan.modal');
-            Route::post('store/add/loan','CustomerTransactionalController@soteAddLoanDate')->name('store.add.loan');
+            Route::post('store/add/loan','CustomerTransactionalController@soteAddLoanData')->name('store.add.loan');
             //render add advance modal
             Route::get('render/add/advance/modal','CustomerTransactionalController@renderAddAdvanceModal')->name('render.next.add.advance.modal');
             Route::post('store/add/advance','CustomerTransactionalController@soteAddAdvance')->name('store.next.add.advance');

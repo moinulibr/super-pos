@@ -70,12 +70,22 @@ use App\Models\Backend\Payment\Account;
         function allModule_hh()
         {
             return [
-                //value = label
-                1 => "Purchase",
-                2 => "Sell",
-                3 => "Purchase Return",
-                4 => "Sell Return",
-                5 => "Expense",
+                //value = label - never change this name/label.. coz, this label is used to another
+                1 => "Purchase", //debit
+                2 => "Sell", // credit
+                3 => "Purchase Return",//credit
+                4 => "Sell Return", //debit
+                5 => "Receive Sell Due",//credit
+                6 => "Receive Customer Previous Due",//credit - before using this software
+                7 => "Customer Loan",//debit
+                8 => "Customer Advance",//credit
+                9 => "Purchase Advance", //debit
+                10 => "Purchase Due", //debit
+                11 => "Purchase Damange",//credit
+                12 => "Purchase Previous Due", //debit - before using this software
+                13 => "Expense",//
+                14 => "Others Income",//
+                15 => "Other Cost",//
             ];
         }
     /*
