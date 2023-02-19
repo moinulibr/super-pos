@@ -93,7 +93,7 @@
                                              <strong>Overall Less <small>(Adjustment)</small></strong>
                                         </th>
                                         <th style="width: 25%;">
-                                            <span style="font-size:14px;"> {{$data->adjustment_amount}}</span>
+                                            <span style="font-size:14px;"> {{$data->overall_discount_amount}}</span>
                                         </th>
                                         <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
                                         <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
@@ -102,18 +102,18 @@
                                     </tr>
                                     <tr> <th colspan="4"></th></tr>
                                     <tr>
-                                        <th style="text-align:left"><small>Total Invoice Less </small> : {{number_format($data->adjustment_amount + $data->total_discount,2,'.','')}}</th>
+                                        <th style="text-align:left"><small>Total Invoice Less </small> : {{number_format($data->overall_discount_amount + $data->total_discount,2,'.','')}}</th>
                                         <th style="text-align:right">Overall Less <small>(Adjustment) Amount</small></th>
                                         <th>
                                             <input type="text" 
-                                            @if ($data->adjustment_amount && $data->adjustment_amount > 0)
+                                            @if ($data->overall_discount_amount && $data->overall_discount_amount > 0)
                                                 class="form-control receivingOverallAdjustmentAmount" disabled
                                                 @else class="form-control receivingOverallAdjustmentAmount"
                                             @endif >
                                             <input type="hidden" class="receivingOverallAdjustmentAmountId" value="{{$data->id}}">
                                         </th>
                                         <th>
-                                        <strong style="cursor: pointer;" @if ($data->adjustment_amount && $data->adjustment_amount > 0)
+                                        <strong style="cursor: pointer;" @if ($data->overall_discount_amount && $data->overall_discount_amount > 0)
                                             class="form-control form-control btn btn-sm btn-danger" disabled
                                             @else  class="receivingOverallAdjustmentLessAmount form-control btn btn-sm btn-primary"
                                         @endif >
@@ -461,7 +461,7 @@
                                         </td>
                                         <td>(Adjustment)</td>
                                         <td style="text-align:right;">
-                                            {{$data->adjustment_amount}}
+                                            {{$data->overall_discount_amount}}
                                         </td>
                                     </tr>
                                 </tbody>

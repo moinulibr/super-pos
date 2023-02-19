@@ -470,6 +470,9 @@ Route::group(['middleware' => ['auth']], function ()
                 Route::get('sell/single/invoice/overall/adjustment/discount','SellController@viewSingleInvoiceForOverallAdjustmentDiscount')->name('view.single.invoice.for.overall.adjustment.discount');
                 Route::get('sell/single/invoice/overall/adjustment/discount/receiving','SellController@viewSingleInvoiceForOverallAdjustmentDiscountReceiving')->name('view.single.invoice.for.overall.adjustment.discount.receiving');
                 
+                //sell update calculation summery
+                Route::get('sell/single/invoice/update/calculation/summery/{id}','SellController@updateSellCalculation')->name('update.sell.calculation');
+                
                 //payment
                 Route::get('sell/receive/payment/','SellController@receiveSingleInvoiceWisePayment')->name('view.single.invoice.receive.payment.modal');
                 Route::post('/sell/receive/invoice/wise/payment/','SellController@receivingSingleInvoiceWisePayment')->name('view.single.invoice.receiving.payment.modal');
@@ -488,7 +491,10 @@ Route::group(['middleware' => ['auth']], function ()
                 //print sell invoice :- pos print
                 Route::get('pos/print/from/sell/list/by/{invoiceId}','InvoicePrintController@posPrintFromSellList')->name('pos.print.from.sell.list');
                 Route::get('normal/print/from/sell/list/by/{invoiceId}','InvoicePrintController@normalPrintFromSellList')->name('normal.print.from.sell.list');
-                Route::get('normal/print/from/sell/quotation/list/by/{sellInvoiceId}','InvoicePrintController@normalPrintFromSellQuotationList')->name('normal.print.from.sell.quotation.list');
+                Route::get('normal/print/from/sell/quotation/list/by/{sellInvoiceId}','InvoicePrintController@normalPrintFromSellQuotationList')->name('normal.print.from.sell.quotation.list');    
+                
+                //download sell list pdf file
+                Route::post('list/pdf/download/','InvoicePrintController@sellListPdfDownload')->name('sell.list.pdf.download');
             });
         /*
         |-----------------------------------
@@ -736,7 +742,25 @@ Route::group(['middleware' => ['auth']], function ()
     |-----------------------------------
     */
 
+        
 
+    /*
+    |-----------------------------------
+    | Report
+    |-----------------------------------
+    */
+        Route::group(['as'=> 'admin.report.','prefix'=>'admin/report', 'namespace'=>'Backend\Report'],function(){
+            Route::get('daily/summary','AllReportController@dalilyReportSummary')->name('daily.summary');//->middleware(['permissions:unit|index']);
+            Route::get('daily/transactional/summary','AllReportController@dalilyTransactionalReportSummary')->name('daily.transactional.summary');//->middleware(['permissions:unit|index']);
+        });
+    /*
+    |-----------------------------------
+    | Report
+    |-----------------------------------
+    */  
+
+
+    
 
 });//end auth middleware
 

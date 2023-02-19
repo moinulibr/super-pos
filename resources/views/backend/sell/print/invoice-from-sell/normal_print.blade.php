@@ -97,6 +97,7 @@ html {
                     </div>
                 </div>
             </div>
+            
             <div class="row">
 
                 <div class="col-lg-12">
@@ -154,19 +155,19 @@ html {
                                         @endforeach
                                         <tr>
                                             <th colspan="2">Less : 
-                                                <span style="margin-left:5px;">
-                                                    {{$data->total_discount}} 
+                                                <span style="margin-left:2px;">
+                                                    {{$data->total_discount_amount}} 
                                                 </span> 
                                             </th>
                                             <th style="text-align: center;">
-                                                <span style="margin-right:5px;">
+                                                <span style="margin-right:1px;">
                                                     Shipping :  {{$data->shipping_cost}},     
                                                 </span>    
-                                                <span style="margin-left:5px;margin-right:5px;">
+                                                <span style="margin-left:1px;margin-right:1px;">
                                                     Other :  {{$data->others_cost}},     
                                                 </span>  
-                                                <span style="margin-left:8px;margin-right:2px;">
-                                                    Total :  {{$data->totalInvoicePayableAmountAfterRefundAfterDiscount()}}     
+                                                <span style="margin-left:1px;margin-right:1px;">
+                                                    Total :  {{$data->total_payable_amount}}     
                                                 </span> 
                                             </th>
                                             <th colspan="2" style="text-align: right;">

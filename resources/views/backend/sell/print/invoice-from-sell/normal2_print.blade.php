@@ -1,3 +1,77 @@
+<table summary="This table shows how to create responsive tables using RWD-Table-Patterns' functionality" class="table table-bordered table-hover">
+    <caption class="text-center">An example of a responsive table based on RWD-Table-Patterns' <a href="http://gergeo.se/RWD-Table-Patterns/" target="_blank"> solution</a>:</caption>
+    <thead>
+      <tr>
+          <th  style="width:3%;">#</th>
+          <th style="width:;">Invoice No</th>
+          <th style="width:;">Date(Time) </th>
+          <th style="width:;">Customer </th>
+          <th style="width:;">Total Amount </th>
+          <th style="width:;">Paid Amount </th>
+          <th style="width:;">Due Amount </th>
+          <th style="width:;">Less Amount </th>
+          <th style="width:;">Total Item </th>
+      </tr>
+    </thead>
+    <tbody>
+      @php
+                      $totalSellAmount = 0;
+                      $totalPaidAmount = 0;
+                      $totalDueAmount = 0;
+                      $totalLessAmount = 0;
+                      $totalItem = 0;
+                  @endphp
+                  @foreach ($datas as $index => $item)
+                      <tr>
+                          <th scope="row">
+                              {{$index + 1}}
+                          </th>
+                          <td> {{$item->invoice_no}}</td>
+                          <td>
+                              {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
+                          </td>
+                          <td>{{$item->customer?$item->customer->name:NULL}}</td>
+                          <td>{{$item->totalInvoicePayableAmountAfterRefundAfterDiscount()}}</td>
+                          <td>{{$item->total_paid_amount}}</td>
+                          <td>{{$item->totalInvoicePayableAmountAfterRefundAfterDiscount() - $item->total_paid_amount}}</td>
+                          <td>{{$item->totalInvoiceDiscountAmountWithAdjustment()}}</td>
+                          <td>{{$item->totalSellItemAfterRefund()}}</td>
+                          @php
+                              $totalSellAmount += $item->totalInvoicePayableAmountAfterRefundAfterDiscount();
+                              $totalPaidAmount += $item->total_paid_amount;
+                              $totalDueAmount += $item->total_due_amount;
+                              $totalLessAmount += $item->totalInvoiceDiscountAmountWithAdjustment();
+                              $totalItem += $item->totalSellItemAfterRefund();
+                          @endphp
+                      </tr>
+                  @endforeach
+    </tbody>
+    <tfoot>
+      <tr>
+          <th colspan="4" style="text-align:right">Total</th>
+          <th>{{number_format($totalSellAmount,2,'.','')}}</th>
+          <th>{{number_format($totalPaidAmount,2,'.','')}}</th>
+          <th>{{number_format($totalDueAmount,2,'.','')}}</th>
+          <th>{{number_format($totalLessAmount,2,'.','')}}</th>
+          <th>{{$totalItem}}</th>
+      </tr>
+    </tfoot>
+  </table>
+</div><!--end of .table-responsive-->
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="default-style layout-fixed layout-navbar-fixed">
     <!-- Mirrored from html.phoenixcoded.net/empire/bootstrap/default/pages_invoice-print.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 21 Jun 2020 11:02:16 GMT -->

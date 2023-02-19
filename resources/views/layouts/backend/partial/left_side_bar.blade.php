@@ -588,6 +588,31 @@
             <!---HRM--->
 
             <!---Reports--->
+            <li class="sidenav-item   @if(request()->is('admin/report/*')) open active @endif ">
+                <a href="javascript:" class="sidenav-link sidenav-toggle">
+                    <i class="sidenav-icon feather icon-activity"></i>
+                    <div>Reports</div>
+                    <div class="pl-1 ml-auto">
+                        <!-- <div class="badge badge-danger">Hot</div> -->
+                    </div>
+                </a>
+                <ul class="sidenav-menu">
+                    <li class="sidenav-item   @if(request()->is('admin/report/*')) active @endif ">
+                        <a href="{{route('admin.report.daily.transactional.summary')}}" class="sidenav-link">
+                            <div>Daily Ttransaction</div>
+                        </a>
+                    </li> 
+                    <li class="sidenav-item   @if(request()->is('admin/report/*')) active @endif ">
+                        <a href="{{route('admin.report.daily.summary')}}" class="sidenav-link">
+                            <div>Daily Report</div>
+                        </a>
+                    </li> 
+                    
+                </ul>
+            </li>
+            <!---Reports--->
+
+            <!---Reports--->
             {{-- <li class="sidenav-item  ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-home"></i>

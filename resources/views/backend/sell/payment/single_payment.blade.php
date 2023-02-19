@@ -76,7 +76,7 @@
 
                                     <td style="width:30%;background-color:#e67373;color:#ffff;text-align:right">Invoice Total Due Amount</td>
                                     <td style="width:0.25%;background-color:#e67373;color:#ffff;">:</td>
-                                    <td style="width:18%;background-color:#f15454;color:#ffff;"><strong class="total_invoice_payble_amount">{{ $data->due_amount }}</strong></td>
+                                    <td style="width:18%;background-color:#f15454;color:#ffff;"><strong class="total_invoice_payble_amount">{{ $data->total_due_amount }}</strong></td>
                                 </tr>
             
                             </table>

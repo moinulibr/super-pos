@@ -137,9 +137,9 @@ trait UpdateSellSummaryCalculationTrait
     private function updateSellInvoiceCalculation($primaryId) : bool {
         
         $existingData = SellInvoice::select('id','sell_quantity','total_selling_amount','total_refunded_amount','refundable_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
-        'total_selling_profit','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty',
+        'total_selling_profit','total_invoice_amount','overall_discount_amount','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty',
         'subtotal','total_discount','total_vat','shipping_cost','others_cost','round_amount','total_payable_amount',
-        'paid_amount','due_amount','adjustment_amount','refund_charge','reference_amount','total_paid_amount','total_due_amount','total_sell_item','total_refunded_item','total_item','payment_status','payment_type'
+        'paid_amount','due_amount','adjustment_amount','total_discount_amount','refund_charge','reference_amount','total_paid_amount','total_due_amount','total_sell_item','total_refunded_item','total_item','payment_status','payment_type'
         )->where('id',$primaryId)->first();
 
         // $existingData->sellProducts->sum('total_quantity'); 
@@ -161,7 +161,7 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_refunded_amount = $totalRefundedAmount;
         $existingData->refundable_amount = $totalRefundedAmount;
 
-        //total sold amount
+        //total sold amount :- current total_quantity * sold_price //its from sell_product_stocks
         $totalSoldAmount = $existingData->sellProducts->sum('total_sold_amount');
         $existingData->subtotal = $totalSoldAmount; 
         $existingData->total_sold_amount = $totalSoldAmount; 
@@ -187,23 +187,33 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_profit_from_product = $totalSellingProfit - $totalRefundedReducedProfit;
         //$existingData->total_profit = ($totalSellingProfit - $totalRefundedReducedProfit) - (0);//-(0)==others
         
-
-        $totalSoldAmountAmountAfterRefunded = $totalSoldAmount - $totalRefundedAmount;
+        $totalDiscountAmount = $existingData->overall_discount_amount + $existingData->total_discount;
+        $existingData->total_discount_amount = $totalDiscountAmount;
+        //total_invoice_amount , total_payable_amount, overall_discount_amount, total_discount_amount
+        
+        //after refunded sold amount
+        $totalSoldAmountAfterRefunded = $totalSoldAmount;
         //total_discount ,total_vat, shipping_cost,others_cost,round_amount//total_payable_amount,paid_amount,due_amount,adjustment_amount//refund_charge,reference_amount,total_paid_amount,total_due_amount, total_sell_item ,total_refunded_item ,total_item   
         //total payable amount calculation
-        $invoicePlusableCharge = $existingData->total_vat + $existingData->shipping_cost + $existingData->others_cost + $existingData->refund_charge;
-        $invoiceMinusableCost = $existingData->total_discount + $existingData->reference_amount;
+        $invoicePlusableCharge = $existingData->total_vat + $existingData->shipping_cost + $existingData->others_cost; //+ $existingData->refund_charge
+        $invoiceMinusableCost = $totalDiscountAmount; //+ $existingData->reference_amount
         if($existingData->round_type ==	'+'){
             $invoicePlusableCharge = $invoicePlusableCharge + $existingData->round_amount;
         }else{
             $invoiceMinusableCost = $invoiceMinusableCost + $existingData->round_amount;
         }
 
+        //total invoice amount calculation
+        $totalInvoiceAmount = ($totalSoldAmountAfterRefunded + $invoicePlusableCharge);
+        $existingData->total_invoice_amount = $totalInvoiceAmount;
+        //total invoice amount calculation
+
         //$existingData->adjustment_amount
-        $totalPayableAmount = (($totalSoldAmountAmountAfterRefunded + $invoicePlusableCharge) - ($invoiceMinusableCost));
+        $totalPayableAmount = (($totalSoldAmountAfterRefunded + $invoicePlusableCharge) - ($invoiceMinusableCost));
         $existingData->total_payable_amount = $totalPayableAmount ;
         //total payable amount calculation
-
+        
+      
 
         $totalPaidAmount = $existingData->total_paid_amount;
         //$totalDueAmount = $existingData->total_due_amount;
@@ -226,14 +236,16 @@ trait UpdateSellSummaryCalculationTrait
             $nowNewDueAmount = 0; 
         }
         $existingData->total_paid_amount = $newPaidAmount;
+        $existingData->paid_amount = $newPaidAmount;
         $existingData->total_due_amount = $nowNewDueAmount;
+        $existingData->due_amount = $nowNewDueAmount;
         //total due and paid section
 
 
     
         //total profit calculation
         $invoicePlusableChargeForInvoiceProfit = $existingData->refund_charge;
-        $invoiceMinusableCostForInvoiceProfit  = $existingData->total_discount + $existingData->reference_amount + $existingData->adjustment_amount;
+        $invoiceMinusableCostForInvoiceProfit  = $existingData->total_discount + $existingData->reference_amount + $existingData->total_discount_amount;
         if($existingData->round_type ==	'+'){
             $invoicePlusableChargeForInvoiceProfit = $invoicePlusableChargeForInvoiceProfit + $existingData->round_amount;
         }else{
@@ -452,7 +464,7 @@ trait UpdateSellSummaryCalculationTrait
            21 => 'total_payable_amount' ,
            22 => 'paid_amount',
            23 => 'due_amount',
-           24 => 'adjustment_amount' ,
+           24 => 'adjustment_amount' ,//overall_discount_amount
            25 => 'refund_charge' ,
            26 => 'reference_amount' ,
            27 => 'total_paid_amount' ,

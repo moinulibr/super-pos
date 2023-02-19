@@ -238,3 +238,106 @@ $(document).on('click','.deletingCustomerButton',function(e){
     });
 }); */
 
+
+  
+        // checked all order list 
+        $(document).on('click','.check_all_class',function()
+        {
+            if (this.checked == false)
+            {   
+                $('.pdfDownload').hide();
+                $('.check_single_class').prop('checked', false).change();
+                $(".check_single_class").each(function ()
+                {
+                    var id = $(this).attr('id');
+                    $(this).val('').change();
+                });
+            }
+            else
+            {
+                $('.pdfDownload').show();
+                $('.check_single_class').prop("checked", true).change();
+                $(".check_single_class").each(function ()
+                {
+                    var id = $(this).attr('id');
+                    $(this).val(id).change();
+                });
+            }
+        });
+    // checked all order list 
+
+    
+    //check single order list
+        $(document).on('click','.check_single_class',function()
+        {
+            var $b = $('input[type=checkbox]');
+            if($b.filter(':checked').length <= 0)
+            {
+                $('.pdfDownload').hide();
+                $('.check_all_class').prop('checked', false).change();
+            }
+
+            var id = $(this).attr('id');
+            if (this.checked == false)
+            {
+                $(this).prop('checked', false).change();
+                $(this).val('').change();
+            }else{
+                $('.pdfDownload').show();
+
+                $(this).prop("checked", true).change();
+                $(this).val(id).change();
+            }
+            
+            var ids = [];
+            $('input.check_single_class[type=checkbox]').each(function () {
+                if(this.checked){
+                    var v = $(this).val();
+                    ids.push(v);
+                }
+            });
+            if(ids.length <= 0)
+            {
+                $('.pdfDownload').hide();
+                $('.check_all_class').prop('checked', false).change();
+            }
+        });
+    //check single order list
+
+
+    //order action end  download)
+        /* $(document).on('click', '.published-button', function (){
+            var ids = [];
+            $('input.check_single_class[type=checkbox]').each(function () {
+                if(this.checked){
+                    var v = $(this).val();
+                    ids.push(v);
+                }
+            });
+            var url =  "";
+
+            if(ids.length <= 0) return ;
+            var page_no         = $('.page_no').val();
+            $.ajax({
+                url: url,
+                data: {ids: ids,page_no:page_no},
+                type: "POST",
+                beforeSend:function(){
+                    $('.loading').fadeIn();
+                    $('.loadingText').show();
+                },
+                success: function(response){
+                    if(response.status == true)
+                    {
+                        $('.alert-success').show();
+                        $('.text-left').text(response.message);
+                        defaultLoading(page_no);
+                    }
+                },
+                complete:function(){
+                    $('.loading').fadeOut();
+                    $('.loadingText').hide();
+                },
+            });
+        }); */
+    //order action end 

@@ -27,6 +27,7 @@ class CreateSellInvoicesTable extends Migration
                 $table->decimal('discount_amount',20,2)->default(0);
                 $table->string('discount_type',12)->nullable()->comment('percentage, fixed');
                 $table->decimal('total_discount',20,2)->default(0);
+                $table->decimal('total_discount_amount',20,2)->default(0);
                 $table->decimal('vat_amount',20,2)->default(0);
                 $table->decimal('total_vat',20,2)->default(0);
                 $table->decimal('shipping_cost',20,2)->default(0);
@@ -38,6 +39,7 @@ class CreateSellInvoicesTable extends Migration
                 $table->decimal('due_amount',20,2)->default(0)->comment('total due amount before refunded');
                 $table->string('adjustment_type',2)->nullable()->comment('plus(+), minus(-)');
                 $table->decimal('adjustment_amount',20,2)->default(0)->comment('invoice final less from customer');
+                $table->decimal('overall_discount_amount',20,2)->default(0)->comment('invoice final less from customer');
                 //$table->decimal('refunded_amount',20,2)->nullable();
                 
                 $table->decimal('refund_charge',20,2)->default(0)->comment('take from customer(company profit)');

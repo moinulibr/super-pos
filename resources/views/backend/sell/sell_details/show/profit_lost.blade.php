@@ -93,7 +93,7 @@
                                              <strong>Overall Less <small>(Adjustment)</small></strong>
                                         </th>
                                         <th style="width: 25%;">
-                                            <span style="font-size:14px;"> {{$data->adjustment_amount}}</span>
+                                            <span style="font-size:14px;"> {{$data->overall_discount_amount}}</span>
                                         </th>
                                         <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
                                         <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
@@ -441,7 +441,7 @@
                                         </td>
                                         <td>(Adjustment)</td>
                                         <td style="text-align:right;">
-                                            {{$data->adjustment_amount}}
+                                            {{$data->overall_discount_amount}}
                                         </td>
                                     </tr>
                                 </tbody>

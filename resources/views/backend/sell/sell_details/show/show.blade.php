@@ -45,7 +45,7 @@
                         <div class="mb-2">
                             <label>
                                 <strong>Payment Status: </strong>
-                                {{paymentStatus_hh($data->totalInvoicePayableAmountAfterRefundAfterDiscount(),$data->total_paid_amount)}}
+                                {{paymentStatus_hh($data->total_payable_amount,$data->total_paid_amount)}}
                             </label>
                         </div>
                     </div>
@@ -276,7 +276,7 @@
                                         </td>
                                         <td><small style="color:rgb(113, 22, 22)"> (before return)</small></td>
                                         <td style="text-align:right;">
-                                            {{$data->totalInvoicePayableAmountBeforeReturnWithoutDiscount()}}
+                                            {{$data->total_amount}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -286,6 +286,24 @@
                                         <td>(-)</td>
                                         <td style="text-align:right;">
                                             <span style="font-size:14px;">{{$data->total_discount}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Total Invoice Overall Less</strong>
+                                        </td>
+                                        <td>(Adjustment)</td>
+                                        <td style="text-align:right;">
+                                            {{$data->overall_discount_amount}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Total Invoice Less</strong>
+                                        </td>
+                                        <td></td>
+                                        <td style="text-align:right;">
+                                            {{$data->total_discount_amount}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -332,15 +350,6 @@
                                         <td></td>
                                         <td style="text-align:right;">
                                             {{$data->total_due_amount}}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <strong>Total Invoice Overall Less</strong>
-                                        </td>
-                                        <td>(Adjustment)</td>
-                                        <td style="text-align:right;">
-                                            {{$data->adjustment_amount}}
                                         </td>
                                     </tr>
                                 </tbody>

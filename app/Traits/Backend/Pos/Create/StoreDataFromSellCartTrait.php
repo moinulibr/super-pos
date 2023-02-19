@@ -415,20 +415,36 @@ trait StoreDataFromSellCartTrait
         $sellInvoice->shipping_cost = $sellInvoiceSummeryCart['totalShippingCost'];
         $sellInvoice->others_cost = $sellInvoiceSummeryCart['invoiceOtherCostAmount'];
         $sellInvoice->round_amount = $sellInvoiceSummeryCart['lineInvoiceRoundingAmount'];
+       
+        //total invoice amount == subtotal + shippping_cost + others_cost + vat +  
+        $totalInvoiceAmount = $sellInvoiceSummeryCart['lineInvoiceSubTotal'] + $sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'];
+
         $sign = "";
         if($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'] >=  $sellInvoiceSummeryCart['lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal'])
         {
             $sign = "+";
+            $totalInvoiceAmount = $totalInvoiceAmount + $sellInvoice->round_amount;
         }
         else if($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'] <  $sellInvoiceSummeryCart['lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal'])
         {
             $sign = "-";
+            $totalInvoiceAmount = $totalInvoiceAmount - $sellInvoice->round_amount;
         }else{
             $sign = "";
         }
         $sellInvoice->round_type = $sign;
+
+        //total invoice amount with or without rounding amount
+        $sellInvoice->total_invoice_amount = $totalInvoiceAmount;
+        $sellInvoice->total_discount_amount = $sellInvoiceSummeryCart['totalInvoiceDiscountAmount'];
+        $sellInvoice->sold_type = $this->sellCreateFormData['sell_type'] == 1 ? 1 : 4; //1 = direct sold, 2 = sold from quotation, 3 = quotation - this quotation is sold, 4 = quotation
+        $sellInvoice->reference_invoice_no = NULL;
+        //new option created 19-02-2023
+
+        //$lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal   = number_format((($this->requestAllCartData['subtotalFromSellCartList'] - $this->requestAllCartData['totalInvoiceDiscountAmount']) +  $this->requestAllCartData['totalVatAmountCalculation'] + $this->requestAllCartData['totalShippingCost'] + $this->requestAllCartData['invoiceOtherCostAmount']),2,'.', '');
+        //$lineInvoicePayableAmountWithRounding   = number_format(round($lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal),2,'.', '');
         $totalPayableAmount = $sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'];
-        $sellInvoice->total_payable_amount = $totalPayableAmount; 
+        $sellInvoice->total_payable_amount = $totalPayableAmount; //with rounding + shipping cost, others cost, vat - discount 
         
         $sellInvoice->sell_type = $this->sellCreateFormData['sell_type'];
         

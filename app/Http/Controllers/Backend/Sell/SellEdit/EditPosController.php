@@ -392,6 +392,7 @@ class EditPosController extends Controller
             $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
             
             $sellType = session()->get('sell_type_for_edit');
+            
             $this->updateSellRelatedDataFromSellEditCart($sellType,$sellEditCart->sell_invoice_no);
             
             //$sellNormalPrintUrl = route('admin.sell.edit.regular.normal.print.from.sell.edit.list',$sellLastId); 

@@ -328,7 +328,7 @@ class SellController extends Controller
                 //change amount from sellinvoice 
                 //$invoiceData->paid_amount = $invoiceData->paid_amount + $request->invoice_total_paying_amount ?? 0;
                 //$invoiceData->due_amount = $invoiceData->due_amount - $request->invoice_total_paying_amount ?? 0;
-                $invoiceData->adjustment_amount =  $request->amount ?? 0;
+                $invoiceData->overall_discount_amount =  $request->amount ?? 0;
                 $invoiceData->save();
                 $this->updateSellInvoiceCalculation($invoiceData->id);
 
@@ -367,14 +367,11 @@ class SellController extends Controller
 
 
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function updateSellCalculation($primaryId)
     {
-        //
+        $this->updateSellInvoiceCalculation($primaryId);
+        return redirect()->route('admin.sell.regular.sell.index');
     }
 
     /**
