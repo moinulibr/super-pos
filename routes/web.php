@@ -750,8 +750,8 @@ Route::group(['middleware' => ['auth']], function ()
     |-----------------------------------
     */
         Route::group(['as'=> 'admin.report.','prefix'=>'admin/report', 'namespace'=>'Backend\Report'],function(){
-            Route::get('daily/summary','AllReportController@dalilyReportSummary')->name('daily.summary');//->middleware(['permissions:unit|index']);
-            Route::get('daily/transactional/summary','AllReportController@dalilyTransactionalReportSummary')->name('daily.transactional.summary');//->middleware(['permissions:unit|index']);
+            Route::get('daily/transactional/summary','AllReportController@dalilyTransactionalReportSummary')->name('daily.transactional.report.summary');//->middleware(['permissions:unit|index']);
+            Route::get('daily/transactional/details','AllReportController@dalilyReportTransactionalSummaryDetails')->name('daily.report.transactional.details');//->middleware(['permissions:unit|index']);
         });
     /*
     |-----------------------------------

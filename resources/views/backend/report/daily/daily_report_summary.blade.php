@@ -64,15 +64,15 @@
         <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->   
         
 
-            <div class="col-md-12 text-center">
-                <h3 style="text-align: center;">Daily Summary Report</h3>
-                <h4 class="text-center">Date: 19-02-2023</h4>
+            <div class="col-md-12 text-center"  style="background-color:#ffff; padding-top:20px;">
+                <h3 style="text-align: center;">Daily  Report Summary</h3>
+                <h4 class="text-center">Date: {{date('d-m-Y')}}</h4>
             
-                <form class="d-flex justify-content-center">
+                {{-- <form class="d-flex justify-content-center">
                     <input type="date" id="date_search" value="2023-02-19" name="q" class="form-control margin-right-10 w-25" placeholder="Date" />
                     <button type="submit" class="btn ms-1 btn-primary pull-left"><i class="fa fa-search"></i> Search</button>
                     <a class="btn btn-secondary ms-1" href="https://amadersanitary.com/reports/daily-summery-report">Today</a>
-                </form>
+                </form> --}}
                 <br />
                 <hr />
             

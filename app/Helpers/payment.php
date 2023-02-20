@@ -78,14 +78,15 @@ use App\Models\Backend\Payment\Account;
                 5 => "Receive Sell Due",//credit
                 6 => "Receive Customer Previous Due",//credit - before using this software
                 7 => "Customer Loan",//debit
-                8 => "Customer Advance",//credit
-                9 => "Purchase Advance", //debit
-                10 => "Purchase Due", //debit
-                11 => "Purchase Damange",//credit
-                12 => "Purchase Previous Due", //debit - before using this software
-                13 => "Expense",//
-                14 => "Others Income",//
-                15 => "Other Cost",//
+                8 => "Customer Loan Return",//credit
+                9 => "Customer Advance",//credit
+                10 => "Supplier Advance", //debit
+                11 => "Supplier Due Payment", //debit
+                12 => "Purchase Damange",//credit
+                13 => "Supplier Previous Due", //debit - before using this software
+                14 => "Expense",//
+                15 => "Others Income",//
+                16 => "Other Cost",//
             ];
         }
     /*

@@ -598,13 +598,13 @@
                 </a>
                 <ul class="sidenav-menu">
                     <li class="sidenav-item   @if(request()->is('admin/report/*')) active @endif ">
-                        <a href="{{route('admin.report.daily.transactional.summary')}}" class="sidenav-link">
-                            <div>Daily Ttransaction</div>
+                        <a href="{{route('admin.report.daily.transactional.report.summary')}}" class="sidenav-link">
+                            <div>Daily Report Summary</div>
                         </a>
                     </li> 
                     <li class="sidenav-item   @if(request()->is('admin/report/*')) active @endif ">
-                        <a href="{{route('admin.report.daily.summary')}}" class="sidenav-link">
-                            <div>Daily Report</div>
+                        <a href="{{route('admin.report.daily.report.transactional.details')}}" class="sidenav-link">
+                            <div>Daily Report Details</div>
                         </a>
                     </li> 
                     

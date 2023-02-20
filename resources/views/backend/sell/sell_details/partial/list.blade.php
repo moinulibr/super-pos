@@ -31,7 +31,7 @@
             </thead>
             <tbody>
                 @php
-                    $totalSellAmount = 0;
+                    $totalPayableAmount = 0;
                     $totalPaidAmount = 0;
                     $totalDueAmount = 0;
                     $totalLessAmount = 0;
@@ -105,8 +105,8 @@
                         <td style="text-align:center;">{{$item->totalSellItemAfterRefund()}}</td>
                         <td style="text-align:center;">{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
                         @php
-                            $totalSellAmount += $item->total_payable_amount;
-                            /* $totalSellAmount += $item->totalInvoicePayableAmountAfterRefundAfterDiscount(); */
+                            $totalPayableAmount += $item->total_payable_amount;
+                            /* $totalPayableAmount += $item->totalInvoicePayableAmountAfterRefundAfterDiscount(); */
                             $totalPaidAmount += $item->total_paid_amount;
                             $totalDueAmount += $item->total_due_amount;
                             $totalLessAmount += $item->total_discount_amount;
@@ -119,7 +119,7 @@
             <tfoot>
                 <tr>
                     <th colspan="7" style="text-align:right">Total</th>
-                    <th style="text-align:center;">{{number_format($totalSellAmount,2,'.','')}}</th>
+                    <th style="text-align:center;">{{number_format($totalPayableAmount,2,'.','')}}</th>
                     <th style="text-align:center;">{{number_format($totalPaidAmount,2,'.','')}}</th>
                     <th style="text-align:center;">{{number_format($totalDueAmount,2,'.','')}}</th>
                     <th style="text-align:center;">{{number_format($totalLessAmount,2,'.','')}}</th>
