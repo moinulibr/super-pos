@@ -467,8 +467,8 @@ Route::group(['middleware' => ['auth']], function ()
                 Route::get('sell/single/view','SellController@singleView')->name('single.view');//->middleware(['permissions:unit|index']);
                 Route::get('sell/single/invoice/profit/loss','SellController@viewSingleInvoiceProfitLoss')->name('view.single.invoice.profit.loss');
                 //over all invoice adjustment discount
-                Route::get('sell/single/invoice/overall/adjustment/discount','SellController@viewSingleInvoiceForOverallAdjustmentDiscount')->name('view.single.invoice.for.overall.adjustment.discount');
-                Route::get('sell/single/invoice/overall/adjustment/discount/receiving','SellController@viewSingleInvoiceForOverallAdjustmentDiscountReceiving')->name('view.single.invoice.for.overall.adjustment.discount.receiving');
+                Route::get('sell/single/invoice/overall/discount','SellController@viewSingleInvoiceForOverallDiscount')->name('view.single.invoice.for.overall.discount');
+                Route::get('sell/single/invoice/overall/discount/receiving','SellController@viewSingleInvoiceForOverallDiscountReceiving')->name('view.single.invoice.for.overall.discount.receiving');
                 
                 //sell update calculation summery
                 Route::get('sell/single/invoice/update/calculation/summery/{id}','SellController@updateSellCalculation')->name('update.sell.calculation');
@@ -494,6 +494,7 @@ Route::group(['middleware' => ['auth']], function ()
                 Route::get('normal/print/from/sell/quotation/list/by/{sellInvoiceId}','InvoicePrintController@normalPrintFromSellQuotationList')->name('normal.print.from.sell.quotation.list');    
                 
                 //download sell list pdf file
+                //Route::post('list/normat/print/','InvoicePrintController@sellListNormalPrint')->name('sell.list.normal.print');
                 Route::post('list/pdf/download/','InvoicePrintController@sellListPdfDownload')->name('sell.list.pdf.download');
             });
         /*
@@ -635,7 +636,14 @@ Route::group(['middleware' => ['auth']], function ()
             //stock history
             Route::get('stock/history/list','StockController@stockHistoryList')->name('stock.history.list');
             Route::get('show/single/product/stock/history','StockController@showSingleProductStockHistory')->name('show.single.product.stock.history');
+            
+            //check stock to others branch : before start api call
+            Route::get('check/stock/from/other/branch','StockController@checkStockFromOtherBranch')->name('check.stock.from.other.branch');
+        });
 
+        //stock check api
+        Route::group(['prefix'=>'admin/product/stock','as'=> 'admin.product.stock.', 'namespace'=>'Backend\Stock'],function(){
+            //Route::get('add/initial/stock','StockController@addInitialStock')->name('add.initial.stock');
         });
     /*
     |-----------------------------------

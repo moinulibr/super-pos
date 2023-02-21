@@ -108,28 +108,28 @@ table caption {
                             $totalItem = 0;
                         @endphp
                         @foreach ($datas as $index => $item)
-                            <tr>
-                                <th scope="row">
-                                    {{$index + 1}}
-                                </th>
-                                <td> {{$item->invoice_no}}</td>
-                                <td>
-                                    {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
-                                </td>
-                                <td>{{$item->customer?$item->customer->name:NULL}}</td>
-                                <td>{{$item->totalInvoicePayableAmountAfterRefundAfterDiscount()}}</td>
-                                <td>{{$item->total_paid_amount}}</td>
-                                <td>{{$item->totalInvoicePayableAmountAfterRefundAfterDiscount() - $item->total_paid_amount}}</td>
-                                <td>{{$item->totalInvoiceDiscountAmountWithAdjustment()}}</td>
-                                <td>{{$item->totalSellItemAfterRefund()}}</td>
-                                @php
-                                    $totalSellAmount += $item->totalInvoicePayableAmountAfterRefundAfterDiscount();
-                                    $totalPaidAmount += $item->total_paid_amount;
-                                    $totalDueAmount += $item->total_due_amount;
-                                    $totalLessAmount += $item->totalInvoiceDiscountAmountWithAdjustment();
-                                    $totalItem += $item->totalSellItemAfterRefund();
-                                @endphp
-                            </tr>
+                        <tr>
+                            <th scope="row">
+                                {{$index + 1}}
+                            </th>
+                            <td> {{$item->invoice_no}}</td>
+                            <td>
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
+                            </td>
+                            <td>{{$item->customer?$item->customer->name:NULL}}</td>
+                            <td>{{$item->total_payable_amount}}</td>
+                            <td>{{$item->total_paid_amount}}</td>
+                            <td>{{$item->total_due_amount}}</td>
+                            <td>{{$item->total_discount_amount}}</td>
+                            <td>{{$item->totalSellItemAfterRefund()}}</td>
+                            @php
+                                $totalSellAmount += $item->total_payable_amount;
+                                $totalPaidAmount += $item->total_paid_amount;
+                                $totalDueAmount += $item->total_due_amount;
+                                $totalLessAmount += $item->total_discount_amount;
+                                $totalItem += $item->totalSellItemAfterRefund();
+                            @endphp
+                        </tr>
                         @endforeach
                     </tbody>
                     <tfoot>

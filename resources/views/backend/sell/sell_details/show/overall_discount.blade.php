@@ -90,7 +90,7 @@
                                     </tr>
                                     <tr>
                                         <th  style="width: 25%;">
-                                             <strong>Overall Less <small>(Adjustment)</small></strong>
+                                             <strong>Overall Less </strong>
                                         </th>
                                         <th style="width: 25%;">
                                             <span style="font-size:14px;"> {{$data->overall_discount_amount}}</span>
@@ -103,21 +103,22 @@
                                     <tr> <th colspan="4"></th></tr>
                                     <tr>
                                         <th style="text-align:left"><small>Total Invoice Less </small> : {{number_format($data->overall_discount_amount + $data->total_discount,2,'.','')}}</th>
-                                        <th style="text-align:right">Overall Less <small>(Adjustment) Amount</small></th>
+                                        <th style="text-align:right">Overall Less Amount</th>
                                         <th>
                                             <input type="text" 
                                             @if ($data->overall_discount_amount && $data->overall_discount_amount > 0)
-                                                class="form-control receivingOverallAdjustmentAmount" disabled
-                                                @else class="form-control receivingOverallAdjustmentAmount"
+                                                class="form-control receivingOverallDiscountAmount" disabled
+                                                @else class="form-control receivingOverallDiscountAmount"
                                             @endif >
-                                            <input type="hidden" class="receivingOverallAdjustmentAmountId" value="{{$data->id}}">
+                                            <input type="hidden" class="receivingOverallDiscountAmountId" value="{{$data->id}}">
+                                            <input type="hidden" class="totalNetProfitOfThisInvoice" value="{{$data->totalInvoiceProfit()}}">
                                         </th>
                                         <th>
                                         <strong style="cursor: pointer;" @if ($data->overall_discount_amount && $data->overall_discount_amount > 0)
                                             class="form-control form-control btn btn-sm btn-danger" disabled
-                                            @else  class="receivingOverallAdjustmentLessAmount form-control btn btn-sm btn-primary"
+                                            @else class="receivingOverallDiscountAmountSubmit form-control btn btn-sm btn-primary"
                                         @endif >
-                                            Receive Adjustment Amount <img class="submit_button_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                            Receive Overall Amount <img class="submit_button_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                         </strong>
                                     </th>
                                     </tr>
@@ -459,7 +460,7 @@
                                         <td colspan="2">
                                             <strong>Total Invoice Overall Less</strong>
                                         </td>
-                                        <td>(Adjustment)</td>
+                                        <td></td>
                                         <td style="text-align:right;">
                                             {{$data->overall_discount_amount}}
                                         </td>

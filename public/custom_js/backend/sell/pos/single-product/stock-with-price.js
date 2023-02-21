@@ -45,6 +45,45 @@
 
 
 
+    /*
+    |----------------------------------------------------------------
+    | request for other branch product stock : api call and response
+    |----------------------------------------------------------------
+    */
+        jQuery(document).on('click','.requestForOtherBranchProductStock',function(e){
+            e.preventDefault();
+            $('.display-other-branch-product-stock-section').fadeToggle();
+            return ;
+            var url = jQuery('.showProductDetailsModalRoute').val();
+            var id  = jQuery(this).data('id');
+            jQuery.ajax({
+                url:url,
+                data:{id:id},
+                beforeSend:function(){
+                    jQuery('.product_rendering_processing_gif').fadeIn();
+                },
+                success:function(response){
+                    if(response.status == true)
+                    {
+                        jQuery('#showProductDetailModal').html(response.html).modal('show');
+                        jQuery('.display-product-stock-with-price-section').html(response.stock);
+                        defaultSelectedProductStockSellingPriceAndQuantityCalculation();
+                    }
+                },
+                complete:function(){
+                    jQuery('.product_rendering_processing_gif').fadeOut();
+                },
+            });
+        });
+    /*
+    |----------------------------------------------------------------
+    | request for other branch product stock : api call and response
+    |----------------------------------------------------------------
+    */
+
+
+
+
 
 
     /*

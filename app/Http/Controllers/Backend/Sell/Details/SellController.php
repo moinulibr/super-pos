@@ -260,10 +260,10 @@ class SellController extends Controller
 
 
     
-    public function viewSingleInvoiceForOverallAdjustmentDiscount(Request $request)
+    public function viewSingleInvoiceForOverallDiscount(Request $request)
     {
         $data['data']  =  SellInvoice::where('id',$request->id)->first();
-        $html = view('backend.sell.sell_details.show.overall_adjustment',$data)->render();
+        $html = view('backend.sell.sell_details.show.overall_discount',$data)->render();
         return response()->json([
             'status' => true,
             'html' => $html
@@ -271,7 +271,7 @@ class SellController extends Controller
     }
 
     //store receiving single invoice swise payment
-    public function viewSingleInvoiceForOverallAdjustmentDiscountReceiving(Request $request)
+    public function viewSingleInvoiceForOverallDiscountReceiving(Request $request)
     {
         //return $request;
         DB::beginTransaction();
@@ -368,6 +368,7 @@ class SellController extends Controller
 
 
 
+    //for sellinvoice table update all single invoice calculation
     public function updateSellCalculation($primaryId)
     {
         $this->updateSellInvoiceCalculation($primaryId);

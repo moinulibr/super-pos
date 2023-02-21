@@ -90,9 +90,9 @@ class ProductController extends Controller
             if($request->search)
             {
                 $product->where('name','like','%'.$search.'%')
+                        ->orWhere('custom_code','like','%'.$search.'%')
                         ->orWhere('sku','like','%'.$search.'%')
                         ->orWhere('bacode','like','%'.$search.'%')
-                        ->orWhere('custom_code','like','%'.$search.'%')
                         ->orWhere('company_code','like','%'.$search.'%');
             }
             if($supplier_id)

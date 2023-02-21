@@ -164,7 +164,7 @@
 
 
 //-----------------------------------------------------------------------
-    $(document).on('click','.singleViewSellInvoiceOverallAjdustmentDiscountDetailsModal',function(e){
+    $(document).on('click','.singleViewSellInvoiceOverallDiscountDetailsModal',function(e){
         e.preventDefault();
         var url = $('.sellViewSingleInvoiceOverallAdjustmentDiscountModalRoute').val();
         var id = $(this).data('id');
@@ -180,16 +180,21 @@
         });
     });
     
-    $(document).on('click','.receivingOverallAdjustmentLessAmount',function(e){
+    $(document).on('click','.receivingOverallDiscountAmountSubmit',function(e){
         e.preventDefault();
         var url = $('.sellViewSingleInvoiceOverallAdjustmentDiscountReceivingRouteUrl').val();
-        var amount = $('.receivingOverallAdjustmentAmount').val();
-        var id = $('.receivingOverallAdjustmentAmountId').val();
-        $('.receivingOverallAdjustmentLessAmount').attr('disabled',true);
+        var amount = parseFloat($('.receivingOverallDiscountAmount').val());
+        var id = $('.receivingOverallDiscountAmountId').val();
+        var netProfit = parseFloat($('.totalNetProfitOfThisInvoice').val());
         if(!amount){
             alert('Amount is required');
             return;
         }
+        if(netProfit <= amount){
+            alert('Invalid Amount');
+            return;
+        }
+        $('.receivingOverallDiscountAmountSubmit').attr('disabled',true);
         $.ajax({
             url:url,
             data:{id:id,amount:amount},
@@ -211,97 +216,97 @@
 //-----------------------------------------------------------------------
 
 
-/* $(document).on('click','.singleDeleteModal',function(e){
-    e.preventDefault();
-    var id = $(this).data('id');
-    var name = $(this).data('name');
-    $('.deletingCustomerId').val(id);
-    $('.deletingCustomerName').text(name);
-    $('#deleteConfirmationModal').modal('show');
-});
-
-$(document).on('click','.deletingCustomerButton',function(e){
-    e.preventDefault();
-    var url = $('.deleteCustomerModalRoute').val();
-    var id = $('.deletingCustomerId').val();
-    $.ajax({
-        url:url,
-        data:{id:id},
-        success:function(response){
-            $('.deletingCustomerId').val('');
-            $.notify(response.message, response.type);
-            setTimeout(function(){
-                sellList();
-                $('#deleteConfirmationModal').modal('hide');//hide modal
-            },1000);
-        }
+    /* $(document).on('click','.singleDeleteModal',function(e){
+        e.preventDefault();
+        var id = $(this).data('id');
+        var name = $(this).data('name');
+        $('.deletingCustomerId').val(id);
+        $('.deletingCustomerName').text(name);
+        $('#deleteConfirmationModal').modal('show');
     });
-}); */
+
+    $(document).on('click','.deletingCustomerButton',function(e){
+        e.preventDefault();
+        var url = $('.deleteCustomerModalRoute').val();
+        var id = $('.deletingCustomerId').val();
+        $.ajax({
+            url:url,
+            data:{id:id},
+            success:function(response){
+                $('.deletingCustomerId').val('');
+                $.notify(response.message, response.type);
+                setTimeout(function(){
+                    sellList();
+                    $('#deleteConfirmationModal').modal('hide');//hide modal
+                },1000);
+            }
+        });
+    }); */
 
 
   
-        // checked all order list 
-        $(document).on('click','.check_all_class',function()
-        {
-            if (this.checked == false)
-            {   
-                $('.pdfDownload').hide();
-                $('.check_single_class').prop('checked', false).change();
-                $(".check_single_class").each(function ()
-                {
-                    var id = $(this).attr('id');
-                    $(this).val('').change();
-                });
-            }
-            else
+    // checked all order list 
+    $(document).on('click','.check_all_class',function()
+    {
+        if (this.checked == false)
+        {   
+            $('.PrintPdfDownload').hide();
+            $('.check_single_class').prop('checked', false).change();
+            $(".check_single_class").each(function ()
             {
-                $('.pdfDownload').show();
-                $('.check_single_class').prop("checked", true).change();
-                $(".check_single_class").each(function ()
-                {
-                    var id = $(this).attr('id');
-                    $(this).val(id).change();
-                });
-            }
-        });
+                var id = $(this).attr('id');
+                $(this).val('').change();
+            });
+        }
+        else
+        {
+            $('.PrintPdfDownload').show();
+            $('.check_single_class').prop("checked", true).change();
+            $(".check_single_class").each(function ()
+            {
+                var id = $(this).attr('id');
+                $(this).val(id).change();
+            });
+        }
+    });
     // checked all order list 
 
-    
+
     //check single order list
-        $(document).on('click','.check_single_class',function()
+    $(document).on('click','.check_single_class',function()
+    {
+        var $b = $('input[type=checkbox]');
+        if($b.filter(':checked').length <= 0)
         {
-            var $b = $('input[type=checkbox]');
-            if($b.filter(':checked').length <= 0)
-            {
-                $('.pdfDownload').hide();
-                $('.check_all_class').prop('checked', false).change();
-            }
+            $('.PrintPdfDownload').hide();
+            $('.check_all_class').prop('checked', false).change();
+        }
 
-            var id = $(this).attr('id');
-            if (this.checked == false)
-            {
-                $(this).prop('checked', false).change();
-                $(this).val('').change();
-            }else{
-                $('.pdfDownload').show();
+        var id = $(this).attr('id');
+        if (this.checked == false)
+        {
+            $(this).prop('checked', false).change();
+            $(this).val('').change();
+        }else{
+            $('.PrintPdfDownload').show();
 
-                $(this).prop("checked", true).change();
-                $(this).val(id).change();
-            }
-            
-            var ids = [];
-            $('input.check_single_class[type=checkbox]').each(function () {
-                if(this.checked){
-                    var v = $(this).val();
-                    ids.push(v);
-                }
-            });
-            if(ids.length <= 0)
-            {
-                $('.pdfDownload').hide();
-                $('.check_all_class').prop('checked', false).change();
+            $(this).prop("checked", true).change();
+            $(this).val(id).change();
+        }
+        
+        var ids = [];
+        $('input.check_single_class[type=checkbox]').each(function () {
+            if(this.checked){
+                var v = $(this).val();
+                ids.push(v);
             }
         });
+        if(ids.length <= 0)
+        {
+            $('.PrintPdfDownload').hide();
+            $('.check_all_class').prop('checked', false).change();
+        }
+    });
     //check single order list
 
 

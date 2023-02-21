@@ -90,7 +90,7 @@
                                     </tr>
                                     <tr>
                                         <th  style="width: 25%;">
-                                             <strong>Overall Less <small>(Adjustment)</small></strong>
+                                             <strong>Overall Less</strong>
                                         </th>
                                         <th style="width: 25%;">
                                             <span style="font-size:14px;"> {{$data->overall_discount_amount}}</span>
@@ -439,7 +439,7 @@
                                         <td colspan="2">
                                             <strong>Total Invoice Overall Less</strong>
                                         </td>
-                                        <td>(Adjustment)</td>
+                                        <td></td>
                                         <td style="text-align:right;">
                                             {{$data->overall_discount_amount}}
                                         </td>

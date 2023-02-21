@@ -139,7 +139,7 @@ trait UpdateSellSummaryCalculationTrait
         $existingData = SellInvoice::select('id','sell_quantity','total_selling_amount','total_refunded_amount','refundable_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
         'total_selling_profit','total_invoice_amount','overall_discount_amount','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty',
         'subtotal','total_discount','total_vat','shipping_cost','others_cost','round_amount','total_payable_amount',
-        'paid_amount','due_amount','adjustment_amount','total_discount_amount','refund_charge','reference_amount','total_paid_amount','total_due_amount','total_sell_item','total_refunded_item','total_item','payment_status','payment_type'
+        'paid_amount','due_amount','total_discount_amount','refund_charge','reference_amount','total_paid_amount','total_due_amount','total_sell_item','total_refunded_item','total_item','payment_status','payment_type'
         )->where('id',$primaryId)->first();
 
         // $existingData->sellProducts->sum('total_quantity'); 
@@ -193,7 +193,7 @@ trait UpdateSellSummaryCalculationTrait
         
         //after refunded sold amount
         $totalSoldAmountAfterRefunded = $totalSoldAmount;
-        //total_discount ,total_vat, shipping_cost,others_cost,round_amount//total_payable_amount,paid_amount,due_amount,adjustment_amount//refund_charge,reference_amount,total_paid_amount,total_due_amount, total_sell_item ,total_refunded_item ,total_item   
+        //total_discount ,total_vat, shipping_cost,others_cost,round_amount//total_payable_amount,paid_amount,due_amount//refund_charge,reference_amount,total_paid_amount,total_due_amount, total_sell_item ,total_refunded_item ,total_item   
         //total payable amount calculation
         $invoicePlusableCharge = $existingData->total_vat + $existingData->shipping_cost + $existingData->others_cost; //+ $existingData->refund_charge
         $invoiceMinusableCost = $totalDiscountAmount; //+ $existingData->reference_amount
@@ -208,7 +208,7 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_invoice_amount = $totalInvoiceAmount;
         //total invoice amount calculation
 
-        //$existingData->adjustment_amount
+        //$existingData->total_payable_amount
         $totalPayableAmount = (($totalSoldAmountAfterRefunded + $invoicePlusableCharge) - ($invoiceMinusableCost));
         $existingData->total_payable_amount = $totalPayableAmount ;
         //total payable amount calculation
@@ -464,7 +464,7 @@ trait UpdateSellSummaryCalculationTrait
            21 => 'total_payable_amount' ,
            22 => 'paid_amount',
            23 => 'due_amount',
-           24 => 'adjustment_amount' ,//overall_discount_amount
+           24 => 'overall_discount_amount',
            25 => 'refund_charge' ,
            26 => 'reference_amount' ,
            27 => 'total_paid_amount' ,

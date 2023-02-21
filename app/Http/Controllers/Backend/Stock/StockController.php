@@ -286,6 +286,7 @@ class StockController extends Controller
     public function stockHistoryList(){
 
     }
+   
     public function showSingleProductStockHistory(Request $request){
         $data['product'] = Product::findOrFail($request->id);
         $data['stockHistories'] = StockHistory::where('product_id',$request->id)->where('branch_id',authBranch_hh())->latest()->get();
@@ -296,6 +297,13 @@ class StockController extends Controller
         ]);
     }
 
+
+
+
+    //stock check from others branch
+    public function checkStockFromOtherBranch(){
+        return view('backend.stock.checkStockFromOtherBranch.index');
+    }
 
 
 }

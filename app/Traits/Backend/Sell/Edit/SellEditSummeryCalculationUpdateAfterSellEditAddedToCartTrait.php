@@ -66,7 +66,7 @@ trait SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait
         
         //total due and paid section
         //total_discount ,total_vat, shipping_cost,others_cost,round_amount
-        //total_payable_amount,paid_amount,due_amount,adjustment_amount
+        //total_payable_amount,paid_amount,due_amount
         //refund_charge,reference_amount,total_paid_amount,total_due_amount,
         $totalPayableAmount = $invoicePayableAmount;
         $totalPaidAmount = $existingData->total_paid_amount;

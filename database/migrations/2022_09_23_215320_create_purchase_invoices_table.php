@@ -37,8 +37,6 @@ class CreatePurchaseInvoicesTable extends Migration
                 $table->decimal('total_payable_amount',20,2)->nullable();
                 $table->decimal('paid_amount',20,2)->nullable();
                 $table->decimal('due_amount',20,2)->nullable();
-                $table->string('adjustment_type',2)->nullable()->comment('plus(+), minus(-)');
-                $table->decimal('adjustment_amount',20,2)->nullable();
                 $table->decimal('refundable_amount',20,2)->nullable();
                 $table->decimal('refunded_amount',20,2)->nullable();
                 $table->decimal('refund_charge',20,2)->nullable()->comment('take from customer(comp profit)');

@@ -30,7 +30,9 @@
                         <div class="row" style="background-color:#fbfbfb;;margin-bottom:10px;text-align:center;">
                             <div class="col-md-12" style="padding:5px;">
                                 <h4 style="color: forestgreen;">
-                                    {{$product->name}}   
+                                    <span class="requestForOtherBranchProductStock" style="cursor: pointer;">
+                                        {{$product->name}}
+                                    </span>
                                     <input type="hidden" id="main_product_id" class="product_id" name="product_id" value="{{$product->id}}">
                                     <input type="hidden" name="product_name" value="{{$product->name}}">
                                     <input type="hidden" name="custom_code" value="{{$product->custom_code}}">
@@ -55,7 +57,7 @@
                                                     <table style="width:100%;background-color:#f2f3f5;height:100%;">
                                                         <tr>
                                                             <td style="height:49%;text-align: center;background-color: #ffffff">
-                                                                {{productCustomCodeLabel_hh()}} : {{$product->custom_code }}
+                                                                {{productCustomCodeLabel_hh()}} : <span class="requestForOtherBranchProductStock" style="cursor: pointer;">{{$product->custom_code }}</span>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -121,6 +123,14 @@
                                             <div class="col-md-12">
                                                 <div class="table">
                                                     <div class="display-product-stock-with-price-section"></div>
+                                                    <br/>
+                                                    
+                                                    <div class="display-other-branch-product-stock-section" style="display:none;">
+                                                        <h3>Other branch stock</h3>
+                                                        <div class="render-other-branch-product-stock-detail">
+                                                            @include('backend.sell.pos.ajax-response.otherBranchProductStock.other_branch_product_stock')
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

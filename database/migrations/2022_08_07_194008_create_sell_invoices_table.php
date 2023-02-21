@@ -18,6 +18,8 @@ class CreateSellInvoicesTable extends Migration
                 $table->id();
                 $table->integer('branch_id')->nullable();
                 $table->tinyInteger('sell_type')->nullable()->comment('1=final sell, 2=quatation , 3=draft, 4=others');
+                $table->tinyInteger('sold_type')->nullable()->comment('1 = direct sold, 2 = sold from quotation, 3 = quotation - this quotation is sold, 4 = quotation');
+                $table->string('reference_invoice_no',50)->nullable()->comment('reference previous sell invoice no or sell from quotation invoice no');
                 $table->string('invoice_no',50)->nullable();
                 $table->decimal('total_sell_item',20,2)->default(0)->comment('sell creating time, total sell item');
                 $table->decimal('total_refunded_item',20,2)->default(0)->comment('sell refunded time, total refunded item');
@@ -34,11 +36,10 @@ class CreateSellInvoicesTable extends Migration
                 $table->decimal('others_cost',20,2)->default(0);
                 $table->decimal('round_amount',20,2)->default(0);
                 $table->string('round_type',2)->nullable()->comment('plus(+), minus(-)');
+                $table->decimal('total_invoice_amount',20,2)->default(0)->comment('(subtotal + total_vat) - (discount + shipping_cost + others_cost +- round_amount)');
                 $table->decimal('total_payable_amount',20,2)->default(0)->comment('(subtotal + total_vat) - (discount + shipping_cost + others_cost +- round_amount)');
                 $table->decimal('paid_amount',20,2)->default(0)->comment('total paid amount before refunded');
                 $table->decimal('due_amount',20,2)->default(0)->comment('total due amount before refunded');
-                $table->string('adjustment_type',2)->nullable()->comment('plus(+), minus(-)');
-                $table->decimal('adjustment_amount',20,2)->default(0)->comment('invoice final less from customer');
                 $table->decimal('overall_discount_amount',20,2)->default(0)->comment('invoice final less from customer');
                 //$table->decimal('refunded_amount',20,2)->nullable();
                 

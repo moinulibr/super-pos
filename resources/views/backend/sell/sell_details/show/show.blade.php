@@ -111,6 +111,7 @@
                             <table id="example1" class="table table-bordered table-striped table-hover">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>{{productCustomCodeLabel_hh()}}</th>
                                         <th style="width:30%;">Product</th>
                                         <th><small>Delivered qty</small></th>
@@ -124,11 +125,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data->sellProducts ? $data->sellProducts : NULL  as $item)
+                                    @foreach ($data->sellProducts ? $data->sellProducts : NULL  as $index => $item)
                                     <tr>
                                         @php
                                             $cats = json_decode($item->cart,true);
                                         @endphp
+                                        <td>{{($index + (1))}}</td>
                                         <td> {{$item->custom_code}}</td>
                                         <td style="width:30%;">
                                             @if (array_key_exists('productName',$cats))
@@ -292,7 +294,7 @@
                                         <td colspan="2">
                                             <strong>Total Invoice Overall Less</strong>
                                         </td>
-                                        <td>(Adjustment)</td>
+                                        <td></td>
                                         <td style="text-align:right;">
                                             {{$data->overall_discount_amount}}
                                         </td>

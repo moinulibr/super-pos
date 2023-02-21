@@ -38,96 +38,110 @@ class InvoicePrintController extends Controller
 
     //pdf sell list
     public function sellListPdfDownload(Request $request){
-
-        $sellInvoices  =  SellInvoice::whereIn('id',$request->checked_id)->get();
-        $data['datas'] = $sellInvoices;
-        ini_set('max_execution_time', 180); //3 minutes
-        
-        $html =  header('Content-Type: text/html; charset=utf-8');
       
-          $html .= '<h4 style="text-align:center;">'.config('app.name').'</h4>';
-            /* 
-                $html .= '<div style="margin:0 auto; padding:2%; width:94%;"><strong style="font-size: 19px">'.companyNameInInvoice_hh().'</strong><br>
-                <span>'.companyAddressLineOneInInvoice_hh().'</span> 
-                '.companyAddressLineTwoInInvoice_hh().'<br>'.
-                
-                '<span><strong>Call:  '.companyPhone_hh().' '. companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL ;
-                
-                $html .= companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL .' </strong> </span><br>' .'
-                </div>
-                <hr/>'; 
-            */
-        
+        if($request->action_type == 'pdf_download'){
 
-        $html .= '<table style="width:96%;margin:2%;border: 0.5px solid gray; border-spacing: 0;">
-        <tr>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">#</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Invoice No</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Date(Time)</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Customer</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Payable Amount</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Paid Amount</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Due Amount</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Less Amount</th>
-          <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Total Item</th>
-        </tr>';
-
-        $totalPayableAmount = 0;
-        $totalPaidAmount = 0;
-        $totalDueAmount = 0;
-        $totalDiscountAmount = 0;   
-        $totalItem = 0;
-
-        $dynamicRows = '';
-        foreach($sellInvoices as $index => $item)
-        {
-            $customer = Customer::select('id','name')->find($item->customer_id);
-            $customerName = NULL;
-            if($customer){
-                $customerName = $customer->name;
-            }
+            $sellInvoices  =  SellInvoice::whereIn('id',$request->checked_id)->get();
+            $data['datas'] = $sellInvoices;
+            ini_set('max_execution_time', 180); //3 minutes
             
-            $dynamicRows .= 
-            '<tr>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. ($index + (1)).'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->invoice_no.'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. date('d-m-Y h:i:s A',strtotime($item->created_at)).'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. html_entity_decode($customerName)  .'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_payable_amount.'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_paid_amount.'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_due_amount.'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_discount_amount.'</td>
-                <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->totalSellItemAfterRefund().'</td>
-            </tr>';
-
-            $totalPayableAmount += $item->total_payable_amount;
-            $totalPaidAmount += $item->total_paid_amount;
-            $totalDueAmount += $item->total_due_amount;
-            $totalDiscountAmount += $item->total_discount_amount;   
-            $totalItem += $item->totalSellItemAfterRefund();            
-        };
-        $html .= '<tbody>'.$dynamicRows.'</tbody';
-        //$html .= $tbody;
-
-        $html .= '<tfooter  style="background-color:gray;">
-            <tr>
-                <th style="border:1px solid gray; border-collapse: collapse;text-align:right" colspan="4">Total</th>
-                <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalPayableAmount,2,'.','').'</th>
-                <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalPaidAmount,2,'.','').'</th>
-                <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalDueAmount,2,'.','').'</th>
-                <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalDiscountAmount,2,'.','').'</th>
-                <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. $totalItem.'</th>
-            </tr>
-        </tfooter>';
-
-        $html .= '</table>';
-        
-        $pdf = \App::make('dompdf.wrapper');
-        //$pdf->loadHTML($html);
-        $pdfile = $pdf->loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf');
-        return $pdfile->download('sell-list-'.date('d-m-Y h:i:s A').'.pdf');
-        //return $pdf->stream();
+            $html =  header('Content-Type: text/html; charset=utf-8');
+          
+              $html .= '<h4 style="text-align:center;">'.config('app.name').'</h4>';
+                /* 
+                    $html .= '<div style="margin:0 auto; padding:2%; width:94%;"><strong style="font-size: 19px">'.companyNameInInvoice_hh().'</strong><br>
+                    <span>'.companyAddressLineOneInInvoice_hh().'</span> 
+                    '.companyAddressLineTwoInInvoice_hh().'<br>'.
+                    
+                    '<span><strong>Call:  '.companyPhone_hh().' '. companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL ;
+                    
+                    $html .= companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL .' </strong> </span><br>' .'
+                    </div>
+                    <hr/>'; 
+                */
+            
     
+            $html .= '<table style="width:96%;margin:2%;border: 0.5px solid gray; border-spacing: 0;">
+            <tr>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">#</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Invoice No</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Date(Time)</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Customer</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Bill Amount</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Cash Amount</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Due Amount</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Less Amount</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Total Amount</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Total Item</th>
+            </tr>';
+    
+            $totalPayableAmount = 0;
+            $totalPaidAmount = 0;
+            $totalDueAmount = 0;
+            $totalDiscountAmount = 0;            
+            $totalInvoiceAmount = 0;            
+            $totalItem = 0;
+    
+            $dynamicRows = '';
+            foreach($sellInvoices as $index => $item)
+            {
+                $customer = Customer::select('id','name')->find($item->customer_id);
+                $customerName = NULL;
+                if($customer){
+                    $customerName = $customer->name;
+                }
+                
+                $dynamicRows .= 
+                '<tr>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. ($index + (1)).'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->invoice_no.'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. date('d-m-Y h:i:s A',strtotime($item->created_at)).'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. html_entity_decode($customerName)  .'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_payable_amount.'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_paid_amount.'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_due_amount.'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_discount_amount.'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_invoice_amount.'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->totalSellItemAfterRefund().'</td>
+                </tr>';
+    
+                $totalPayableAmount += $item->total_payable_amount;
+                $totalPaidAmount += $item->total_paid_amount;
+                $totalDueAmount += $item->total_due_amount;
+                $totalDiscountAmount += $item->total_discount_amount;   
+                $totalInvoiceAmount += $item->total_invoice_amount;   
+                $totalItem += $item->totalSellItemAfterRefund();            
+            };
+            $html .= '<tbody>'.$dynamicRows.'</tbody';
+            //$html .= $tbody;
+    
+            $html .= '<tfooter  style="background-color:gray;">
+                <tr>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:right" colspan="4">Total</th>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalPayableAmount,2,'.','').'</th>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalPaidAmount,2,'.','').'</th>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalDueAmount,2,'.','').'</th>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalDiscountAmount,2,'.','').'</th>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'.  number_format($totalInvoiceAmount,2,'.','') .'</th>
+                    <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. $totalItem.'</th>
+                </tr>
+            </tfooter>';
+    
+            $html .= '</table>';
+            
+            $pdf = \App::make('dompdf.wrapper');
+            //$pdf->loadHTML($html);
+            $pdfile = $pdf->loadHTML($html)->setPaper('a4', 'landscape')->setWarnings(false)->save('myfile.pdf');
+            return $pdfile->download('sell-list-'.date('d-m-Y h:i:s A').'.pdf');
+            //return $pdf->stream();
+        }
+
+        else if($request->action_type == 'normal_print'){
+            ini_set('max_execution_time', 180); //3 minutes
+            $sellInvoices  =  SellInvoice::whereIn('id',$request->checked_id)->get();
+            $data['datas'] = $sellInvoices;
+            return view('backend.sell.print.invoice-from-sell.sell_list_print',$data);
+        }
 
         //ini_set('max_execution_time', 180); //3 minutes
         //$page =  view('backend.sell.print.invoice-from-sell.pdf_sell_list',$data);
@@ -141,6 +155,15 @@ class InvoicePrintController extends Controller
         //return $pdf->download('sell-list.pdf');//->setOptions(['defaultFont' => 'sans-serif'])
 
         return view('backend.sell.print.invoice-from-sell.pdf_sell_list',$data);
+    } 
+
+    public function sellListNormalPrint(Request $request){
+
+        $sellInvoices  =  SellInvoice::whereIn('id',$request->checked_id)->get();
+        $data['datas'] = $sellInvoices;
+        ini_set('max_execution_time', 180); //3 minutes
+        
+        return view('backend.sell.print.invoice-from-sell.sell_list_print',$data);
     } 
 
     //sell quotation print

@@ -20,18 +20,15 @@
     <!---page_title_of_content-->    
     @push('page_title_of_content')
         <div class="breadcrumbs layout-navbar-fixed">
-            <h4 class="font-weight-bold py-3 mb-0">Products  </h4>
+            <h4 class="font-weight-bold py-3 mb-0">Reports  </h4>
             <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="#"><i class="feather icon-home"></i></a>
                     </li>
-                    <li class="breadcrumb-item">Products</li>
-                    <li class="breadcrumb-item active">All Products</li>
+                    <li class="breadcrumb-item">Reports</li>
+                    <li class="breadcrumb-item active">Daily  Report Summary</li>
                 </ol>
-            </div>
-            <div class="products">
-                <a href="#">Add Product</a>
             </div>
         </div>
     @endpush

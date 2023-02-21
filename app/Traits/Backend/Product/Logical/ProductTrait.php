@@ -117,12 +117,14 @@ use App\Traits\Backend\Price\Logical\PricingTrait;
             | stock changing section
             |-----------------------------------------------------
             */
+                //never stop this section
                 $this->stock_id_FSCT                = regularStockId_hh();
                 $this->product_id_FSCT              = $product->id;
                 $this->stock_quantity_FSCT          = $product->initial_stock;
                 $this->unit_id_FSCT                 = $product->unit_id;
                 $product->available_stock           = $this->initialStockTypeIncrement();
                 $product->save();
+                
             /*
             |-----------------------------------------------------
             | stock changing section
@@ -193,13 +195,16 @@ use App\Traits\Backend\Price\Logical\PricingTrait;
 
         $product->color_id          = $request['color_id'];
 
-        $initialStock = $product->initial_stock;
-        if(isset($request['initial_stock']))
-        {
-            $initialStock = floatval($request['initial_stock']);
-        }
-        $product->initial_stock     = $initialStock;
-        $product->alert_stock       = floatval($request['alert_stock']);
+        /* 
+            $initialStock = $product->initial_stock;
+            if(isset($request['initial_stock']))
+            {
+                $initialStock = floatval($request['initial_stock']);
+            }
+            $product->initial_stock     = $initialStock;
+            $product->alert_stock       = floatval($request['alert_stock']); 
+        */
+
         $product->description       = $request['description'];
         $product->save();
         
@@ -234,19 +239,22 @@ use App\Traits\Backend\Price\Logical\PricingTrait;
         | product price section : update
         |-----------------------------------------------------
         */
-        if($product->initial_stock > 0 && 
-            ($product->getTotalAvailableStockFromProductStock() == 0 
-            && $product->getTotalUsedStockFromProductStock() == 0
+
+        /* 
+            if($product->initial_stock > 0 && 
+                ($product->getTotalAvailableStockFromProductStock() == 0 
+                && $product->getTotalUsedStockFromProductStock() == 0
+                )
             )
-        )
-        {
-            $this->stock_id_FSCT                = regularStockId_hh();
-            $this->product_id_FSCT              = $product->id;
-            $this->stock_quantity_FSCT          = $product->initial_stock;
-            $this->unit_id_FSCT                 = $product->unit_id;
-            $product->available_stock           = $this->updateStockWhenProductUpdateStockTypeIncrement();
-            $product->save();
-        }
+            {
+                $this->stock_id_FSCT                = regularStockId_hh();
+                $this->product_id_FSCT              = $product->id;
+                $this->stock_quantity_FSCT          = $product->initial_stock;
+                $this->unit_id_FSCT                 = $product->unit_id;
+                $product->available_stock           = $this->updateStockWhenProductUpdateStockTypeIncrement();
+                $product->save();
+            } 
+        */
 
         return $product;
 
