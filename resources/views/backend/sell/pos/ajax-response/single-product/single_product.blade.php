@@ -123,14 +123,17 @@
                                             <div class="col-md-12">
                                                 <div class="table">
                                                     <div class="display-product-stock-with-price-section"></div>
-                                                    <br/>
                                                     
-                                                    <div class="display-other-branch-product-stock-section" style="display:none;">
-                                                        <h3>Other branch stock</h3>
-                                                        <div class="render-other-branch-product-stock-detail">
-                                                            @include('backend.sell.pos.ajax-response.otherBranchProductStock.other_branch_product_stock')
+                                                    
+                                                    @if (otherBranchStockAPIActiveOrNot_hh())
+                                                        <div class="display-other-branch-product-stock-section" style="display:none;">
+                                                            <h3>Other branch stock</h3>
+                                                            <div class="render-other-branch-product-stock-detail">
+                                                                @include('backend.sell.pos.ajax-response.otherBranchProductStock.other_branch_product_stock')
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    @endif
+                                                    
                                                 </div>
                                             </div>
                                         </div>

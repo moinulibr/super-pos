@@ -13,86 +13,125 @@ use App\Models\Backend\ProductAttribute\Unit;
     | Setting, App Name, App Address, Phone, and others
     |----------------------------------------------------------------------------------------
     */
+        //function liveOrLocalEnvironment
+        function otherBranchStockAPIActiveOrNot_hh(){
+            if(env('APP_ENV') != 'local' && (env('APP_LIVE_URL') == liveUrlAS_hh() || env('APP_LIVE_URL') == liveUrlAS2_hh()))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        function liveUrlAS_hh(){
+            return 'http://as.dcootech.com';
+        } 
+        function liveUrlAS2_hh(){
+            return 'http://as2.dcootech.com';
+        }
+        function liveUrlKS_hh(){
+            return 'http://ks.dcootech.com';
+        }
+
         function AppName_hh()
         {
+            return env('APP_NAME');
             return "Khan Sanitary"; 
         }
         function AppPhone_hh()
-        {
+        { 
+            return env('APP_PHONE');
             return "01686 862056";
         }  
         function AppPhoneOne_hh()
-        {
+        { 
+            return env('APP_PHONE_ONE');
             return "01915 101091";
         }
         function AppPhoneTwo_hh()
-        {
+        { 
+            return env('APP_PHONE_TWO');
             return "01781 226972";
         }
         function AppFullAddress_hh()
-        {
+        { 
+            return env('APP_FULL_ADDRESS');
             return "Beside the Karim Jute Mill, Kanaipur,Faridpur";
         } 
         function AppAddressFirstLine_hh()
-        {
+        { 
+            return env('APP_ADDRESS_FIRST_LINE');
             return "Beside the Karim Jute Mill, Kanaipur";
         } 
         function AppAddressSecondLine_hh()
-        {
+        { 
+            return env('APP_ADDRESS_SECOND_LINE');
             return "Faridpur";
         }
         
         function companyName_hh()
-        {
+        { 
+            return env('APP_COMPANY_NAME');
             return "Khan Sanitary";
         }
         function companyNameInInvoice_hh()
-        {
+        { 
+            return env('APP_COMPANY_NAME_IN_INVOICE');
             return "মেসার্স খান সেনিটারি";
         }
         function companyPhone_hh()
-        {
+        { 
+            return env('APP_COMPANY_PHONE');
             return "01686 862056";
         } 
         function companyPhoneOne_hh()
-        {
+        { 
+            return env('APP_COMPANY_PHONE_ONE');
             return "01915 101091";
         } 
         function companyPhoneTwo_hh()
-        {
+        { 
+            return env('APP_COMPANY_PHONE_TWO');
             return "01781 226972";
         }
         function companyFullAddress_hh()
-        {   
+        {    
+            return env('APP_COMPANY_FULL_ADDRESS');
             return "Beside the Karim Jute Mill, Kanaipur,Faridpur";
         }
         function companyAddressLineOne_hh()
-        {   
+        {    
+            return env('APP_COMPANY_ADDRESS_LINE_ONE');
             return "Beside the Karim Jute Mill, Kanaipur";
         } 
         function companyAddressLineTwo_hh()
-        {   
+        {    
+            return env('APP_COMPANY_ADDRESS_LINE_TWO');
             return "Faridpur";
         }
         function companyFullAddressInInvoice_hh()
-        {   
+        {    
+            return env('APP_COMPANY_FULL_ADDRESS_IN_INVOICE');
             return "করিম জুট মিলের সাথে, কানাইপুর, ফরিদপুর";
         }
         function companyAddressLineOneInInvoice_hh()
-        {   
+        {    
+            return env('APP_COMPANY_ADDRESS_LINE_ONE_IN_INVOICE');
             return "করিম জুট মিলের সাথে, কানাইপুর,";
         }
         function companyAddressLineTwoInInvoice_hh()
-        {   
+        {    
+            return env('APP_COMPANY_ADDRESS_LINE_TWO_IN_INVOICE');
             return "ফরিদপুর";
         }
        
         function currencySymbol_hh()
-        {
+        { 
+            return env('APP_CURRENCY_SYMBOL');
             return " ৳";
         }    
         function productCustomCodeLabel_hh()
-        {
+        { 
+            return env('APP_PRODUCT_CUSTOM_CODE');
             return "KS Code";
         }
     /*

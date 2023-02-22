@@ -20,7 +20,7 @@ Route::get('cache-clear', function() {
     Artisan::call('config:cache');
     Artisan::call('view:clear');
     Artisan::call('route:clear');
-    return 'Configuration, Cache, View, Route clear';
+    return '<a href='.env('APP_LIVE_URL').'>Home '.env('APP_LIVE_URL').' - '. config('app.name').'</a>';
 });
 
 Route::get('storage-link', function() {

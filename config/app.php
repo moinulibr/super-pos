@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => "Khan Sanitary",//env('APP_NAME', 'Khan Sanitary'),
+    'name' => env('APP_NAME', 'Khan Sanitary'),//env('APP_NAME', 'Khan Sanitary'),
     //'name' => "Amader Sanitary",//env('APP_NAME', 'Amader Sanitary'),
     /*
     |--------------------------------------------------------------------------

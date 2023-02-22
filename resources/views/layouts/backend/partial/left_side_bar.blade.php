@@ -337,11 +337,13 @@
                             <div>Add Initial Stock</div>
                         </a>
                     </li> 
+                    @if (otherBranchStockAPIActiveOrNot_hh())
                     <li class="sidenav-item  @if(request()->is('admin/stock/*')) active @endif ">
                         <a href="{{route('admin.product.stock.check.stock.from.other.branch')}}" class="sidenav-link">
                             <div><small>Check Other Branch Stock</small></div>
                         </a>
                     </li> 
+                    @endif
                 </ul>
             </li>
             <!---Stock--->
