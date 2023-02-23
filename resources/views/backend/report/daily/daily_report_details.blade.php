@@ -2,7 +2,9 @@
 @section('page_title') Home Page @endsection
 @push('css')
 <style>
-
+    .table-bordered {
+        border: none;
+    }
 </style>
 @endpush
 
@@ -66,7 +68,7 @@
 
             <div class="card-body" style="background-color: #fff;">
                 <div class="col-md-12 text-center">
-                    <h3 style="text-align: center;">Daily Report - Transactional Details</h3>
+                    <h3 style="text-align: center;">Daily Report - Module Wise Transaction Details</h3>
                     <h4 class="text-center">Date: {{date('d-m-Y')}}</h4>
             
                     {{-- <form class="d-flex justify-content-center">
@@ -82,22 +84,24 @@
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
                         <tr role="row" class="bg-whitesmoke">
+                            <th>#</th>
                             <th>Date</th>
                             <th>Invoice No.</th>
-                            <th>Payable Amount</th>
-                            <th>Paid Amount</th>
+                            <th>Bill Amount</th>
+                            <th>Cash Amount</th>
                             <th>Due Amount</th>
                             <th>Payment Status</th>
                         </tr>
                         @php
-                            $totalPayableAmount = 0;
-                            $totalPaidAmount = 0;
-                            $totalDueAmount = 0;
+                            $totalSellPayableAmount = 0;
+                            $totalSellPaidAmount = 0;
+                            $totalSellDueAmount = 0;
                             $totalLessAmount = 0;
                             $totalItem = 0;
                         @endphp
                         @foreach ($sellInvoices as $item)
                             <tr role="row">
+                                <td>{{$loop->iteration}}</td>
                                 <td>
                                     {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                                 </td>
@@ -118,18 +122,19 @@
                                 </td>
                             </tr>
                             @php
-                                $totalPayableAmount += $item->total_payable_amount;
-                                $totalPaidAmount += $item->total_paid_amount;
-                                $totalDueAmount += $item->total_due_amount;
+                                $totalSellPayableAmount += $item->total_payable_amount;
+                                $totalSellPaidAmount += $item->total_paid_amount;
+                                $totalSellDueAmount += $item->total_due_amount;
                                 //$totalLessAmount += $item->total_discount_amount;
                                 //$totalItem += $item->totalSellItemAfterRefund();
                             @endphp
                         @endforeach
                         <tr class="bg-whitesmoke h6">
-                            <td colspan="2" style="text-align:right">Total</td>
-                            <td>{{number_format($totalPayableAmount,2,'.','')}}</td>
-                            <td>{{number_format($totalPaidAmount,2,'.','')}}</td>
-                            <td>{{number_format($totalDueAmount,2,'.','')}}</td>
+                            <td colspan="3" style="text-align:right">Total</td>
+                            <th>{{number_format($totalSellPayableAmount,2,'.','')}}</th>
+                            <th>{{number_format($totalSellPaidAmount,2,'.','')}}</th>
+                            <th>{{number_format($totalSellDueAmount,2,'.','')}}</th>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -147,9 +152,9 @@
                             <th>Payment Status</th>
                         </tr>
                         @php
-                            $totalPayableAmountForPurchase = 0;
-                            $totalPaidAmountForPurchase = 0;
-                            $totalDueAmountForPurchase = 0;
+                            $totalPurchasePayableAmount = 0;
+                            $totalPurchasePaidAmount = 0;
+                            $totalPurchaseDueAmount = 0;
                         @endphp
                         @foreach ($purchaseInvoices as $item)
                         <tr role="row">
@@ -163,16 +168,17 @@
                             <td>{{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}}</td>
                         </tr>
                         @php
-                            $totalPayableAmountForPurchase += $item->total_payable_amount;
-                            $totalPaidAmountForPurchase += $item->total_paid_amount;
-                            $totalDueAmountForPurchase += $item->due_amount;
+                            $totalPurchasePayableAmount += $item->total_payable_amount;
+                            $totalPurchasePaidAmount += $item->total_paid_amount;
+                            $totalPurchaseDueAmount += $item->due_amount;
                         @endphp
                         @endforeach
                         <tr class="bg-whitesmoke h6">
                             <td colspan="2" style="text-align:right">Total</td>
-                            <td>{{number_format($totalPayableAmountForPurchase,2,'.','')}}</td>
-                            <td>{{number_format($totalPaidAmountForPurchase,2,'.','')}}</td>
-                            <td>{{number_format($totalDueAmountForPurchase,2,'.','')}}</td>
+                            <th>{{number_format($totalPurchasePayableAmount,2,'.','')}}</th>
+                            <th>{{number_format($totalPurchasePaidAmount,2,'.','')}}</th>
+                            <th>{{number_format($totalPurchaseDueAmount,2,'.','')}}</th>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -257,43 +263,42 @@
                     <tbody>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
-                            <th>Payment Ref No.</th>
-                            <th>Invoice No./Ref. No.</th>
-                            <th>Payment Method</th>
-                            <th>Account</th>
+                            <th>Invoice No</th>
+                            <th>Customer Name</th>
+                            {{-- <th>Payment Method</th>
+                                <th>Account</th> --}}
                             <th>Receive Amount</th>
+                            <th>Receive By</th>
                         </tr>
+                        @php
+                            $totalCustomerDueReceivedAmount = 0;
+                        @endphp
+                        @foreach ($customerSellDueReceives as $item)
                         <tr role="row">
                             <td>
-                                11-01-2023
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                             </td>
                             <td>
-                                SI2023/006381
+                               {{$item->main_module_invoice_no}}
                             </td>
                             <td>
-                                003906
-                            </td>
-            
-                            <td>
-                                <small style="font-size: 11px;">
-                                    Cash<br />
-                                    (Cash)
-                                </small>
+                                {{$item->customers ? $item->customers->name : NULL}}
                             </td>
                             <td>
-                                <small style="font-size: 13px;">
-                                    Cash<br />
-                                    ()
-                                </small>
+                                {{$item->payment_amount}}
                             </td>
-            
                             <td>
-                                250.00
+                                {{$item->createdBY ? $item->createdBY->name : NULL}}
                             </td>
-                        </tr>
+                        </tr>     
+                        @php
+                            $totalCustomerDueReceivedAmount += $item->payment_amount;
+                        @endphp 
+                        @endforeach
                         <tr class="bg-whitesmoke h6">
-                            <td colspan="5"></td>
-                            <td>33595</td>
+                            <td colspan="3" style="text-align:right">Total</td>
+                            <th>{{number_format($totalCustomerDueReceivedAmount,2,'.','')}}</th>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -304,82 +309,81 @@
                     <tbody>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
-                            <th>Payment Ref No.</th>
-                            <th>Payment Method</th>
-                            <th>Account</th>
+                            <th>Customer Name</th>
+                            {{-- <th>Payment Method</th>
+                                <th>Account</th> --}}
                             <th>Receive Amount</th>
+                            <th>Receive By</th>
                         </tr>
+                        @php
+                            $totalCustomerPreviousDueReceivedAmount = 0;
+                        @endphp
+                        @foreach ($customerPreviousDueReceives as $item)
                         <tr role="row">
                             <td>
-                                11-01-2023
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                             </td>
                             <td>
-                                SI2023/006381
-                            </td>
-            
-                            <td>
-                                <small style="font-size: 11px;">
-                                    Cash<br />
-                                    (Cash)
-                                </small>
+                                {{$item->customers ? $item->customers->name : NULL}}
                             </td>
                             <td>
-                                <small style="font-size: 13px;">
-                                    Cash<br />
-                                    ()
-                                </small>
+                                {{$item->payment_amount}}
                             </td>
-            
                             <td>
-                                250.00
+                                {{$item->createdBY ? $item->createdBY->name : NULL}}
                             </td>
-                        </tr>
+                        </tr>     
+                        @php
+                            $totalCustomerPreviousDueReceivedAmount += $item->payment_amount;
+                        @endphp 
+                        @endforeach
                         <tr class="bg-whitesmoke h6">
-                            <td colspan="5"></td>
-                            <td>33595</td>
+                            <td colspan="2" style="text-align:right">Total</td>
+                            <th>{{number_format($totalCustomerPreviousDueReceivedAmount,2,'.','')}}</th>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
                 <br />
-
+                
+                
                 <h3 class="text-center">Customer Add Loan</h3>
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
-                            <th>Payment Ref No.</th>
-                            <th>Payment Method</th>
-                            <th>Account</th>
+                            <th>Customer Name</th>
+                            {{-- <th>Payment Method</th>
+                                <th>Account</th> --}}
                             <th>Receive Amount</th>
+                            <th>Receive By</th>
                         </tr>
+                        @php
+                            $totalCustomerAddLoanAmount = 0;
+                        @endphp
+                        @foreach ($customerAddLoans as $item)
                         <tr role="row">
                             <td>
-                                11-01-2023
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                             </td>
                             <td>
-                                SI2023/006381
-                            </td>
-            
-                            <td>
-                                <small style="font-size: 11px;">
-                                    Cash<br />
-                                    (Cash)
-                                </small>
+                                {{$item->customers ? $item->customers->name : NULL}}
                             </td>
                             <td>
-                                <small style="font-size: 13px;">
-                                    Cash<br />
-                                    ()
-                                </small>
+                                {{$item->payment_amount}}
                             </td>
-            
                             <td>
-                                250.00
+                                {{$item->createdBY ? $item->createdBY->name : NULL}}
                             </td>
-                        </tr>
+                        </tr>     
+                        @php
+                            $totalCustomerAddLoanAmount += $item->payment_amount;
+                        @endphp 
+                        @endforeach
                         <tr class="bg-whitesmoke h6">
-                            <td colspan="5"></td>
-                            <td>33595</td>
+                            <td colspan="2" style="text-align:right">Total</td>
+                            <th>{{number_format($totalCustomerAddLoanAmount,2,'.','')}}</th>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -390,39 +394,38 @@
                     <tbody>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
-                            <th>Payment Ref No.</th>
-                            <th>Payment Method</th>
-                            <th>Account</th>
+                            <th>Customer Name</th>
+                            {{-- <th>Payment Method</th>
+                                <th>Account</th> --}}
                             <th>Receive Amount</th>
+                            <th>Receive By</th>
                         </tr>
+                        @php
+                            $totalCustomerReceivedAdvanceAmount = 0;
+                        @endphp
+                        @foreach ($customerAddAdvances as $item)
                         <tr role="row">
                             <td>
-                                11-01-2023
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                             </td>
                             <td>
-                                SI2023/006381
-                            </td>
-            
-                            <td>
-                                <small style="font-size: 11px;">
-                                    Cash<br />
-                                    (Cash)
-                                </small>
+                                {{$item->customers ? $item->customers->name : NULL}}
                             </td>
                             <td>
-                                <small style="font-size: 13px;">
-                                    Cash<br />
-                                    ()
-                                </small>
+                                {{$item->payment_amount}}
                             </td>
-            
                             <td>
-                                250.00
+                                {{$item->createdBY ? $item->createdBY->name : NULL}}
                             </td>
-                        </tr>
+                        </tr>     
+                        @php
+                            $totalCustomerReceivedAdvanceAmount += $item->payment_amount;
+                        @endphp 
+                        @endforeach
                         <tr class="bg-whitesmoke h6">
-                            <td colspan="5"></td>
-                            <td>33595</td>
+                            <td colspan="2" style="text-align:right">Total</td>
+                            <th>{{number_format($totalCustomerReceivedAdvanceAmount,2,'.','')}}</th>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
@@ -490,73 +493,215 @@
                 <br />
                 <hr />
                 <br />
-                <h2 class="text-center">Daily Summery (Total)</h2>
-                <table class="table daily-summery table-bordered table-hover">
-                    <thead>
-                        <tr style="border-bottom: 1px solid lightgray;">
-                            <th>Account</th>
-                            <th style="width: 10%;">Debit</th>
-                            <th style="width: 10%;">Credit</th>
-                        </tr>
-                    </thead>
-            
-                    <tbody>
-                        <tr>
-                            <td>Sales Total</td>
-                            <td>90505</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Sales Receive</td>
-                            <td></td>
-                            <td>60975</td>
-                        </tr>
-            
-                        <tr>
-                            <td>Total Purchase</td>
-                            <td></td>
-                            <td>2413.45</td>
-                        </tr>
-                        <tr>
-                            <td>Purchase Payments</td>
-                            <td>2413.45</td>
-                            <td></td>
-                        </tr>
-            
-                        <tr>
-                            <td>Loan</td>
-                            <td>0</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Loan return</td>
-                            <td></td>
-                            <td>0</td>
-                        </tr>
-            
-                        <tr>
-                            <td>Advance</td>
-                            <td></td>
-                            <td>0</td>
-                        </tr>
-            
-                        <tr>
-                            <td>Total Expense</td>
-                            <td>40</td>
-                            <td></td>
-                        </tr>
-            
-                        <tr class="line">
-                            <td class="text-end"><b>Balance</b></td>
-                            <td><b>92958.45</b></td>
-                            <td><b>63388.45</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Total Damage</td>
-                            <td>0</td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <h2 class="text-center">Calculation Summery</h2>
+
+                <div class="table-responsive">
+                    <table id="example1" class="table table-bordered table-striped table-hover">
+                        <tbody>
+                            <tr>
+                                <th colspan="4" style="text-align: center;">
+                                    Invoice profit / loss
+                                </th>
+                            </tr>                                
+                                <td rowspan="3" style="background-color:green;color:#ffff;text-align: center;vertical-align: middle;">
+                                    Sell
+                                </td>
+                            </tr>
+                            <tr style="background-color:green;color:#ffff;font-weight: 900;">
+                                <td>Bill Amount</td>
+                                <td>Received Amount</td>
+                                <td>Due Amount</td>
+                            </tr>
+                            <tr style="background-color:green;color:#ffff;font-weight: 900;">
+                                <td>{{number_format($totalSellPayableAmount,2,'.','')}}</td>
+                                <td>{{number_format($totalSellPaidAmount,2,'.','')}} <br/>
+                                    <small style="color:yellow;">During Selling. Cash Received Amount</small> <br/>
+                                    {{$sellingTimeReceivedAmount}}
+                                </td>
+                                <td>{{number_format($totalSellDueAmount,2,'.','')}}</td>
+                            </tr>
+                            
+                            <tr style="background-color:#f1f9f1;color:black;font-weight: 900;">
+                                <td rowspan="3" style="text-align: center;vertical-align: middle;">
+                                    Purchase
+                                </td>
+                            </tr>
+                            <tr style="background-color:#f1f9f1;color:black;font-weight: 900;">
+                                <td>Bill Amount</td>
+                                <td>Paid Amount</td>
+                                <td>Due Amount</td>
+                            </tr>
+                            <tr style="background-color:#f1f9f1;color:black;font-weight: 900;">
+                                <td>{{number_format($totalPurchasePayableAmount,2,'.','')}}</td>
+                                <td  style="background-color:red;color:#ffff;font-weight: 900;">
+                                    {{number_format($totalPurchasePaidAmount,2,'.','')}} <br/>
+                                    <small style="color:yellow;">During Purchasing... Cash Paid Amount</small> <br/>
+                                    {{$purchaseingTimePaidAmount}}
+                                </td>
+                                <td>{{number_format($totalPurchaseDueAmount,2,'.','')}}</td>
+                            </tr>
+
+                            <tr>
+                                <th style="width: 25%;background-color:#5bcf5b;color:#ffff;">
+                                    <strong> Customer Due Receives</strong>
+                                </th>
+                                <th style="width: 25%;background-color: #3a743a;color:#ffff;">
+                                    {{number_format($totalCustomerDueReceivedAmount,2,'.','')}}
+                                </th>
+                                <th style="background-color:#65f565;color:black;width: 25%;text-align:right;">Customer Previous Due Receives</th>
+                                <th style="background-color: #3a743a;color:#ffff;text-align:left;width: 25%;">
+                                    <span style="font-size:14px;">{{number_format($totalCustomerPreviousDueReceivedAmount,2,'.','')}}</span>
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th  style="width: 25%;background-color: #2f302f;color:red;">
+                                    <strong>Customer Add Loan</strong>
+                                </th>
+                                <th style="width: 25%;background-color:red;color:#ffff;">
+                                    <span style="font-size:14px;">{{number_format($totalCustomerAddLoanAmount,2,'.','')}}</span>
+                                </th>
+                                <th style="background-color:#3a743a;color:#ffff;width: 25%;text-align:right;">Customer Add Advance</th>
+                                <th style="background-color:#65f565;color:black;text-align:left;width: 25%;">
+                                    <span style="font-size:14px;">{{number_format($totalCustomerReceivedAdvanceAmount,2,'.','')}}</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="3" style="text-align: right;background-color:#65f565;color:black;">
+                                    <div style="width:100%;display:flex;">
+                                        <div style="width:90%;">
+                                            <small>((Sell Cash Amount + Due Receive Amount + Previous Due Receive + Advance Receive) - (Purchase Paid Amount + Add Loan))</small> 
+                                            <br/>
+
+                                            <small>calculation with:</small> - 
+                                            <small style="color:#b55353;">During Selling Cash Received Amount</small>
+                                            
+                                             <small style="color:#b55353;"> & Purchasing Cash Paid Amount</small>
+                                             <small> Fields</small>
+                                            
+                                        </div>
+                                        <div style="color: darkslateblue;width: 9%;padding-top: 1%;padding-right: 2px;padding-left: 2px;text-align: left;margin-left: 1%;border-left: 1px solid gray;">
+                                            <strong>Total Cash </strong>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th style="background-color: green;color:#ffff;padding-top: 1.9%;">
+                                   {{number_format( ( ($sellingTimeReceivedAmount + $totalCustomerDueReceivedAmount + $totalCustomerPreviousDueReceivedAmount + $totalCustomerReceivedAdvanceAmount) - ($purchaseingTimePaidAmount + $totalCustomerAddLoanAmount) ) ,2,'.','')}}
+                                </th>
+                            </tr>
+
+                            {{-- 
+                                <tr>
+                                    <th  style="width: 25%;">
+                                        <strong>Other cost</strong>
+                                    </th>
+                                    <th style="width: 25%;">  
+                                        <span style="font-size:14px;"> others_cost</span>
+                                    </th>
+                                    <th style="background-color: #c7d5c7;color:#000000;width: 25%;text-align:right;">Total Less Amount</th>
+                                    <th style="background-color: #c7d5c7;color:#000000;text-align:right;width: 25%;">
+                                        <span style="font-size:14px;"> total_discount</span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th  style="width: 25%;">
+                                        <strong>Round off</strong>
+                                    </th>
+                                    <th style="width: 25%;">
+                                        <span style="font-size:14px;"> round_amount</span>
+                                    </th>
+                                    <th style="width: 25%;text-align:right;background-color: #5bcf5b;color:#ffff;">Profit <small>From Product</small></th>
+                                    <th style="text-align:right;width: 25%;background-color: #5bcf5b;color:#ffff;">
+                                        <span style="font-size:14px;"> total_profit_from_product</span>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th  style="width: 25%;">
+                                        <strong>Overall Less</strong>
+                                    </th>
+                                    <th style="width: 25%;">
+                                        <span style="font-size:14px;"> overall_discount_amount</span>
+                                    </th>
+                                    <th style="width: 25%;text-align:right;background-color: green;color:#ffff;">Net Profit/Loss</th>
+                                    <th style="text-align:right;width: 25%;background-color: green;color:#ffff;">
+                                        <span style="font-size:14px;"> totalInvoiceProfit()</span>
+                                    </th>
+                                </tr> 
+                            --}}   
+
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- processd will later
+                    <table class="table daily-summery table-bordered table-hover">
+                        <thead>
+                            <tr style="border-bottom: 1px solid lightgray;">
+                                <th>Account</th>
+                                <th style="width: 10%;">Debit</th>
+                                <th style="width: 10%;">Credit</th>
+                            </tr>
+                        </thead>
+                
+                        <tbody>
+                            <tr>
+                                <td>Sales Total</td>
+                                <td>90505</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Sales Receive</td>
+                                <td></td>
+                                <td>60975</td>
+                            </tr>
+                
+                            <tr>
+                                <td>Total Purchase</td>
+                                <td></td>
+                                <td>2413.45</td>
+                            </tr>
+                            <tr>
+                                <td>Purchase Payments</td>
+                                <td>2413.45</td>
+                                <td></td>
+                            </tr>
+                
+                            <tr>
+                                <td>Loan</td>
+                                <td>0</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Loan return</td>
+                                <td></td>
+                                <td>0</td>
+                            </tr>
+                
+                            <tr>
+                                <td>Advance</td>
+                                <td></td>
+                                <td>0</td>
+                            </tr>
+                
+                            <tr>
+                                <td>Total Expense</td>
+                                <td>40</td>
+                                <td></td>
+                            </tr>
+                
+                            <tr class="line">
+                                <td class="text-end"><b>Balance</b></td>
+                                <td><b>92958.45</b></td>
+                                <td><b>63388.45</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Total Damage</td>
+                                <td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                --}}
             </div>
             
 

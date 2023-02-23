@@ -4,7 +4,7 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <input type="hidden" name="product_id" value="1874" />
+                        <input type="hidden" name="" value="" />
                         <th style="font-size: 16px; background-color: darkgray; color: floralwhite; border-bottom-color: #f1e7e7;">
                             Stock
                         </th>
@@ -13,19 +13,19 @@
                         </th>
 
                         <td style="font-size: 12px;">Offer Purchase Price</td>
-                        <input type="hidden" name="prices[]" value="4" />
+                        <input type="hidden" name="" value="4" />
 
                         <td style="font-size: 12px;">Purchase Price</td>
-                        <input type="hidden" name="prices[]" value="5" />
+                        <input type="hidden" name="" value="5" />
 
                         <td style="font-size: 12px;">Whole Sell Price</td>
-                        <input type="hidden" name="prices[]" value="3" />
+                        <input type="hidden" name="" value="3" />
 
                         <td style="font-size: 12px;">Retail Price</td>
-                        <input type="hidden" name="prices[]" value="2" />
+                        <input type="hidden" name="" value="2" />
 
                         <td style="font-size: 12px;">MRP Price</td>
-                        <input type="hidden" name="prices[]" value="1" />
+                        <input type="hidden" name="" value="1" />
                     </tr>
                 </thead>
                 <tbody>

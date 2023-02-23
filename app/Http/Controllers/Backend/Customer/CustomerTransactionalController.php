@@ -52,7 +52,7 @@ class CustomerTransactionalController extends Controller
         ]);
     }
     //store next payment data
-    public function soteNextPaymentDate(Request $request)
+    public function storeNextPaymentDate(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -100,7 +100,7 @@ class CustomerTransactionalController extends Controller
         ]);
     }
     //store loan data
-    public function soteAddLoanData(Request $request)
+    public function storeAddLoanData(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -178,7 +178,7 @@ class CustomerTransactionalController extends Controller
         ]);
     }
     //store advance
-    public function soteAddAdvance(Request $request)
+    public function storeAddAdvance(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -255,7 +255,7 @@ class CustomerTransactionalController extends Controller
         ]);
     }
     //store receive previous data
-    public function soteReceivePreviousDue(Request $request)
+    public function storeReceivePreviousDue(Request $request)
     {
         DB::beginTransaction();
         try {

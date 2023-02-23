@@ -15,7 +15,7 @@
         <ul class="sidenav-inner py-1">
 
             <!---sales--->
-            <li class="sidenav-item "> {{---<li class="sidenav-item open active">---}}
+            <li class="sidenav-item  @if(request()->routeIs(['admin.sell.regular.sell.index','admin.sell.regular.pos.create', 'admin.sell.regular.quotation.index']))  open active @endif  ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-shopping-cart"></i>
                     <div>Sales</div>
@@ -24,12 +24,12 @@
                     </div>
                 </a>
                 <ul class="sidenav-menu">
-                    <li class="sidenav-item ">{{-- <li class="sidenav-item active"> active--}}
+                    <li class="sidenav-item  @if(request()->routeIs('admin.sell.regular.sell.index')) active @endif  ">
                         <a href="{{route('admin.sell.regular.sell.index')}}" class="sidenav-link">
                             <div>Sale List</div>
                         </a>
                     </li>
-                    <li class="sidenav-item">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.sell.regular.pos.create')) active @endif ">
                         <a href="{{route('admin.sell.regular.pos.create')}}" class="sidenav-link">
                         <div>Sale Create</div>
                         <div class="pl-1 ml-auto">
@@ -37,7 +37,7 @@
                         </div>
                         </a>
                     </li>
-                    <li class="sidenav-item">
+                    <li class="sidenav-item @if(request()->routeIs('admin.sell.regular.quotation.index')) active @endif ">
                         <a href="{{route('admin.sell.regular.quotation.index')}}" class="sidenav-link">
                         <div>Quotation List</div>
                         <div class="pl-1 ml-auto">
@@ -58,7 +58,7 @@
             <!---sales--->
 
             <!---purchase--->
-            <li class="sidenav-item">
+            <li class="sidenav-item  @if(request()->routeIs(['admin.purchase.regular.purchase.index','admin.purchase.regular.pos.create'])) open active @endif ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-shopping-cart"></i>
                     <div>Purchase</div>
@@ -67,12 +67,12 @@
                     </div>
                 </a>
                 <ul class="sidenav-menu">
-                    <li class="sidenav-item">
+                    <li class="sidenav-item @if(request()->routeIs('admin.purchase.regular.purchase.index')) active @endif ">
                         <a href="{{route('admin.purchase.regular.purchase.index')}}" class="sidenav-link">
                             <div>Purchase List</div>
                         </a>
                     </li>
-                    <li class="sidenav-item">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.purchase.regular.pos.create')) active @endif ">
                         <a href="{{route('admin.purchase.regular.pos.create')}}" class="sidenav-link">
                         <div>Purchase Create</div>
                         <div class="pl-1 ml-auto">
@@ -318,7 +318,7 @@
             <!---Expense--->
 
             <!---Stock--->
-            <li class="sidenav-item   @if(request()->is('admin/stock/*')) open active @endif ">
+            <li class="sidenav-item @if(request()->routeIs(['admin.product.stock.index','admin.product.stock.add.initial.stock', 'admin.product.stock.check.stock.from.other.branch']))  open active @endif  "> {{--- @if(request()->is('admin/stock/*')) open active @endif--}}
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-codepen"></i>
                     <div>Stock</div>
@@ -327,18 +327,18 @@
                     </div>
                 </a>
                 <ul class="sidenav-menu">
-                    <li class="sidenav-item   @if(request()->is('admin/stock/*')) active @endif ">
+                    <li class="sidenav-item @if(request()->routeIs('admin.product.stock.index'))  active @endif "> {{--  @if(request()->is('admin/stock/*')) active @endif --}}
                         <a href="{{route('admin.product.stock.index')}}" class="sidenav-link">
                             <div>Stock List</div>
                         </a>
                     </li> 
-                    <li class="sidenav-item   @if(request()->is('admin/stock/*')) active @endif ">
+                    <li class="sidenav-item @if(request()->routeIs('admin.product.stock.add.initial.stock'))  active @endif">
                         <a href="{{route('admin.product.stock.add.initial.stock')}}" class="sidenav-link">
                             <div>Add Initial Stock</div>
                         </a>
                     </li> 
                     @if (otherBranchStockAPIActiveOrNot_hh())
-                    <li class="sidenav-item  @if(request()->is('admin/stock/*')) active @endif ">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.product.stock.check.stock.from.other.branch'))  active @endif">
                         <a href="{{route('admin.product.stock.check.stock.from.other.branch')}}" class="sidenav-link">
                             <div><small>Check Other Branch Stock</small></div>
                         </a>
@@ -463,13 +463,11 @@
             </li> --}}
             <!---Account--->
 
-            <!---Product Attribute--->
-            <li class="sidenav-item @if(request()->is('admin/unit/*')
-                || request()->is('admin/brand/*') || request()->is('admin/product/grade/*') 
-                || request()->is('admin/category/*') || request()->is('admin/sub/category/*') 
-                || request()->is('admin/color/*') || request()->is('admin/supplier/group/*') 
-                ) open active @endif
-             ">
+            <!---Product Attribute---> 
+            
+            <li class="sidenav-item @if(request()->routeIs(['admin.product.grade.index','admin.brand.index',
+                'admin.category.index','admin.subcategory.index','admin.unit.index',
+                'admin.color.index','admin.supplier.group.index'])) open active @endif ">
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-tag"></i>
                     <div>Product Attribute</div>
@@ -478,12 +476,12 @@
                     </div>
                 </a>
                 <ul class="sidenav-menu">
-                    <li class="sidenav-item @if(request()->is('admin/product/grade/*')) active @endif">
+                    <li class="sidenav-item @if(request()->routeIs('admin.product.grade.index')) active @endif ">
                         <a href="{{route('admin.product.grade.index')}}" class="sidenav-link">
                             <div>Product Grade </div>
                         </a>
                     </li>
-                    <li class="sidenav-item @if(request()->is('admin/brand/*')) active @endif ">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.brand.index')) active @endif ">
                         <a href="{{route('admin.brand.index')}}" class="sidenav-link">
                         <div>Brands</div>
                         <div class="pl-1 ml-auto">
@@ -491,7 +489,7 @@
                         </div>
                         </a>
                     </li>
-                    <li class="sidenav-item @if(request()->is('admin/category/*')) active @endif ">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.category.index')) active @endif ">
                         <a href="{{route('admin.category.index')}}" class="sidenav-link">
                         <div>Categories</div>
                         <div class="pl-1 ml-auto">
@@ -499,7 +497,7 @@
                         </div>
                         </a>
                     </li> 
-                    <li class="sidenav-item @if(request()->is('admin/sub/category/*')) active @endif">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.subcategory.index')) active @endif ">
                         <a href="{{route('admin.subcategory.index')}}" class="sidenav-link">
                         <div>Sub-categories</div>
                         <div class="pl-1 ml-auto">
@@ -507,7 +505,7 @@
                         </div>
                         </a>
                     </li>
-                    <li class="sidenav-item  @if(request()->is('admin/unit/*')) active @endif ">
+                    <li class="sidenav-item @if(request()->routeIs('admin.unit.index')) active @endif ">
                         <a href="{{route('admin.unit.index')}}" class="sidenav-link">
                         <div>Units</div>
                         <div class="pl-1 ml-auto">
@@ -515,7 +513,7 @@
                         </div>
                         </a>
                     </li>
-                    <li class="sidenav-item   @if(request()->is('admin/color/*')) active @endif ">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.color.index')) active @endif ">
                         <a href="{{route('admin.color.index')}}" class="sidenav-link">
                         <div>Color</div>
                         <div class="pl-1 ml-auto">
@@ -523,7 +521,7 @@
                         </div>
                         </a>
                     </li>
-                    <li class="sidenav-item    @if(request()->is('admin/supplier/group/*')) active @endif ">
+                    <li class="sidenav-item  @if(request()->routeIs('admin.supplier.group.index')) active @endif ">
                         <a href="{{route('admin.supplier.group.index')}}" class="sidenav-link">
                             <div>Group (Supplier Group) </div>
                         </a>
@@ -595,7 +593,7 @@
             <!---HRM--->
 
             <!---Reports--->
-            <li class="sidenav-item   @if(request()->is('admin/report/*')) open active @endif ">
+            <li class="sidenav-item @if(request()->routeIs(['admin.report.daily.transactional.report.summary', 'admin.report.daily.report.transactional.details']))  open active @endif "> {{-- @if(request()->is('admin/report/*')) open active @endif --}}
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-activity"></i>
                     <div>Reports</div>
@@ -604,12 +602,12 @@
                     </div>
                 </a>
                 <ul class="sidenav-menu">
-                    <li class="sidenav-item   @if(request()->is('admin/report/*')) active @endif ">
+                    <li class="sidenav-item   @if(request()->routeIs('admin.report.daily.transactional.report.summary')) active @endif ">
                         <a href="{{route('admin.report.daily.transactional.report.summary')}}" class="sidenav-link">
                             <div>Daily Report Summary</div>
                         </a>
                     </li> 
-                    <li class="sidenav-item   @if(request()->is('admin/report/*')) active @endif ">
+                    <li class="sidenav-item   @if(request()->routeIs('admin.report.daily.report.transactional.details')) active @endif ">
                         <a href="{{route('admin.report.daily.report.transactional.details')}}" class="sidenav-link">
                             <div>Daily Report Details</div>
                         </a>

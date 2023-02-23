@@ -89,6 +89,10 @@ use App\Models\Backend\Payment\Account;
                 16 => "Other Cost",//
             ];
         }
+        			//selling time discount
+                    //when overall discount , 
+                    // when sell edit, - or + amount in the payment table..
+                    // same to purchase
     /*
     |--------------------------------------------------------------------------
     | Module during payment processing
@@ -689,6 +693,10 @@ use App\Models\Backend\Payment\Account;
                     11 => "Adjustment", // Sell Return Payment // 
                 ]; 
             }
+                    	//selling time discount
+                        //when overall discount , 
+                        // when sell edit, - or + amount in the payment table..
+                        // same to purchase
         /*
         |--------------------------------------------------------------------------
         | Module during payment processing

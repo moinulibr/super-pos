@@ -15,12 +15,13 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 Route::get('cache-clear', function() {
+    Artisan::call('config:cache');
     Artisan::call('config:clear');
     Artisan::call('cache:clear');
-    Artisan::call('config:cache');
     Artisan::call('view:clear');
+    Artisan::call('optimize:clear');
     Artisan::call('route:clear');
-    return '<a href='.env('APP_LIVE_URL').'>Home '.env('APP_LIVE_URL').' - '. config('app.name').'</a>';
+    return '<a href='.env('APP_LIVE_URL').'>Home '.'</a>'; //.env('APP_LIVE_URL').' - '. config('app.name')
 });
 
 Route::get('storage-link', function() {
@@ -252,16 +253,16 @@ Route::group(['middleware' => ['auth']], function ()
             Route::get('transaction/statement','CustomerTransactionalController@customerTransactionalStatement')->name('transactional.statement');//->middleware(['permissions:unit|index']);
             //render next payment date modal
             Route::get('render/next/payment/date/modal','CustomerTransactionalController@renderNextPaymentDateModal')->name('render.next.payment.date.modal');
-            Route::post('store/next/payment/date','CustomerTransactionalController@soteNextPaymentDate')->name('store.next.payment.date');
+            Route::post('store/next/payment/date','CustomerTransactionalController@storeNextPaymentDate')->name('store.next.payment.date');
             //render add loan modal
             Route::get('render/add/loan/modal','CustomerTransactionalController@renderAddLoanModal')->name('render.add.loan.modal');
-            Route::post('store/add/loan','CustomerTransactionalController@soteAddLoanData')->name('store.add.loan');
+            Route::post('store/add/loan','CustomerTransactionalController@storeAddLoanData')->name('store.add.loan');
             //render add advance modal
             Route::get('render/add/advance/modal','CustomerTransactionalController@renderAddAdvanceModal')->name('render.next.add.advance.modal');
-            Route::post('store/add/advance','CustomerTransactionalController@soteAddAdvance')->name('store.next.add.advance');
+            Route::post('store/add/advance','CustomerTransactionalController@storeAddAdvance')->name('store.next.add.advance');
             //render receive previous due  modal
             Route::get('render/receive/previous/due/modal','CustomerTransactionalController@renderReceivePreviousDueModal')->name('render.receive.previous.due.modal');
-            Route::post('store/receive/previous/due','CustomerTransactionalController@soteReceivePreviousDue')->name('store.receive.previous.due');
+            Route::post('store/receive/previous/due','CustomerTransactionalController@storeReceivePreviousDue')->name('store.receive.previous.due');
         });
     /*
     |----------------------------------------

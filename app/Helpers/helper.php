@@ -15,6 +15,7 @@ use App\Models\Backend\ProductAttribute\Unit;
     */
         //function liveOrLocalEnvironment
         function otherBranchStockAPIActiveOrNot_hh(){
+
             if(env('APP_ENV') != 'local' && (env('APP_LIVE_URL') == liveUrlAS_hh() || env('APP_LIVE_URL') == liveUrlAS2_hh()))
             {
                 return true;
@@ -23,13 +24,13 @@ use App\Models\Backend\ProductAttribute\Unit;
         }
 
         function liveUrlAS_hh(){
-            return 'http://as.dcootech.com';
+            return 'https://as.dcootech.com';
         } 
         function liveUrlAS2_hh(){
-            return 'http://as2.dcootech.com';
+            return 'https://as2.dcootech.com';
         }
         function liveUrlKS_hh(){
-            return 'http://ks.dcootech.com';
+            return 'https://ks.dcootech.com';
         }
 
         function AppName_hh()
