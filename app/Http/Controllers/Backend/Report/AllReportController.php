@@ -13,9 +13,10 @@ class AllReportController extends Controller
 {
    
     public function dalilyTransactionalReportSummary(Request $request){
-        //$date_to = Carbon::parse($request->input('date_to'));
-         $date_to = date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day"));
-         $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day")));
+        //$date_to = date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day"));
+         
+        $date_to = Carbon::parse($request->input('date_to'));
+        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-0 day")));
         
         $accountPayments =  AccountPayment::where('branch_id',authBranch_hh())->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
         $creditAccountPayments =  AccountPayment::where('branch_id',authBranch_hh())->where('cdf_type_id',1)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
@@ -27,10 +28,11 @@ class AllReportController extends Controller
     //daily report transactional summary details module wise
     public function dalilyReportTransactionalSummaryDetails(Request $request){
 
-       // $date_to = Carbon::parse($request->input('date_to'));
-        //$date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-200 day")));
-        $date_to = date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day"));
-        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day")));
+        //$date_to = date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day"));
+        //$date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-1 day")));
+       
+        $date_to = Carbon::parse($request->input('date_to'));
+        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-0 day")));
        
         $sellInvoices =  SellInvoice::where('branch_id',authBranch_hh())->whereNull('deleted_at')->whereDate('created_at', '>=', $date_from)->whereDate('created_at', '<=', $date_to)->latest()->get();
         $purchaseInvoices =  PurchaseInvoice::where('branch_id',authBranch_hh())->whereNull('deleted_at')->whereDate('created_at', '>=', $date_from)->whereDate('created_at', '<=', $date_to)->latest()->get();
@@ -54,4 +56,8 @@ class AllReportController extends Controller
         $customerAddAdvances =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',9)->where('module_id',9)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
         return view('backend.report.daily.daily_report_details',compact('sellInvoices','purchaseInvoices','sellingTimeReceivedAmount','purchaseingTimePaidAmount','customerSellDueReceives','customerPreviousDueReceives','customerAddLoans','customerAddAdvances'));
     }
+
+
+
+
 }

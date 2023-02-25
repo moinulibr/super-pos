@@ -74,7 +74,7 @@
                     <div>
                         <table  style="width: 100%;">
                             <tr>
-                                <td style="width:7%">
+                                <td style="width:6%">
                                     <label for="">&nbsp;</label>
                                     <select class="form-control paginate" id="paginate" name="paginate" style="font-size: 12px;width:100%;">
                                         <option value="10">10</option>
@@ -90,33 +90,32 @@
                                     </select>
                                 </td>
                                 <td style="width:1%"></td>
-                                {{-- <td style="width: 20%">
-                                    <label for="">Supplier</label>
-                                    <select name="supplier_id" id="supplier_filter_id" class="supplier_filter_id form-control">
-                                        <option value="">Select Supllier</option>
-                                    </select>
-                                </td>
-                                <td style="width:1%"></td>
                                 <td style="width:14%">
-                                    <label for="">Group</label>
-                                    <select name="ground" id="ground_filter_id" class="ground_filter_id form-control">
-                                        <option value="">Select Group</option>
-                                    </select>
-                                </td>
-                                <td style="width:1%"></td> --}}
-                                <td style="width: 15%">
                                     <label for="">Date From </label>
                                     <input type="date" class="form-control date_from">
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width:19%">
+                                <td style="width:14%">
                                     <label for="">Date To</label>
                                     <input type="date" class="form-control date_to">    
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width: 20%">
-                                    <label for="">Search</label>
-                                    <input type="text" class="search form-control" name="search" placeholder="Search" autofocus autocomplete="off">
+                                <td style="width:20%">
+                                    <label for=""><strong>Search</strong></label>
+                                    <input type="text" class="search form-control" name="search" placeholder="Search (by invoice)" autofocus autocomplete="off">
+                                </td>
+                                <td style="width:1%"></td>
+                                <td style="width:20%">
+                                    <label for=""><strong>Customer</strong></label>
+                                    <input type="text" class="form-control customer" name="customer" placeholder="Customer Name / Phone" autofocus autocomplete="off">
+                                </td>
+                                <td style="width:1%"></td>
+                                <td style="width:20%">
+                                    <label for="">&nbsp;</label>
+                                    <div class="display:flex">
+                                        <a href="{{route('admin.sell.regular.sell.index')}}" class="btn btn-success btn">Reload</a>
+                                        <a href="{{route('home')}}" class="btn btn-info btn">Home</a>
+                                    </div>
                                 </td>
                             </tr>
                         </table>

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Backend\Customer\Customer;
 use App\Models\Backend\Sell\SellInvoice;
 use App\Models\Backend\Sell\SellProduct;
 use App\Traits\Backend\Payment\PaymentProcessTrait;
@@ -40,36 +41,6 @@ class SellController extends Controller
 
     public function sellListByAjaxResponse(Request $request)
     {
-        /* $status         = $request->status ?? NULL;
-        $pagination     = $request->pagination ?? 50;
-        $search         = $request->search ?? NULL;
-        
-        $date_from = Carbon::parse($request->input('start_date'));
-        $date_to = Carbon::parse($request->input('end_date') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-21 day")));
-        
-        $query= Order::query();
-        if($search)
-        {   
-            $query->where('order_number','like','%'.$search.'%')
-            ->orWhere('customer_name','like','%'.$search.'%')
-            ->orWhere('status','like','%'.$search.'%')
-            ->orWhere('payment_status','like','%'.$search.'%')
-            ->orWhere('method','like','%'.$search.'%')
-            ;
-        }
-        if($date_from)
-        {
-            $query->whereDate('created_at', '<=', $date_from)
-            ->whereDate('created_at', '>=', $date_to);
-        }
-        if($status != "none" && $status != "")
-        {
-            $query->where('status',$status);
-        }
-        $data['orders'] =    $query->orderBy('id', 'desc')
-                        ->paginate($pagination); 
-        $data['page_no'] = $request->page ?? 1; */
-
         $status         = $request->status ?? NULL;
         $pagination     = $request->pagination ?? 50;
         $search         = $request->search ?? NULL;
@@ -81,11 +52,21 @@ class SellController extends Controller
 
         $sell  = SellInvoice::query();
         if($request->ajax())
-        {
+        {   
+            if($request->customer){
+                $cids = Customer::select('id','name','phone')->where('name','like','%'.$request->customer.'%')
+                ->orWhere('phone','like','%'.$request->customer.'%')
+                ->pluck('id')
+                ->toArray();
+                if(is_array($cids)){
+                    $sell->whereIn('customer_id',$cids);
+                }
+            }
+            
             if($request->search)
             {
-                $sell->where('invoice_no','like','%'.$request->search.'%')
-                ->orWhere('customer_phone','like','%'.$request->search.'%');
+                $sell->where('invoice_no','like','%'.$request->search.'%');
+                //->orWhere('customer_phone','like','%'.$request->search.'%');
             }
             if($date_from)
             {
@@ -101,6 +82,7 @@ class SellController extends Controller
             ]);
         }
     }
+
 
 
     public function singleView(Request $request)

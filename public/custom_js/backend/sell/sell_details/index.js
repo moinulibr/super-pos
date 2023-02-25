@@ -13,12 +13,13 @@
         var date_to = $('.date_to').val();
 
         var search = $('.search').val();
+        var customer = $('.customer').val();
         var url  =  createUrl+"?page="+page_no;
 
         $.ajax({
             url:url,
             data:{
-                pagination:pagination,search:search,page_no:page_no,date_from:date_from,date_to:date_to
+                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to
             },
             success:function(response){
                 if(response.status == true)
@@ -49,11 +50,12 @@
         var date_to = $('.date_to').val();
 
         var search = $('.search').val();
+        var customer = $('.customer').val();
 
         $.ajax({
             url: url,
             data:{
-                pagination:pagination,search:search,page_no:page_no,date_from:date_from,date_to:date_to
+                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to
             },
             type: "GET",
             datatype:"HTML",
@@ -77,22 +79,23 @@
 //-----------------------------------------------------------------------
     //search
     var ctrlDown = false,ctrlKey = 17,cmdKey = 91,vKey = 86,cKey = 67;xKey = 88;
-    $(document).on('keypress keyup','.search',function(e){
+    $(document).on('keypress keyup','.search, .customer',function(e){
         if (e.keyCode == ctrlKey || e.keyCode == cmdKey) ctrlDown = true;
         if (ctrlDown && (e.keyCode == vKey || e.keyCode == cKey || e.keyCode == xKey)) return false;
-        var search = $(this).val();
+        var search = $('.search').val();
         var createUrl = $('.sellListUrl').val();
         var page_no     = parseInt($('.page_no').val());
         var pagination  = $('.paginate :selected').val();
 
         var date_from = $('.date_from').val();
         var date_to = $('.date_to').val();
+        var customer = $('.customer').val();
 
         var url  =  createUrl+"?page="+page_no;
         $.ajax({
             url: url,
             data:{
-                pagination:pagination,search:search,page_no:page_no,date_from:date_from,date_to:date_to
+                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to
             },
             type: "GET",
             datatype:"HTML",

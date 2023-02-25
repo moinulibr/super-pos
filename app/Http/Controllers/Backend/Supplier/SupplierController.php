@@ -23,7 +23,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $data['datas']  = Supplier::latest()->paginate(50);
+        $data['datas']  = Supplier::latest()->orderBy('custom_id', 'asc')->paginate(50);
         $data['typies'] = SupplierType::latest()->get();
         return view('backend.supplier.supplier.index',$data);
     }
@@ -61,7 +61,7 @@ class SupplierController extends Controller
                     //->orWhere('company_name','like','%'.$request->search.'%');
             }
             
-            $data['datas'] = $qry->latest()->paginate(50);
+            $data['datas'] = $qry->orderBy('custom_id', 'asc')->paginate(50);
             $html = view('backend.supplier.supplier.ajax.list_ajax_response',$data)->render();
             return response()->json([
                 'status' => true,
