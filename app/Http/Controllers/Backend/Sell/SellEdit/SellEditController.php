@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Backend\Sell\SellEdit;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\CartSell\EditSellCartInvoice;
 use App\Models\Backend\CartSell\EditSellCartProduct;
@@ -16,14 +15,12 @@ use App\Models\Backend\Customer\Customer;
 use App\Models\Backend\Reference\Reference;
 use App\Models\Backend\Sell\SellProductStock;
 use App\Models\Backend\ProductAttribute\Category;
-
-use App\Traits\Backend\Sell\Edit\SellUpdateDataFromSellEditCartTrait;
-
+use App\Traits\Backend\Sell\Edit\QuotationToSellAndSellUpdateDataFromSellEditCartTrait;
 use App\Traits\Backend\Sell\Edit\SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
 
 class SellEditController extends Controller
 {
-    use SellUpdateDataFromSellEditCartTrait;
+    use QuotationToSellAndSellUpdateDataFromSellEditCartTrait;
     use SellEditSummeryCalculationUpdateAfterSellEditAddedToCartTrait;
 
     private $invoiceTotalQuantity;
@@ -88,23 +85,22 @@ class SellEditController extends Controller
         if(!$sellInvoice){
             return redirect()->back()->with('error','Data Not Found!');
         }
-        
+
         $data['customers'] = Customer::latest()->get();
         $data['references'] = Reference::latest()->get();
-
         $data['categories'] = Category::latest()->get();
         $data['allproducts'] = Product::select('name','id')->latest()->get();
         $data['products'] = Product::select('name','id','photo','available_base_stock')->latest()->paginate(21);
     
-
         DB::beginTransaction();
         try {
             if($sellInvoice)
             {
                 $this->deleteSellEditCartBySellInvoice($id);
 
-                $data['sellEditCart'] = $this->insertSellEditCart($sellInvoice);
-                $editSellCartInvoice = EditSellCartInvoice::where('sell_invoice_id',$sellInvoice->id)->first();
+                $editSellCartInvoice = $this->insertSellEditCart($sellInvoice);
+                $data['sellEditCart'] = $editSellCartInvoice;
+                //$editSellCartInvoice = EditSellCartInvoice::where('sell_invoice_id',$sellInvoice->id)->first();
                 
                 session()->put('sellInvoice_for_edit',$sellInvoice);
                 session()->put('total_edit_count_for_edit',$sellInvoice->total_edit_count);
@@ -125,7 +121,6 @@ class SellEditController extends Controller
             }else{
                 return redirect()->back()->with('error','Invalid Data!');
             }
-           
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
@@ -295,6 +290,7 @@ class SellEditController extends Controller
      */
     public function store(Request $request)
     {
+        //test data
         DB::beginTransaction();
         try {
             if((isset($request->checked_id)) && (count($request->checked_id) > 0))

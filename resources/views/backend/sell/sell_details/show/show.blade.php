@@ -133,7 +133,7 @@
                                         <td>{{($index + (1))}}</td>
                                         <td> {{$item->custom_code}}</td>
                                         <td style="width:30%;">
-                                            @if (array_key_exists('productName',$cats))
+                                            @if ( is_array($cats) && array_key_exists('productName',$cats))
                                                 {{$cats['productName']}}
                                                 @else
                                                 NULL
@@ -143,7 +143,7 @@
                                             {{$item->delivered_qty}}
                                         </td>
                                         <td>
-                                            @if (array_key_exists('unitName',$cats))
+                                            @if ( is_array($cats) && array_key_exists('unitName',$cats))
                                                 <small>{{$cats['unitName']}}</small>
                                                 @else
                                                 NULL

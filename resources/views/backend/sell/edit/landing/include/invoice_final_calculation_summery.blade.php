@@ -33,7 +33,7 @@
             <th class="border-0" style="text-align: left !important;background-color:#f5f5f5;width:25%">
                 <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark" style="padding-left:4px;">
                     Shipping Cost
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceShippingCostApplyModal" {{-- data-toggle="modal" data-target="#shippingCostPopUpModal" --}} style="cursor: pointer">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceShippingCostApplyModal" data-toggle="modal" data-target="#shippingCostPopUpModal" style="cursor: pointer">
                         <i class="fa fa-plus"></i>
                     </span>
                 </div>
@@ -50,7 +50,7 @@
                         (<span class="invoiceDiscountAmount">0</span>
                         <span class="invoiceDiscountType" style="margin-left: -3px;"></span>)
                     </span>
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceDiscountApplyModal" {{-- data-toggle="modal" data-target="#discountPopUpModal" --}} style="cursor: pointer;">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceDiscountApplyModal" data-toggle="modal" data-target="#discountPopUpModal" style="cursor: pointer;">
                         <i class="fa fa-minus"></i>
                     </span>
                 </div>
@@ -65,7 +65,7 @@
             <th class="border-0" style="background-color:#f5f5f5;width:25%;text-align:left !important">
                 <div class="d-flex align-items-center font-size-h5 mb-0 font-size-bold text-dark" style="padding-left:4px;">
                     Others Cost
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceOtherCostApplyModal" {{-- data-toggle="modal" data-target="#otherCostPopUpModal" --}} style="cursor: pointer">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceOtherCostApplyModal" data-toggle="modal" data-target="#otherCostPopUpModal" style="cursor: pointer">
                         <i class="fa fa-plus"></i>
                     </span>
                 </div>
@@ -82,7 +82,7 @@
                         (<span class="invoiceVatAmount">0</span>
                         <span class="invoiceVatType" style="margin-left: -3px;"></span>)
                     </span>
-                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceVatApplyModal"{{--  data-toggle="modal" data-target="#vatPopUpModal" --}} style="cursor: pointer">
+                    <span class="badge badge-secondary white rounded-circle ml-2 invoiceVatApplyModal" data-toggle="modal" data-target="#vatPopUpModal" style="cursor: pointer">
                         <i class="fa fa-plus"></i>
                     </span>
                 </div>
@@ -103,3 +103,4 @@
         </tr>
     </tbody>
 </table>
+

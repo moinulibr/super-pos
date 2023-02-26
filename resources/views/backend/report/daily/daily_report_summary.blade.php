@@ -1,8 +1,10 @@
 @extends('layouts.backend.app')
-@section('page_title') Home Page @endsection
+@section('page_title') Report @endsection
 @push('css')
 <style>
-
+    .table-bordered {
+        border: none;
+    }
 </style>
 @endpush
 
@@ -72,9 +74,17 @@
                 </form> --}}
                 <br />
                 <hr />
-                <div class="">
-                    <table class="table table-responsive table-bordered" style="margin-left:1%;margin-right:1%;">
+                <br/>
+
+                <div class="width:95%;margin-bottom:2%;background-color:#ffff;margin-right:5%">
+                    <table class="table table-responsive table-bordered" style="padding-bottom:5%;width:90%;margin-left:5%;margin-right:5%;">
                         <tbody>
+                            <tr>
+                                <th colspan="9" style="text-align:center;background-color:#3a743a;color:#ffff;">
+                                    <h4>Transaction Details</h4>
+                                </th>
+                            </tr>
+
                             <tr role="row" class="bg-whitesmoke">
                                 <th>#</th>
                                 <th>Date</th>
@@ -95,7 +105,7 @@
                             @endphp
                             @foreach ($accountPayments as $item)
                             <tr role="row">
-                                <td>{{$loop->iteration}}- {{ $item->id}}</td>
+                                <td>{{$loop->iteration}}</td>
                                 <td>
                                     {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                                 </td>
@@ -114,13 +124,6 @@
                                 <th>{{$item->createdBY ? $item->createdBY->name : NULL}}</th>
                             </tr>
                             @endforeach
-                            <tr class="bg-whitesmoke h6">
-                                <td colspan="2" style="text-align:right">Total</td>
-                                <th>{{number_format($totalSellPayableAmount,2,'.','')}}</th>
-                                <th>{{number_format($totalSellPaidAmount,2,'.','')}}</th>
-                                <th>{{number_format($totalSellDueAmount,2,'.','')}}</th>
-                                <td></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

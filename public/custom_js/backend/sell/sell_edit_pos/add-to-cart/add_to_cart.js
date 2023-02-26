@@ -546,7 +546,7 @@
         jQuery('.invoice_subtotal_after_vat').text(totalInvoiceSubtotalAfterVat);
 
         //.............vat set...........//
-        setInvoiceVatType      = "%";
+        setInvoiceVatType  = "%";
         jQuery('.invoiceVatAmount').text(invoiceVatAmount);
         jQuery('.invoiceVatType').text(setInvoiceVatType);
         jQuery('.invoiceFinalTotalVatAmount').text(totalVatAmountCalculation);
@@ -621,8 +621,9 @@
         var totalItem = nanCheck(parseFloat(jQuery('.totalItemFromSellCartList').text()));
         var totalQuantity = totalQuantityFromCartList();
         var totalInvoicePayableAmount = nanCheck(parseFloat(jQuery('.netPayableInvoiceTotal').text()));
-
-        var url = jQuery('.invoiceFinalSellCalculationSummeryUrl').val();
+        var sellEditInvoiceId = jQuery('.sellEditInvoiceId').val();
+        var url = jQuery('.invoiceFinalSellEditCalculationSummeryUrl').val();
+        
         jQuery.ajax({
             url:url,
             data:{subtotalFromSellCartList:subtotalFromSellCartList,totalItem:totalItem,totalQuantity:totalQuantity,
@@ -630,7 +631,7 @@
                 totalInvoiceDiscountAmount:totalInvoiceDiscountAmount,invoiceVatAmount:invoiceVatAmount,
                 totalVatAmountCalculation:totalVatAmountCalculation,totalShippingCost:totalShippingCost,
                 invoiceOtherCostAmount:invoiceOtherCostAmount,totalInvoicePayableAmount:totalInvoicePayableAmount,
-                customer_id:customer_id,reference_id:reference_id
+                customer_id:customer_id,reference_id:reference_id,sellEditInvoiceId:sellEditInvoiceId
             },
             beforeSend:function(){
                 jQuery('.processing').fadeIn();
@@ -751,18 +752,18 @@
     |quotation modal 
     |----------------------------------------------
     */
-        jQuery('#quotation-popup').css('overflow-y', 'auto');
+        jQuery('#edit-quotation-popup').css('overflow-y', 'auto');
         jQuery(document).on('click','.quotationModalOpen',function(){
             normalPrintAfterSellIsDisabled();   
             var customer_id = jQuery('.customer_id option:selected').val();
             var totalItem = nanCheck(parseFloat(jQuery('.totalItemFromSellCartList').text()));
             if(!totalItem){
-                jQuery('#quotation-popup').modal('hide');
+                jQuery('#edit-quotation-popup').modal('hide');
                 alert('Please select a minimum item');
                 jQuery.notify("Please select a minimum item", 'error');
                 return 0;
             }else{
-                jQuery('#quotation-popup').modal('show');
+                jQuery('#edit-quotation-popup').modal('show');
             }
             var url = jQuery('.quotationModalOpenUrl').val();
             jQuery.ajax({
@@ -1341,7 +1342,7 @@
                     {
                         jQuery('.display_sell_edit_added_to_cart_product_list').html(response.list);
                         jQuery('#payment-popup').modal('hide');
-                        jQuery('#quotation-popup').modal('hide');
+                        jQuery('#edit-quotation-popup').modal('hide');
                         
                         makingEmptyshippingRelatedInformation();
                         makingZeroInShippingCostOtherCostDiscountAndVat();

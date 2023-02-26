@@ -1,5 +1,5 @@
 @extends('layouts.backend.app')
-@section('page_title') Home Page @endsection
+@section('page_title') Report @endsection
 @push('css')
 <style>
     .table-bordered {
@@ -76,13 +76,16 @@
                         <button type="submit" class="btn ms-1 btn-primary pull-left"><i class="fa fa-search"></i> Search</button>
                         <a class="btn btn-secondary ms-1" href="https://amadersanitary.com/reports/daily-report">Today</a>
                     </form> --}}
-                    <br />
-                    <hr />
+                    <br/>
+                    <hr/>
                 </div>
-            
-                <h3 class="text-center">Sales</h3>
+                
+                <br/><br/>
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
+                        <tr>
+                            <th colspan="7" style="text-align:center;background-color:#3a743a;color:#ffff;"><h4>Sales</h4></th>
+                        </tr>
                         <tr role="row" class="bg-whitesmoke">
                             <th>#</th>
                             <th>Date</th>
@@ -138,11 +141,14 @@
                         </tr>
                     </tbody>
                 </table>
-                <br />
+                <br/>
 
-                <h3 class="text-center">Purchases</h3>
+                <br/>
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
+                        <tr>
+                            <th colspan="6" style="text-align:center;background-color:#3a743a;color:#ffff;"><h4 style="text-align:center;">Purchases</h4></th>
+                        </tr>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
                             <th>Invoice No.</th>
@@ -182,7 +188,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <br />
+                <br/>
 
                 {{-- <h3 class="text-center">Supplier Due Payments</h3>
                 <table class="table table-responsive table-bordered">
@@ -257,10 +263,13 @@
                         </tr>
                     </tbody>
                 </table> --}}
-            
-                <h3 class="text-center">Customer Due Receives</h3>
+
+                <br/><br/>
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
+                        <tr>
+                            <th colspan="5" style="text-align:center;background-color:#3a743a;color:#ffff;"><h4 style="text-align:center;">Sell Due Receives</h4></th>
+                        </tr>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
                             <th>Invoice No</th>
@@ -304,9 +313,13 @@
                 </table>
                 <br />
 
-                <h3 class="text-center">Customer Previous Due Receives</h3>
+                <br/>
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
+                        <tr>
+                            <th colspan="4" style="text-align:center;background-color:#3a743a;color:#ffff;"><h4 style="text-align:center;">Customer Previous Due Receives</h4></th>
+                        </tr>
+
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
                             <th>Customer Name</th>
@@ -347,9 +360,13 @@
                 <br />
                 
                 
-                <h3 class="text-center">Customer Add Loan</h3>
+                <br/>   
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
+                        <tr>
+                            <th colspan="4" style="text-align:center;background-color:#3a743a;color:#ffff;"><h4 style="text-align:center;">Customer Add Loan</h4></th>
+                        </tr>
+
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
                             <th>Customer Name</th>
@@ -389,9 +406,12 @@
                 </table>
                 <br />
 
-                <h3 class="text-center">Customer Add Advance</h3>
+                <br/>   
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
                     <tbody>
+                        <tr>
+                            <th colspan="4" style="text-align:center;background-color:#3a743a;color:#ffff;"><h4 style="text-align:center;">Customer Add Advance</h4></th>
+                        </tr>
                         <tr role="row" class="bg-whitesmoke">
                             <th>Date</th>
                             <th>Customer Name</th>
@@ -494,14 +514,13 @@
                 <hr />
                 <br />
 
-                <h2 class="text-center">Calculation Summery</h2>
 
                 <div class="table-responsive">
                     <table id="example1" class="table table-bordered table-striped table-hover">
                         <tbody>
                             <tr>
                                 <th colspan="4" style="text-align: center;">
-                                    Invoice profit / loss
+                                    <h4>Calculation Summery</h4>
                                 </th>
                             </tr>                                
                                 <td rowspan="3" style="background-color:green;color:#ffff;text-align: center;vertical-align: middle;">

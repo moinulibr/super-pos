@@ -386,11 +386,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                             </a>
 
                                             <a href="#" class="quotationModalOpen btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{---paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#quotation-popup"--}}
-                                                Quotation <img class="quotation_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;">
+                                               Make It Quotation <img class="quotation_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;">
                                             </a>
 
                                             <a href="#" class="paymentModalOpen  btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{--paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#payment-popup"--}}
-                                                Payment <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                                <strong><b>Make It Sell</b></strong> <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                             </a>
                                             <input type="hidden" class="paymentModalOpenUrl" value="{{route('admin.sell.regular.pos.sell.payment.modal.open')}}">
                                             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">

@@ -361,22 +361,36 @@ License: You must have a valid license purchased only from themeforest(the above
                                             }
                                         </style>
                                         <div class="col-3" style="border-right: 1px solid #e9ecef;">
+                                            
                                             <a href="#" class="btn btn-danger btnFullWidth white removeOrEmptyAllItemFromCreateSellCartList" style="margin-top: 1%;">
                                                 Cancel
                                             </a>
-                                            @if ($sellInvoice->sell_type == 2)    
-                                            <a href="#" class="quotationModalOpen btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;">
-                                                Quotation <img class="quotation_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;">
-                                            </a>
-                                            @else
-                                            <a href="#" class="btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;cursor:not-allowed !important;">
-                                                Quotation 
-                                            </a>
-                                            @endif
 
-                                            <a href="#" class="paymentModalOpen  btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{--paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#payment-popup"--}}
-                                                Payment <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
-                                            </a>
+                                            <!-----when quotation update or quotation to sell---->
+                                            @if ($sellInvoice->sell_type == 2)    
+                                                <a href="#" class="quotationModalOpen btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;">
+                                                    Quotation Update <img class="quotation_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                                </a> 
+                                                <a href="#" class="paymentModalOpen btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">
+                                                    <strong><b>Quotation To Sell</b></strong> <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                                </a>
+                                            @endif
+                                            <!-----when quotation update or quotation to sell---->
+                                            
+
+                                            <!-----when sell update---->
+                                            @if ($sellInvoice->sell_type == 1) 
+                                                <a href="#" class="btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;cursor:not-allowed !important;">
+                                                    Quotation 
+                                                </a>
+
+                                                <a href="#" class="paymentModalOpen btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{--paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#payment-popup"--}}
+                                                    <strong><b>Sell Update</b></strong> <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                                </a>
+                                            @endif
+                                            <!-----when sell update---->
+
+                                            
                                             <input type="hidden" class="paymentModalOpenUrl" value="{{route('admin.sell.edit.regular.pos.sell.edit.payment.modal.open')}}">
                                             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">
                                             <input type="hidden" class="quotationModalOpenUrl" value="{{route('admin.sell.edit.regular.pos.sell.edit.quotation.modal.open')}}">
@@ -511,7 +525,8 @@ License: You must have a valid license purchased only from themeforest(the above
         <!-------display added to product list------> 
         
         <!------- invoice final calculation summery------> 
-        <input type="hidden" class="invoiceFinalSellCalculationSummeryUrl" value="{{ route('admin.sell.edit.regular.pos.sell.edit.final.invoice.calculation.summery') }}">
+        <input type="hidden" class="sellEditInvoiceId" value="{{$sellEditCart->id}}">
+        <input type="hidden" class="invoiceFinalSellEditCalculationSummeryUrl" value="{{ route('admin.sell.edit.regular.pos.sell.edit.final.invoice.calculation.summery') }}">
         <!------- invoice final calculation summery------> 
 
         <!-------remove single item from added to sell cart list------> 

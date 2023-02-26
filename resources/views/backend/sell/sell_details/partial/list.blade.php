@@ -50,7 +50,7 @@
                         
                         <td style="width:3%;">
                             <div class="btn-group btnGroupForMoreAction">
-                                <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-expanded="true">
+                                <button type="button" class="btn btn-sm btn-success" data-toggle="dropdown" aria-expanded="true">
                                     <i class="fas fa-cog"></i>
                                 </button>
                                 <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">

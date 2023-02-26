@@ -2,47 +2,19 @@
 
 namespace App\Http\Controllers\Backend\Sell\SellEdit;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\Backend\Price\Price;
-
-use App\Models\Backend\Stock\Stock;
-
 use App\Http\Controllers\Controller;
-
-use Illuminate\Support\Facades\Auth;
-use App\Traits\Permission\Permission;
-
-//use Illuminate\Support\Facades\Validator;
-use App\Models\Backend\Payment\Account;
 use App\Models\Backend\Product\Product;
 use App\Models\Backend\Customer\Customer;
-use App\Models\Backend\Supplier\Supplier;
-use App\Models\Backend\Price\ProductPrice;
 use App\Models\Backend\Stock\ProductStock;
-use App\Models\Backend\Reference\Reference;
-use App\Models\Backend\Warehouse\Warehouse;
 use App\Models\Backend\ProductAttribute\Unit;
-use App\Models\Backend\ProductAttribute\Brand;
-use App\Models\Backend\ProductAttribute\Color;
-use App\Models\Backend\Supplier\SupplierGroup;
-use App\Models\Backend\ProductAttribute\Category;
 use App\Models\Backend\CartSell\EditSellCartInvoice;
-use App\Models\Backend\ProductAttribute\SubCategory;
-use App\Traits\Backend\Product\Logical\ProductTrait;
-use App\Models\Backend\ProductAttribute\ProductGrade;
-use App\Traits\Backend\Pos\Create\SellCreateAddToCart;
-
-use App\Traits\Backend\Pos\Create\StoreDataFromSellCartTrait;
-
-use App\Traits\Backend\Product\Request\ProductValidationTrait;
 use App\Traits\Backend\Sell\Edit\SellEditAddToCartProcessTrait;
-
-use App\Traits\Backend\Sell\Edit\SellUpdateDataFromSellEditCartTrait;
+use App\Traits\Backend\Sell\Edit\QuotationToSellAndSellUpdateDataFromSellEditCartTrait;
 class EditPosController extends Controller
 {
-    use SellUpdateDataFromSellEditCartTrait;
+    use  QuotationToSellAndSellUpdateDataFromSellEditCartTrait;
     use SellEditAddToCartProcessTrait;
 
     /**
@@ -159,7 +131,7 @@ class EditPosController extends Controller
   
     
 
-    //================================= start add to cart section for sell edit ============================
+    //================================= start add to cart for sell edit ============================
     /**
      * Store a newly created resource in storage.
      *
@@ -202,20 +174,36 @@ class EditPosController extends Controller
     }//display sell created added to cart product list
 
 
-    //maybe not using this
-    //sell final invoice calculation summery [save in session]
-    public function invoiceFinalSellEditCalculationSummery(Request $request)
-    {
-        $this->cartName   = sellCreateCartInvoiceSummerySessionName_hh();//"SellCartInvoiceSummery";
-        $this->requestAllCartData = $request;
-        $this->sellEditCartInvoiceSummery();
-        $cartName     = [];
-        $cartName     = session()->has($this->cartName) ? session()->get($this->cartName)  : [];
-        return $cartName;
+    
+
+    /**
+     * Undocumented function
+     * sell edit final invoice calculation summery [update in editsellcartinvoice table]
+     * without shipping details, but shipping cost, other cost, discount is working...
+     * @param Request $request
+     * @return void
+     */
+    public function invoiceFinalSellEditCalculationSummery(Request $request){
+
+        $sellEditInvoice = EditSellCartInvoice::findOrFail($request->sellEditInvoiceId);
+        $sellEditInvoice->total_sell_item = $request->totalItem;
+        $sellEditInvoice->subtotal = $request->subtotalFromSellCartList;
+        $sellEditInvoice->total_quantity	 = $request->totalQuantity;
+        $sellEditInvoice->discount_amount = $request->invoiceDiscountAmount;
+        $sellEditInvoice->discount_type = $request->invoiceDiscountType;
+        $sellEditInvoice->total_discount = $request->totalInvoiceDiscountAmount;
+        $sellEditInvoice->vat_amount = $request->invoiceVatAmount;
+        $sellEditInvoice->total_vat = $request->totalVatAmountCalculation;
+        $sellEditInvoice->shipping_cost = $request->totalShippingCost;
+        $sellEditInvoice->others_cost = $request->invoiceOtherCostAmount;
+        $sellEditInvoice->total_payable_amount = $request->totalInvoicePayableAmount;
+        //$sellEditInvoice-> = $request->customer_id;
+        //$sellEditInvoice-> = $request->reference_id;
+        $sellEditInvoice->save();
         return response()->json([
             'status'    => true,
         ]);
-        $cartName['totalInvoicePayableAmount'];
+       
     }
 
 
@@ -320,7 +308,7 @@ class EditPosController extends Controller
             'type'      => 'success'
         ]);
     }
-    //================================= end add to cart section for sell edit ============================
+    //================================= end add to cart for sell edit ============================
 
 
 
@@ -329,7 +317,8 @@ class EditPosController extends Controller
     //quotation mmodal open with customer information and invoice information
     public function quotationModalOpen(Request $request)
     {
-        $list = view('backend.sell.edit.ajax-response.payment_quotation.quotation_data')->render();
+        $sellQuotation = session()->get('sellInvoice_for_edit');
+        $list = view('backend.sell.edit.ajax-response.payment_quotation.quotation_data',compact('sellQuotation'))->render();
         return response()->json([
             'status'    => true,
             'list'     => $list,
@@ -374,34 +363,51 @@ class EditPosController extends Controller
     {
         //return $request; 
         $this->requestAllCartData = $request;
-        $this->cartName = sellCreateCartShippingAddressSessionName_hh();
-        $this->shippingAddressStoreInSession();
+        //$this->cartName = sellCreateCartShippingAddressSessionName_hh();
+        //$this->shippingAddressStoreInSession();
         return response()->json([
             'status'    => true,
         ]);
-    }
+    } //customer shipping address from sell cart (pos)
     /*======================================================= */
+
     // store sell and quotation data from sell cart (pos)
     public function storeDataFromSellEditCart(Request $request)
     {   
         DB::beginTransaction();
         try {
-            //$this->sellCreateFormData = $request;
-
+             
             $edit_sell_cart_invoice_id = session()->get('edit_sell_cart_invoice_id_for_edit');
             $sellEditCart = EditSellCartInvoice::find($edit_sell_cart_invoice_id);
             
-            $sellType = session()->get('sell_type_for_edit');
-            
-            $this->updateSellRelatedDataFromSellEditCart($sellType,$sellEditCart->sell_invoice_no);
-            
+
+            //$this->sellCreateFormData = $request;
+            $currentSellingType = $request->sell_type;
+            $beforeSellingType = session()->get('sell_type_for_edit');
+            if($beforeSellingType == 2 && $currentSellingType == 1){
+                //create new sell from quotation
+                $sellType = 1;
+                $this->quotationToSellStoreDataFromSellEditCart($sellType,$sellEditCart,$request);
+            }
+            else if($beforeSellingType == 2 && $currentSellingType == 2){
+                //'quotation update';
+                //$sellType = session()->get('sell_type_for_edit');
+                $sellType = 2;
+                $this->updateSellRelatedDataFromSellEditCart($sellType,$sellEditCart->sell_invoice_no);
+            }
+            else if($beforeSellingType == 1 && $currentSellingType == 1){
+                //sell update
+                //$this->updateSellRelatedDataFromSellEditCart($sellType,$sellEditCart->sell_invoice_no);
+                return 'sell update';
+            }
+        
             //$sellNormalPrintUrl = route('admin.sell.edit.regular.normal.print.from.sell.edit.list',$sellLastId); 
             DB::commit();
             $redirectUrl = NULL;
             if($sellType == 1){
-                 $redirectUrl = route('admin.sell.regular.sell.index');
+                $redirectUrl = route('admin.sell.regular.sell.index');
             }else{
-                 $redirectUrl = route('admin.sell.regular.quotation.index');
+                $redirectUrl = route('admin.sell.regular.quotation.index');
             }
             session()->put('sellInvoice_for_edit',NULL);
             session()->put('total_edit_count_for_edit',NULL);
