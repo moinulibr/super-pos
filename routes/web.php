@@ -217,6 +217,7 @@ Route::group(['middleware' => ['auth']], function ()
             Route::get('create','SupplierController@create')->name('create');//->middleware(['permissions:unit|index']);
             Route::post('store','SupplierController@store')->name('store');//->middleware(['permissions:unit|index']);
 
+            Route::get('show','SupplierController@show')->name('show');//->middleware(['permissions:unit|index']);
             Route::get('edit','SupplierController@edit')->name('edit');//->middleware(['permissions:unit|index']);
             Route::post('update','SupplierController@update')->name('update');//->middleware(['permissions:unit|index']);
             

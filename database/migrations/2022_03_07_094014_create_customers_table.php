@@ -92,6 +92,10 @@ class CreateCustomersTable extends Migration
                 $table->decimal('total_advance', 20, 2)->default(00.00)->comment('total before + after using this app.');
                 $table->decimal('total_loan', 20, 2)->default(00.00)->comment('total before + after using this app.');
                 $table->decimal('total_return', 20, 2)->default(00.00)->comment('total before + after using this app.');
+                
+                $table->decimal('selling_time_discount_amount', 20, 2)->default(00.00)->comment('this discount is selling time discount');
+                $table->decimal('overall_discount_amount', 20, 2)->default(00.00)->comment('overall discount');
+                $table->decimal('total_discount_amount', 20, 2)->default(00.00)->comment('total_discount = selling_time_discount_amount + overall_discount_amount');
 
                 $table->decimal('current_total_sell_amount', 20, 2)->default(00.00)->comment('after using this app.');
                 $table->decimal('current_total_sell_reference_amount', 20, 2)->default(00.00)->comment('after using this app.');

@@ -7,7 +7,13 @@
                 <div class="table">
                     <table class="table table-bordered table striped">
                         <tr>
-                            <th colspan="3" style="text-align:right;background-color:#666565;color:#fff;">Payment Return Amount</>
+                            <th style="text-align:right;background-color:#524343;color:#fff;">Total Return Amount</th>
+                            <th style="text-align:left;background-color:#524343;color:#fff;">
+                                <strong style="margin-right:5px;">:</strong>
+                                <strong class="total_return_amount_for_customer_history">00</strong>
+                                <input type="hidden" class="total_return_amount_for_customer_history_val" name="total_return_amount_for_customer_history_value">
+                            </th>
+                            <th style="text-align:right;background-color:#666565;color:#fff;">Payment Return Amount</th>
                             <th  style="text-align:left;background-color:#666565;color:#fff;">
                                 <strong style="margin-right:5px;">:</strong>
                                 <strong class="total_sell_return_invoice_payable_amount" style="font-size:16px;">00</strong>

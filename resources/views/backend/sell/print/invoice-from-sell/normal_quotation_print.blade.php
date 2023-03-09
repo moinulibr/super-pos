@@ -104,12 +104,12 @@ html {
                                     width="100%">
                                     <thead style="border-top:1px solid rgba(0, 0, 0, 0.1) !important;">
                                         <tr>
-                                            <th>{{ __('Sl.') }}</th>
-                                            <th>{{ productCustomCodeLabel_hh() }}</th>
-                                            <th style="width:50%">{{ __('Product') }}</th>
-                                            <th  style="text-align: center;">{{ __('Qty') }}</th>
-                                            <th  style="text-align: center;">{{ __('Sale Price') }}</th>
-                                            <th  style="text-align: right;">{{ __('Subtotal') }}</th>
+                                            <th style="padding:0px 6px !important;">{{ __('Sl.') }}</th>
+                                            <th style="padding:0px 6px !important;">{{ productCustomCodeLabel_hh() }}</th>
+                                            <th style="width:50%;padding:0px 6px !important;">{{ __('Product') }}</th>
+                                            <th  style="text-align: center;padding:0px 6px !important;">{{ __('Qty') }}</th>
+                                            <th  style="text-align: center;padding:0px 6px !important;">{{ __('Sale Price') }}</th>
+                                            <th  style="text-align: right;padding:0px 6px !important;">{{ __('Subtotal') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -122,74 +122,75 @@ html {
                                                 $cats = json_decode($item->cart,true);
                                                 $i++;
                                             @endphp
-                                            <td>{{ $i }}</th>
-                                            <td>{{$item->custom_code}} </th>
-                                            <td style="width:50%">
-                                                @if (array_key_exists('productName',$cats))
+                                            <td style="padding:0px 6px !important;">{{ $i }}</th>
+                                            <td style="padding:0px 6px !important;">{{$item->custom_code}} </th>
+                                            <td style="width:50%;padding:0px 6px !important;">
+                                                @if (is_array($cats) && array_key_exists('productName',$cats))
                                                     {{$cats['productName']}}
                                                     @else
                                                     NULL
                                                 @endif    
-                                            </th>
-                                            <td style="text-align: center;">
+                                            </td>
+                                            <td style="text-align: center;padding:0px 6px !important;">
                                                 {{$item->total_quantity}}
-                                                {{-- @if (array_key_exists('unitName',$cats))
+                                                {{-- @if (is_array($cats) && array_key_exists('unitName',$cats))
                                                     <small>{{$cats['unitName']}}</small>
                                                     @else
                                                     NULL
                                                 @endif --}}    
-                                            </th>
-                                            <td style="text-align: center;">{{$item->sold_price}}</th>
-                                            <td style="text-align: right;"> 
+                                            </td>
+                                            <td style="text-align: center;padding:0px 6px !important;">{{$item->sold_price}}</th>
+                                            <td style="text-align: right;padding:0px 6px !important;"> 
                                                 {{$item->total_sold_amount}}
                                                 {{--- @if ($item->total_discount > 0)
                                                     <br/>
                                                     (Less : {{ $item->total_discount }})
                                                 @endif ---}}
-                                            </th>
+                                            </td>
                                         </tr> 
                                         @endforeach
                                         <tr>
-                                            <th colspan="2">Less : 
-                                                <span style="margin-left:5px;">
-                                                    {{$data->total_discount}} 
+                                            <th colspan="2" style="padding:0px 6px !important;">Less : 
+                                                <span style="margin-left:2px;">
+                                                    {{$data->total_discount_amount}} 
                                                 </span> 
                                             </th>
-                                            <th style="text-align: center;">
-                                                <span style="margin-right:5px;">
+                                            <th style="text-align: center;padding:0px 6px !important;">
+                                                <span style="margin-right:1px;">
                                                     Shipping :  {{$data->shipping_cost}},     
                                                 </span>    
-                                                <span style="margin-left:5px;margin-right:5px;">
-                                                    Other :  {{$data->others_cost}},     
+                                                <span style="margin-left:1px;margin-right:1px;">
+                                                    Other :  {{$data->others_cost}}    
                                                 </span>  
-                                                <span style="margin-left:8px;margin-right:2px;">
-                                                    Total :  {{$data->totalInvoicePayableAmountAfterRefundAfterDiscount()}}     
-                                                </span> 
+                                                
                                             </th>
-                                            <th colspan="2" style="text-align: right;">
+                                            <th colspan="2" style="text-align: right;padding:0px 6px !important;">
                                                 Subtotal
                                             </th>
-                                            <th style="text-align: right;">{{$data->subtotal}}</th>
+                                            <th style="text-align: right;padding:0px 6px !important;">{{$data->subtotal}}</th>
                                         </tr>
                                         <tr>
-                                            <th colspan="2">
+                                            <th colspan="2" style="padding:0px 6px !important;">
                                                 Paid  : 
                                                 <span style="margin-left:5px;">
                                                     {{ $data->total_paid_amount ?? 0.00 }} 
                                                 </span> 
                                             </th>
-                                            <th style="text-align: center;">
+                                            <th style="text-align: center;padding:0px 6px !important;">
                                                 <span style="margin-right:5px;">
-                                                  <small> Invoice Current Due </small> :  {{ $data->total_due_amount ?? 0.00 }},     
+                                                  <small> Invoice Current Due </small> :  {{ $data->total_due_amount ?? 0.00 }}   
                                                 </span>    
-                                                <span style="margin-left:5px;margin-right:5px;">
-                                                   <small> Previous Invoice Due </small> :  {{$data->customer ? $data->customer->current_total_due : 0.0}}    
-                                                </span>  
+                                                <!-- <span style="margin-left:5px;margin-right:5px;">
+                                                   <small> Previous Invoice Due </small> :     
+                                                </span>-->
                                             </th>
-                                            <th colspan="2" style="text-align: right;">
-                                                Total Due Amount
+                                            <th colspan="2" style="text-align: right;padding:0px 6px !important;">
+                                                <span style="margin-left:1px;">
+                                                    Total
+                                                </span>
                                             </th>
-                                            <th style="text-align: right;">{{ $data->customer ? $data->customer->totalDueAmount() : 0.0 }}</th>
+                                            <th style="text-align: right;padding:0px 6px !important;"> {{$data->total_payable_amount}}     
+                                            </th>
                                         </tr>
                                     </tbody>
                                 </table>

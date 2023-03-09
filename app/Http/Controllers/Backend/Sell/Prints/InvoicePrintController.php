@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Backend\Sell\SellInvoice;
 use App\Models\Backend\Customer\Customer;
 use App\Models\Backend\Purchase\PurchaseInvoice;
+use App\Models\Backend\Sell\SellQuotation;
 
 class InvoicePrintController extends Controller
 {
@@ -73,6 +74,7 @@ class InvoicePrintController extends Controller
               <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Less Amount</th>
               <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Total Amount</th>
               <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Total Item</th>
+              <th style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">Type</th>
             </tr>';
     
             $totalPayableAmount = 0;
@@ -85,12 +87,27 @@ class InvoicePrintController extends Controller
             $dynamicRows = '';
             foreach($sellInvoices as $index => $item)
             {
-                $customer = Customer::select('id','name')->find($item->customer_id);
                 $customerName = NULL;
-                if($customer){
-                    $customerName = $customer->name;
+                if ($item->sell_type == 1){
+                    $customer = Customer::select('id','name')->find($item->customer_id);
+                    if($customer){
+                        $customerName = $customer->name;
+                    }
+                }
+                elseif ($item->sell_type == 2){
+                   $sellQuotation = SellQuotation::select('id','sell_invoice_id','customer_name')->where('sell_invoice_id',$item->id)->first();
+                   if($sellQuotation){
+                        $customerName =  $sellQuotation->customer_name;
+                   } 
                 }
                 
+                $sellType = 'Sell';
+                if($item->sell_type == 1){
+                    $sellType = 'Sell';
+                }else{
+                    $sellType = 'Quotation';
+                }
+
                 $dynamicRows .= 
                 '<tr>
                     <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. ($index + (1)).'</td>
@@ -103,14 +120,16 @@ class InvoicePrintController extends Controller
                     <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_discount_amount.'</td>
                     <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_invoice_amount.'</td>
                     <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->totalSellItemAfterRefund().'</td>
+                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $sellType.'</td>
                 </tr>';
-    
-                $totalPayableAmount += $item->total_payable_amount;
-                $totalPaidAmount += $item->total_paid_amount;
-                $totalDueAmount += $item->total_due_amount;
-                $totalDiscountAmount += $item->total_discount_amount;   
-                $totalInvoiceAmount += $item->total_invoice_amount;   
-                $totalItem += $item->totalSellItemAfterRefund();            
+                if($item->sell_type == 1){
+                    $totalPayableAmount += $item->total_payable_amount;
+                    $totalPaidAmount += $item->total_paid_amount;
+                    $totalDueAmount += $item->total_due_amount;
+                    $totalDiscountAmount += $item->total_discount_amount;   
+                    $totalInvoiceAmount += $item->total_invoice_amount;   
+                    $totalItem += $item->totalSellItemAfterRefund();
+                }            
             };
             $html .= '<tbody>'.$dynamicRows.'</tbody';
             //$html .= $tbody;
@@ -124,6 +143,7 @@ class InvoicePrintController extends Controller
                     <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. number_format($totalDiscountAmount,2,'.','').'</th>
                     <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'.  number_format($totalInvoiceAmount,2,'.','') .'</th>
                     <th style="border:1px solid gray; border-collapse: collapse;text-align:center">'. $totalItem.'</th>
+                    <th></th>
                 </tr>
             </tfooter>';
     

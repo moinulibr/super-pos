@@ -25,11 +25,13 @@
                             </button>
                             <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
                                 {{-- <a class="dropdown-item" href="javascript:void(0)">View</a> --}}
+                                <a class="dropdown-item singleShowModal" data-id="{{$item->id}}" href="javascript:void(0)">Show</a>
                                 <a class="dropdown-item singleEditModal" data-id="{{$item->id}}" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item singleDeleteModal" data-id="{{$item->id}}" data-name="{{$item->name}}" href="javascript:void(0)">Delete</a>
-                            {{-- <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void(0)">Separated link</a>
-                            </div> --}}
+                                {{-- <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="javascript:void(0)">Separated link</a>
+                                </div> --}}
+                            </div>
                         </div>
                     </td>
                     <th scope="row">

@@ -97,6 +97,7 @@ table caption {
                             <th style="width:;">Due Amount </th>
                             <th style="width:;">Less Amount </th>
                             <th style="width:;">Total Item </th>
+                            <th style="width:;">Type </th>
                         </tr>
                     </thead>
                     <tbody style="border:1px solid gray !important;">
@@ -116,18 +117,27 @@ table caption {
                             <td>
                                 {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                             </td>
-                            <td>{{$item->customer?$item->customer->name:NULL}}</td>
+                            <td>
+                                @if ($item->sell_type == 1)
+                                {{$item->customer?$item->customer->name:NULL}}
+                                @elseif ($item->sell_type == 2)
+                                {{$item->quotation ? $item->quotation->customer_name : NULL}}
+                                @endif
+                            </td>
                             <td>{{$item->total_payable_amount}}</td>
                             <td>{{$item->total_paid_amount}}</td>
                             <td>{{$item->total_due_amount}}</td>
                             <td>{{$item->total_discount_amount}}</td>
                             <td>{{$item->totalSellItemAfterRefund()}}</td>
+                            <td> {{$item->sell_type == 1 ? 'Sell' : 'Quotation'}}</td>
                             @php
-                                $totalSellAmount += $item->total_payable_amount;
-                                $totalPaidAmount += $item->total_paid_amount;
-                                $totalDueAmount += $item->total_due_amount;
-                                $totalLessAmount += $item->total_discount_amount;
-                                $totalItem += $item->totalSellItemAfterRefund();
+                                if($item->sell_type == 1){
+                                    $totalSellAmount += $item->total_payable_amount;
+                                    $totalPaidAmount += $item->total_paid_amount;
+                                    $totalDueAmount += $item->total_due_amount;
+                                    $totalLessAmount += $item->total_discount_amount;
+                                    $totalItem += $item->totalSellItemAfterRefund();
+                                }
                             @endphp
                         </tr>
                         @endforeach
@@ -140,6 +150,7 @@ table caption {
                             <th>{{number_format($totalDueAmount,2,'.','')}}</th>
                             <th>{{number_format($totalLessAmount,2,'.','')}}</th>
                             <th>{{$totalItem}}</th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table> 

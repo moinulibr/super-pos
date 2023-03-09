@@ -7,7 +7,9 @@
             url:url,
             data:{id:id},
             success:function(response){
-                $('#editSupplierModal').html(response).modal('show');
+                if(response.status == true){
+                    $('#editSupplierModal').html(response.html).modal('show');
+                }
             }
         });
     });

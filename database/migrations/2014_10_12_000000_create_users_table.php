@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone',15)->unique();
             $table->integer('user_role_id')->nullable();
+            $table->tinyInteger('user_type')->default(4)->comment('1=developer, 2=supper admin, 3=admin, 4=staff');
             $table->timestamp('email_verified_at')->nullable();
             $table->tinyInteger('status')->nullable();
             $table->string('password');

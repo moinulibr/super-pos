@@ -223,9 +223,30 @@
         //payment Processing With Due Full Amount And Paying Amount Zero
         function paymentProcessingWithDueFullAmountAndPayingAmountZeroForSellReturn()
         {
-            var totalInvoicePayableAmount = nanCheckForSellReturnPayment(parseFloat(jQuery('.total_sell_return_invoice_payable_amount').text()));
+            var totalInvoicePayableReturnAmount = nanCheckForSellReturnPayment(parseFloat(jQuery('.total_sell_return_invoice_payable_amount').text()));
             jQuery('.invoice_paying_amount_for_sell_return').val(0);
-            jQuery('.invoice_due_amount_for_sell_return').val(totalInvoicePayableAmount);
+
+            
+            var totalInvoicePayable = jQuery('.total_invoice_payable_amount').val();
+            var totalInvoicePaidAmount = jQuery('.total_invoice_paid_amount').val();
+            var totalInvoiceDueAmount = jQuery('.total_invoice_due_amount').val();
+
+            var totalPayableAmountBasedOnDueAndPaidAmount = 0;
+            if(totalInvoicePayableReturnAmount == totalInvoiceDueAmount){
+                totalPayableAmountBasedOnDueAndPaidAmount = 0;
+                console.log('1- ' + totalInvoicePayableReturnAmount);
+            }
+            else if(totalInvoicePayableReturnAmount < totalInvoiceDueAmount){
+                totalPayableAmountBasedOnDueAndPaidAmount = 0;
+                console.log('2- ' + totalInvoicePayableReturnAmount);
+            } 
+            else if(totalInvoicePayableReturnAmount > totalInvoiceDueAmount){
+                totalPayableAmountBasedOnDueAndPaidAmount = totalInvoicePayableReturnAmount - totalInvoiceDueAmount;
+                console.log('3- ' + totalInvoicePayableReturnAmount);
+            }
+
+
+            jQuery('.invoice_due_amount_for_sell_return').val(totalPayableAmountBasedOnDueAndPaidAmount);
         }
         //payment Processing With Due Full Amount And Paying Amount Disabled And Zero
         function paymentProcessingWithDueFullAmountAndPayingAmountDisabledAndZeroForSellReturn()
@@ -327,19 +348,39 @@
         //this is used for first time in the sell_return/index.js file
         function linkBetweenSellReturnFunctionAndSellReturnPaymentOption()
         {
-            var totalReturnAmountAfterDiscount = $('.total_return_amount_after_discount_val').val();
-            $('.total_sell_return_invoice_payable_amount').text(totalReturnAmountAfterDiscount);
-            $('.total_invoice_amount_for_calculator_for_sell_return').val(totalReturnAmountAfterDiscount);
-            if(totalReturnAmountAfterDiscount > 0)
+            //var totalReturnAmountAfterDiscount = $('.total_return_amount_after_discount_val').val();
+            var totalReturnAmountAfterDiscount = $('.total_return_amount_for_customer_history_val').val();
+
+            var totalInvoicePayableAmount = jQuery('.total_invoice_payable_amount').val();
+            var totalInvoicePaidAmount = jQuery('.total_invoice_paid_amount').val();
+            var totalInvoiceDueAmount = jQuery('.total_invoice_due_amount').val();
+
+            var totalPayableAmountBasedOnDueAndPaidAmount = 0;
+            if( totalReturnAmountAfterDiscount == totalInvoiceDueAmount){
+                totalPayableAmountBasedOnDueAndPaidAmount = 0;
+                console.log('1/1_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
+            }
+            else if(totalReturnAmountAfterDiscount < totalInvoiceDueAmount){
+                totalPayableAmountBasedOnDueAndPaidAmount = 0;
+                console.log('1/2_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
+            } 
+            else if(totalReturnAmountAfterDiscount > totalInvoiceDueAmount){
+                totalPayableAmountBasedOnDueAndPaidAmount = totalReturnAmountAfterDiscount - totalInvoiceDueAmount;
+                console.log('1/3_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
+            }
+
+            $('.total_sell_return_invoice_payable_amount').text(totalPayableAmountBasedOnDueAndPaidAmount);
+            $('.total_invoice_amount_for_calculator_for_sell_return').val(totalPayableAmountBasedOnDueAndPaidAmount);
+            if(totalPayableAmountBasedOnDueAndPaidAmount > 0)
             { 
                 submitButtonEnableForSellReturn();
                 var currentPayingAmount = calculationTotalPayingDifferentAllMethodsAmountForSellReturn(); 
-                if(currentPayingAmount > totalReturnAmountAfterDiscount)
+                if(currentPayingAmount > totalPayableAmountBasedOnDueAndPaidAmount)
                 {
                     paymentProcessingWithDueFullAmountAndAllPayingAmountZeroForSellReturn();
                     paymentProcessingWithDueFullAmountAndPayingAmountZeroForSellReturn();
                 }
-                else if(currentPayingAmount <= totalReturnAmountAfterDiscount)
+                else if(currentPayingAmount <= totalPayableAmountBasedOnDueAndPaidAmount)
                 { 
                     paymentProcessingWithDueFullAmountAndAllPayingAmountZeroForSellReturn();
                     paymentProcessingWithDueFullAmountAndPayingAmountDisabledAndZeroForSellReturn();

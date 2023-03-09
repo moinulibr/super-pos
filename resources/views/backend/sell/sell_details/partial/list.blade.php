@@ -28,6 +28,7 @@
                     <th style="width:;text-align:center;">Payment Status </th>
                     <th style="width:;text-align:center;">Created By </th>
                     <th style="width:;text-align:center;">Reference By</th>
+                    <th style="width:;text-align:center;">Type</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,8 +41,8 @@
                     $totalItem = 0;
                 @endphp
                 @foreach ($datas as $index => $item)
-                    <tr>
-                        <th>
+                    <tr style="@if($item->sell_type == 2) background-color:#7e7c7c;color:#ffff; @endif">
+                        <th style="padding-top: 2px;padding-bottom: 2px;">
                             <input class="check_single_class form-control" type="checkbox"  name="checked_id[]" value="{{ $item->id }}" class="check_single_class" id="{{$item->id}}" style="box-shadow:none;">
                         </th>
                         <th scope="row">
@@ -54,34 +55,47 @@
                                     <i class="fas fa-cog"></i>
                                 </button>
                                 <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
-                                    <a class="dropdown-item singleSellView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
-                                    <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.normal.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print</a>
-                                    <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.pos.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print (POS)</a>
-                                    <a class="dropdown-item singleSellInvoiceWiseDelivery" data-id="{{$item->id}}" style="cursor: pointer">Delivery Product</a>
-                                    <a class="dropdown-item singleSellInvoiceProfitLossView" data-id="{{$item->id}}" style="cursor: pointer">View Profit/Loss</a>
-                                    <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Return Product</a>
-                                    <a class="dropdown-item singleSellInvoiceReceivePaymentModalView" data-id="{{$item->id}}" style="cursor: pointer;">Make Payment</a> {{--singleSellInvoiceReceivePaymentModalView  cursor: not-allowed !important;--}}
-                                    <a class="dropdown-item singleViewSellInvoiceWisePaymentDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
-                                    <a class="dropdown-item singleViewSellInvoiceOverallDiscountDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">Make Overall Less</a>
-                                    <a class="dropdown-item" style="cursor: pointer" href="{{route('admin.sell.regular.sell.update.sell.calculation',$item->id)}}">Update Invoice</a>
-                                    {{-- @if ($item->total_return_count == 0 && $item->total_delivered_count == 0 &&  $item->overall_discount_amount == 0)
-                                        <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list')}}?seid={{\Crypt::encrypt($item->id)}}" style="cursor: pointer">Edit Sell</a>
-                                        @else
-                                        <a class="dropdown-item" data-id="{{$item->id}}" href="#" style="cursor: not-allowed !important;">Edit Sell</a>
-                                    @endif --}}
+                                    @if ($item->sell_type == 1)
+                                        <a class="dropdown-item singleSellView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
+                                        <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.normal.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print</a>
+                                        <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.pos.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print (POS)</a>
+                                        <a class="dropdown-item singleSellInvoiceWiseDelivery" data-id="{{$item->id}}" style="cursor: pointer">Delivery Product</a>
+                                        <a class="dropdown-item singleSellInvoiceProfitLossView" data-id="{{$item->id}}" style="cursor: pointer">View Profit/Loss</a>
+                                        <a class="dropdown-item singleSellInvoiceReturnModalView" data-id="{{$item->id}}" style="cursor: pointer">Return Product</a>
+                                        <a class="dropdown-item singleSellInvoiceReceivePaymentModalView" data-id="{{$item->id}}" style="cursor: pointer;">Make Payment</a> {{--singleSellInvoiceReceivePaymentModalView  cursor: not-allowed !important;--}}
+                                        <a class="dropdown-item singleViewSellInvoiceWisePaymentDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
+                                        <a class="dropdown-item singleViewSellInvoiceOverallDiscountDetailsModal" data-id="{{$item->id}}" style="cursor: pointer">Make Overall Less</a>
+                                        <a class="dropdown-item" style="cursor: pointer" href="{{route('admin.sell.regular.sell.update.sell.calculation',$item->id)}}">Update Invoice</a>
+                                        {{-- @if ($item->total_return_count == 0 && $item->total_delivered_count == 0 &&  $item->overall_discount_amount == 0)
+                                            <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list')}}?seid={{\Crypt::encrypt($item->id)}}" style="cursor: pointer">Edit Sell</a>
+                                            @else
+                                            <a class="dropdown-item" data-id="{{$item->id}}" href="#" style="cursor: not-allowed !important;">Edit Sell</a>
+                                        @endif --}}
+                                    @elseif ($item->sell_type == 2)
+                                        <a class="dropdown-item singleSellView singleSellQuotationView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
+                                        <a class="dropdown-item print" target="_blank" href="{{route('admin.sell.regular.normal.print.from.sell.quotation.list',$item->id)}}" data-id="{{$item->id}}" style="cursor: pointer">Print</a>
+                                        <a class="dropdown-item singleSellInvoiceProfitLossView singleSellQuotationInvoiceProfitLossView" data-id="{{$item->id}}" style="cursor: pointer">View Profit/Loss</a>
+                                        <a class="dropdown-item" data-id="{{$item->id}}" href="{{route('admin.sell.edit.product.cart.list')}}?seid={{\Crypt::encrypt($item->id)}}" style="cursor: pointer">Edit / Sell</a>
+                                    @endif
                             </div>
                         </td>
                         <td style="text-align:center;">
                             <a  class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
-                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
+                                <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}">  {{date('d-m-Y h:i:s A',strtotime($item->created_at))}} </strong>
                             </a>
                         </td>
                         <td style="text-align:center;"> 
-                            <a  class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
-                                {{$item->invoice_no}} 
+                            <a class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
+                               {{$item->invoice_no}}
                             </a> 
                         </td>
-                        <td style="text-align:center;">{{$item->customer?$item->customer->name:NULL}}</td>
+                        <td style="text-align:center;">
+                            @if ($item->sell_type == 1)
+                            {{$item->customer?$item->customer->name:NULL}}
+                            @elseif ($item->sell_type == 2)
+                            {{$item->quotation ? $item->quotation->customer_name : NULL}}
+                            @endif
+                        </td>
                         <td style="text-align:center;">{{$item->totalSellItemAfterRefund()}}</td>
                         <td style="text-align:center;">
                             {{$item->total_payable_amount}}
@@ -104,13 +118,18 @@
 
                         <td style="text-align:center;">{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                         <td style="text-align:center;">{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
+                        <td style="text-align:center;">
+                            {{$item->sell_type == 1 ? 'Sell' : 'Quotation'}}
+                        </td>
                         @php
-                            $totalPayableAmount += $item->total_payable_amount;
-                            $totalPaidAmount += $item->total_paid_amount;
-                            $totalDueAmount += $item->total_due_amount;
-                            $totalLessAmount += $item->total_discount_amount;
-                            $totalInvoiceAmount += $item->total_invoice_amount;
-                            $totalItem += $item->totalSellItemAfterRefund();
+                            if($item->sell_type == 1){
+                                $totalPayableAmount += $item->total_payable_amount;
+                                $totalPaidAmount += $item->total_paid_amount;
+                                $totalDueAmount += $item->total_due_amount;
+                                $totalLessAmount += $item->total_discount_amount;
+                                $totalInvoiceAmount += $item->total_invoice_amount;
+                                $totalItem += $item->totalSellItemAfterRefund();
+                            }
                         @endphp
                     </tr>
                 @endforeach
@@ -126,6 +145,7 @@
                     <th style="text-align:center;">{{number_format($totalInvoiceAmount,2,'.','')}}</th>
                    
                     <td style="text-align:center;"></td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tfoot>

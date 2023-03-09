@@ -147,7 +147,8 @@
 
                     <!---discount section-->
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-6">
                             <div class="row">
                                 <div class="col-md-4">
                                     <label for="">Discount Type</label>
@@ -187,11 +188,69 @@
                             </div>
                         </div>
                     </div>
-                     <!---discount section-->
+                    <!---discount section-->
 
-                     <!------Start of Payment Info --->
-                     <div class="sell_return_payment_options_render"></div>
-                     <!------Start of Payment Info --->
+                    <!---invoice payment, due, total amount--->
+                    <div class="row">
+                        <div class="col-md-5"></div>
+                        <div class="col-md-7">
+                            <div class="table">
+                                <table class="table table-bordered table striped">
+                                    <tr>
+                                        <th colspan="3" style="text-align:center;background-color:#220909;color:#fff;">
+                                            Invoice Payment
+                                        </th>
+                                    </tr>
+                                    <tr style="text-align:center;background-color:#666565;color:#fff;">
+                                        <th>Payable Amount : {{$data->total_payable_amount}}</th>
+                                        <th style="text-align:center;background-color:#1b441b;color:#fff;">Paid Amount : {{$data->total_paid_amount}}</th>
+                                        <th style="text-align:center;background-color:#7e2727;color:#fff;">Due Amount : {{$data->total_due_amount}}</th>
+                                        
+                                        <input type="hidden" class="total_invoice_payable_amount" name="" value="{{$data->total_payable_amount}}">
+                                        <input type="hidden" class="total_invoice_paid_amount" name="" value="{{$data->total_paid_amount}}">
+                                        <input type="hidden" class="total_invoice_due_amount" name="" value="{{$data->total_due_amount}}">
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!---invoice payment, due, total amount--->
+                    
+                    <br/>
+
+                    <!------Start of Payment Info --->
+                    <!--<div class="sell_return_payment_options_render"></div>-->
+                    <div class="row">
+                        <div class="col-md-8"></div>
+                        <div class="col-md-4">
+                            <!-----Invoice Payment--->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="table">
+                                        <table class="table table-bordered table striped">
+                                            <tr>
+                                                <th style="text-align:right;background-color:#524343;color:#fff;">Total Return Amount</th>
+                                                <th style="text-align:left;background-color:#524343;color:#fff;">
+                                                    <strong style="margin-right:5px;">:</strong>
+                                                    <strong class="total_return_amount_for_customer_history">00</strong>
+                                                    <input type="hidden" class="total_return_amount_for_customer_history_val" name="total_return_amount_for_customer_history_value">
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align:right;background-color:#0e0808;color:#fff;">Paying Return Amount</th>
+                                                <th  style="text-align:left;background-color:#100000;color:#fff;">
+                                                    <strong style="margin-right:5px;">:</strong>
+                                                    <strong class="total_sell_return_invoice_payable_amount" style="font-size:16px;">00</strong>
+                                                    <input type="hidden" name="total_sell_return_invoice_payable_amount" class="total_sell_return_invoice_payable_amount_val">
+                                                </th>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!------Start of Payment Info --->
                     <br/>
                     
 
@@ -201,9 +260,8 @@
             </div><!-----modal-body--->
 
             <div class="modal-footer">
-                <p>Please Paid full amount!!</p>
                 <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Cancel</button>
-                <input type="submit" value="Submit" disabled class="btn btn-success submitButton_for_sell_return">
+                <input type="submit" value="Submit" class="btn btn-success submitButton_for_sell_return">
             </div>
         </form>
     </div>

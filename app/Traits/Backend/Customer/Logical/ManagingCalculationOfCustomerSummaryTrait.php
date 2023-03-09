@@ -144,6 +144,7 @@ trait ManagingCalculationOfCustomerSummaryTrait
             36 => 'total_sell_amount',
             36 => 'total_sell_reference_amount' ,
             37 => 'total_sell_profit_amount' ,
+            38 => 'total_discount_amount' ,
         ];
     }
 
@@ -151,8 +152,7 @@ trait ManagingCalculationOfCustomerSummaryTrait
     private function finalAllCalculation($customerId)
     {
         $existingData = Customer::select('id','previous_due','previous_advance','previous_loan','previous_return','previous_due_paid_now','previous_advance_paid_now','previous_loan_paid_now','previous_return_paid_now','previous_total_due','previous_total_advance','previous_total_loan','previous_total_return',
-            'current_due','current_advance','current_loan','current_return','current_paid_due','current_paid_advance','current_paid_loan','current_paid_return','current_total_due','current_total_advance','current_total_loan','current_total_return','total_due','total_advance','total_loan','total_return','current_total_sell_amount','total_sell_amount'
-            )
+            'current_due','current_advance','current_loan','current_return','current_paid_due','current_paid_advance','current_paid_loan','current_paid_return','current_total_due','current_total_advance','current_total_loan','current_total_return','total_due','total_advance','total_loan','total_return','current_total_sell_amount','total_sell_amount','total_discount_amount')
         ->where('id',$customerId)
         ->first();
 
@@ -188,6 +188,7 @@ trait ManagingCalculationOfCustomerSummaryTrait
         $existingData->total_return = $previousTotalReturn + $currentTotalReturn;
 
         //$existingData->total_sell_amount = $existingData->total_sell_amount + $existingData->current_total_sell_amount;
+        //$existingData->total_sell_amount = $existingData->total_discount_amount + $existingData->current_total_sell_amount;
         $existingData->total_sell_amount = $existingData->current_total_sell_amount;
         $existingData->save();
         return true;

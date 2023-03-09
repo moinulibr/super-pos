@@ -22,11 +22,40 @@ use App\Models\Backend\Payment\Account;
             {
                 echo '<span class="badge badge-primary"> Over Paid </span>';
             }
-            else if(($totalPaidAmount == 0))
+            else if(($totalPaidAmount == 0) && ($totalAmount > 0))
             {
                 echo '<span class="badge badge-danger">Due</span>';
+            }
+            else if(($totalAmount == 0))
+            {
+                echo '<span class="badge badge-dark">Refunded</span>';
             }else{
                 echo '<span class="badge badge-default"> not processed </span>';
+            }
+        }
+        function paymentStatusLabelColor_hp($totalAmount,$totalPaidAmount)
+        {
+            if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))
+            {
+                return 'color:#55a3f4 !important;';
+            }
+            else if(($totalPaidAmount > 0) && ($totalAmount == $totalPaidAmount))
+            {
+                return 'color:#62d493 !important;';
+            } 
+            else if(($totalPaidAmount > 0 ) && ($totalAmount < $totalPaidAmount))
+            {
+                return 'color:#55a3f4 !important;';
+            }
+            else if(($totalPaidAmount == 0) && ($totalAmount > 0))
+            {
+                return 'color:#ff4961 !important;';
+            }
+            else if(($totalAmount == 0))
+            {
+                return 'color:#606c72 !important;';
+            }else{
+                return 'color:#727576 !important;';
             }
         }
     /*
@@ -80,19 +109,16 @@ use App\Models\Backend\Payment\Account;
                 7 => "Customer Loan",//debit
                 8 => "Customer Loan Return",//credit
                 9 => "Customer Advance",//credit
-                10 => "Supplier Advance", //debit
-                11 => "Supplier Due Payment", //debit
-                12 => "Purchase Damange",//credit
-                13 => "Supplier Previous Due", //debit - before using this software
-                14 => "Expense",//
-                15 => "Others Income",//
-                16 => "Other Cost",//
+                10 => "Overall Sell Discount",//credit
+                11 => "Supplier Advance", //debit
+                12 => "Supplier Due Payment", //debit
+                13 => "Purchase Damange",//credit
+                14 => "Supplier Previous Due", //debit - before using this software
+                15 => "Expense",//
+                16 => "Others Income",//
+                17 => "Other Cost",//
             ];
         }
-        			//selling time discount
-                    //when overall discount , 
-                    // when sell edit, - or + amount in the payment table..
-                    // same to purchase
     /*
     |--------------------------------------------------------------------------
     | Module during payment processing
@@ -690,7 +716,7 @@ use App\Models\Backend\Payment\Account;
                     8 => "Previous Due Payment", //PD Payment // Paid
                     9 => "Sell Return Payment", // SR Payment // Paid
                     10 => "Change Payment Date", // Change Payment Date
-                    11 => "Adjustment", // Sell Return Payment // 
+                    11 => "Overall Sell Discount", // Sell Return Payment // 
                 ]; 
             }
                     	//selling time discount

@@ -116,9 +116,15 @@ class SupplierController extends Controller
      * @param  \App\Models\Backend\Supplier\Supplier  $supplier
      * @return \Illuminate\Http\Response
      */
-    public function show(Supplier $supplier)
+    public function show(Supplier $supplier, Request $request)
     {
-        //
+        $data['supplier'] = Supplier::findOrFail($request->id);
+        $view = view('backend.supplier.supplier.show',$data)->render();
+        return response()->json([
+            'status' => true,
+            'type' => 'success',
+            'html' => $view,
+        ]);
     }
 
     /**
@@ -131,7 +137,13 @@ class SupplierController extends Controller
     {
         $data['supplier'] = Supplier::findOrFail($request->id);
         $data['datas'] = SupplierType::latest()->get();
-        return view('backend.supplier.supplier.edit',$data);
+
+        $view = view('backend.supplier.supplier.edit',$data)->render();
+        return response()->json([
+            'status' => true,
+            'type' => 'success',
+            'html' => $view,
+        ]);
     }
 
     /**

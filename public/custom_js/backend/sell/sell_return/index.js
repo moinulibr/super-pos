@@ -22,7 +22,7 @@
                     {
                         $('#sellProductReturnModal').html(response.html).modal('show');
                         $('.return_product_related_response_here').html(response.product);
-                        $('.sell_return_payment_options_render').html(response.payment);
+                        //$('.sell_return_payment_options_render').html(response.payment);
                     }
                 }
             });
@@ -262,8 +262,35 @@
         $('.total_return_amount_after_discount').text(totalReturnAmountAfterDiscount.toFixed(2));
         $('.total_return_amount_after_discount_val').val(totalReturnAmountAfterDiscount.toFixed(2));
         
+        $('.total_return_amount_for_customer_history').text(totalReturnAmountAfterDiscount.toFixed(2));
+        $('.total_return_amount_for_customer_history_val').val(totalReturnAmountAfterDiscount.toFixed(2));
+        
+
+        
+        var totalInvoicePayableAmount = jQuery('.total_invoice_payable_amount').val();
+        var totalInvoicePaidAmount = jQuery('.total_invoice_paid_amount').val();
+        var totalInvoiceDueAmount = jQuery('.total_invoice_due_amount').val();
+
+        var totalPayableAmountBasedOnDueAndPaidAmount = 0;
+        if( totalReturnAmountAfterDiscount == totalInvoiceDueAmount){
+            totalPayableAmountBasedOnDueAndPaidAmount = 0;
+            console.log('1/1_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
+        }
+        else if(totalReturnAmountAfterDiscount < totalInvoiceDueAmount){
+            totalPayableAmountBasedOnDueAndPaidAmount = 0;
+            console.log('1/2_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
+        } 
+        else if(totalReturnAmountAfterDiscount > totalInvoiceDueAmount){
+            totalPayableAmountBasedOnDueAndPaidAmount = totalReturnAmountAfterDiscount - totalInvoiceDueAmount;
+            console.log('1/3_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
+        }
+
+        $('.total_sell_return_invoice_payable_amount').text(totalPayableAmountBasedOnDueAndPaidAmount.toFixed(2));
+        $('.total_sell_return_invoice_payable_amount_val').val(totalPayableAmountBasedOnDueAndPaidAmount.toFixed(2));
+       
+
         //payments part, return payable amount
-        linkBetweenSellReturnFunctionAndSellReturnPaymentOption();
+        //linkBetweenSellReturnFunctionAndSellReturnPaymentOption();
     }
 
     function discountCalculationBasedOnSubtotalAfterSubmit()
@@ -298,11 +325,12 @@
                 {
                     jQuery.notify(response.message, response.type);
                     $('.return_product_related_response_here').html(response.product);
-                    $('.sell_return_payment_options_render').html(response.payment);
+                    //$('.sell_return_payment_options_render').html(response.payment);
                     $('.alert_success_message_div').show();
                     $('.success_message_text').html(response.message+"<br/>"+response.print);
                     discountCalculationBasedOnSubtotalAfterSubmit();
                     sellList();
+                    $('#sellProductReturnModal').modal('hide');
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);

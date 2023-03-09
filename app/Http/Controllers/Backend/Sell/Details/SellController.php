@@ -29,7 +29,7 @@ class SellController extends Controller
      */
     public function index()
     {
-        $data['datas'] = SellInvoice::where('sell_type',1)
+        $data['datas'] = SellInvoice::whereIn('sell_type',[1,2])
                         ->where('branch_id',authBranch_hh())
                         ->whereNull('deleted_at')
                         //->orderBy('custom_serial','ASC')
@@ -73,7 +73,7 @@ class SellController extends Controller
                 $sell->whereDate('created_at', '>=', $date_from)
                 ->whereDate('created_at', '<=', $date_to);
             }
-            $data['datas']  =  $sell->where('sell_type',1)->latest()->paginate($pagination);
+            $data['datas']  =  $sell->whereIn('sell_type',[1,2])->latest()->paginate($pagination);
             $data['page_no'] = $request->page ?? 1;
             $html = view('backend.sell.sell_details.ajax.list_ajax_response',$data)->render();
             return response()->json([
@@ -241,7 +241,7 @@ class SellController extends Controller
 
 
 
-    
+     //over all discount 
     public function viewSingleInvoiceForOverallDiscount(Request $request)
     {
         $data['data']  =  SellInvoice::where('id',$request->id)->first();
@@ -252,7 +252,7 @@ class SellController extends Controller
         ]);
     }
 
-    //store receiving single invoice swise payment
+    //over all discount store receiving single invoice swise 
     public function viewSingleInvoiceForOverallDiscountReceiving(Request $request)
     {
         //return $request;
@@ -262,35 +262,59 @@ class SellController extends Controller
             if(($request->amount ?? 0) > 0)
             {
                 $invoiceData = SellInvoice::findOrFail($request->id);
-                /* //for payment processing 
-                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
-                $moduleRelatedData = [
-                    'main_module_invoice_no' => $invoiceData->invoice_no,
-                    'main_module_invoice_id' => $invoiceData->id,
-                    'module_invoice_no' => $invoiceData->invoice_no,
-                    'module_invoice_id' => $invoiceData->id,
-                    'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
-                ];
-                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
-                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
-                $this->invoiceTotalPayingAmount = $request->invoice_total_paying_amount ?? 0 ;
-                $this->processingPayment();
+                
+                $totalOverallDiscountAmount = 0;
+                if($invoiceData->total_due_amount >  $request->amount) {
+                    $totalOverallDiscountAmount = 0 ;
+                }
+                else if($invoiceData->total_due_amount <  $request->amount) {
+                    $totalOverallDiscountAmount = $request->amount - $invoiceData->total_due_amount;
+                }
+                else if($invoiceData->total_due_amount ==  $request->amount) {
+                    $totalOverallDiscountAmount = 0;
+                }
+                
+                
+                //change amount from sellinvoice 
+                //$invoiceData->paid_amount = $invoiceData->paid_amount + $request->invoice_total_paying_amount ?? 0;
+                //$invoiceData->due_amount = $invoiceData->due_amount - $request->invoice_total_paying_amount ?? 0;
+                $invoiceData->overall_discount_amount =  $request->amount ?? 0;
+                $invoiceData->save();
+                $this->updateSellInvoiceCalculation($invoiceData->id);
+                
 
+                if($totalOverallDiscountAmount > 0){
+                    //for payment processing 
+                    $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                    $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Overall Sell Discount');
+                    $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Debit');
+                    $moduleRelatedData = [
+                        'main_module_invoice_no' => $invoiceData->invoice_no,
+                        'main_module_invoice_id' => $invoiceData->id,
+                        'module_invoice_no' => $invoiceData->invoice_no,
+                        'module_invoice_id' => $invoiceData->id,
+                        'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
+                    ];
+                    $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                    $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                    $this->invoiceTotalPayingAmount = $request->amount ?? 0 ;
+                    $this->defaultCashPaymentProcessing();
+                }
+
+                
                 //customer transaction statement history
                 $requestCTSData = [];
-                $requestCTSData['amount'] = $request->invoice_total_paying_amount ?? 0 ;
+                $requestCTSData['amount'] = $request->amount ?? 0 ;
                 $requestCTSData['ledger_page_no'] = NULL;
                 $requestCTSData['next_payment_date'] = NULL;
-                $requestCTSData['short_note'] = "Sell Due Payment";
+                $requestCTSData['short_note'] = "Overall Sell Discount";
                 $requestCTSData['sell_amount'] = 0;
                 $requestCTSData['sell_paid'] = 0;
                 $requestCTSData['sell_due'] = 0;
                 $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
-                $this->amount = $request->invoice_total_paying_amount ?? 0 ;
+                $this->amount = $request->amount ?? 0 ;
                 
-                $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Due Payment');
+                $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Overall Sell Discount');
                 $this->ctsCustomerId = $invoiceData->customer_id;
                 $ttModuleInvoics = [
                     'invoice_no' => $invoiceData->invoice_no,
@@ -302,26 +326,20 @@ class SellController extends Controller
                 //customer transaction statement history  
                 
                 //calculation in the customer table
-                //$dbField = 24;'current_paid_return';
+                //$dbField = 38;'total_discount_amount';
                 //$calType = 1='plus', 2='minus'
-                //$this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 24 ,$calType = 2,$request->invoice_total_paying_amount ?? 0 );
+                $this->updateCustomerSpecificField($invoiceData->customer_id,$dbField = 38 ,$calType = 1,$request->amount ?? 0 );//invoice_total_paying_amount
+                
+                //calculation in the customer table
+                //$dbField = 38;'total_discount_amount';
+                //$calType = 1='plus', 2='minus'
+                $this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 38 ,$calType = 1,$request->amount ?? 0 );
                 //calculation in the customer table 
-                                 */
-                //change amount from sellinvoice 
-                //$invoiceData->paid_amount = $invoiceData->paid_amount + $request->invoice_total_paying_amount ?? 0;
-                //$invoiceData->due_amount = $invoiceData->due_amount - $request->invoice_total_paying_amount ?? 0;
-                $invoiceData->overall_discount_amount =  $request->amount ?? 0;
-                $invoiceData->save();
-                $this->updateSellInvoiceCalculation($invoiceData->id);
-
-                //$dbField = 21;'current_paid_due';
-                //$calType = 1='plus', 2='minus'
-                //$this->managingCustomerCalculation($invoiceData->customer_id,$dbField = 21 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
             } 
             DB::commit();
             return response()->json([
                 'status'    => true,
-                'message'   => "Received successfully!",
+                'message'   => "Overall less is successfully!",
                 'type'      => 'success',
             ]);
 

@@ -47,12 +47,12 @@ class SellProductReturnController extends Controller
         
         $html = view('backend.sell.sell_return.index',$data)->render();
         $product = view('backend.sell.sell_return.product_only',$data)->render();
-        $payment = view('backend.sell.sell_return.payment',$data)->render();
+        //$payment = view('backend.sell.sell_return.payment',$data)->render();
         return response()->json([
             'status' => true,
             'html' => $html,
             'product' => $product,
-            'payment' => $payment,
+            //'payment' => $payment,
         ]);
     }
     
@@ -86,7 +86,7 @@ class SellProductReturnController extends Controller
                 $dataRequest['subtotal_before_discount'] = $request->return_invoice_subtotal_before_discount;
                 $dataRequest['total_amount_after_discount'] = $request->return_invoice_total_amount_after_discount;
                 $dataRequest['total_discount_amount'] = $request->return_invoice_total_discount_amount;
-                $dataRequest['invoice_total_paying_amount'] = $request->invoice_total_paying_amount ?? 0 ;
+                $dataRequest['invoice_total_paying_amount'] = $request->total_return_amount_for_customer_history_value ?? 0 ;
                 $dataRequest['customer_id'] = $request->customer_id;
                 $rand = rand(01,99);
                 //$makeInvoice = 'SREL'.date("iHsymd").$rand;
@@ -98,8 +98,8 @@ class SellProductReturnController extends Controller
                 
                 $returnInvoice  = $this->sellReturnProductInvoice($makeInvoice,$invoiceData,$dataRequest);
 
-                foreach($request->checked_id as $sell_product_stock_id)
-                {
+                //sell product stock quantity change
+                foreach($request->checked_id as $sell_product_stock_id){
                     $this->sellProductStockChangesData($returnInvoice,$invoiceData, $sell_product_stock_id, $request->input('returning_qty_'.$sell_product_stock_id));
                 }
                 //$this->updateSellInvoiceTable($invoiceData);
@@ -108,8 +108,10 @@ class SellProductReturnController extends Controller
                     $calable = false, $dbField = NULL, $calType = 1, $amountOrQty = 0
                 );
                 
-                //payment process
-                if(($request->invoice_total_paying_amount ?? 0) > 0){
+               
+                //payment process :  
+                $invoice_total_paying_amount = $request->total_sell_return_invoice_payable_amount ?? 0 ; //invoice_total_paying_amount
+                if($invoice_total_paying_amount > 0){
                     //for payment processing 
                     $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
                     $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell Return');
@@ -117,54 +119,49 @@ class SellProductReturnController extends Controller
                     $moduleRelatedData = [
                         'main_module_invoice_no' => $invoiceData->invoice_no,
                         'main_module_invoice_id' => $invoiceData->id,
-                        'module_invoice_no' => $makeInvoice,
+                        'module_invoice_no' => $returnInvoice->invoice_no,
                         'module_invoice_id' => $returnInvoice->id,
                         'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
                     ];
                     $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
                     $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
-                    $this->invoiceTotalPayingAmount = $request->invoice_total_paying_amount ?? 0 ;
-                    $this->processingPayment();
+                    $this->invoiceTotalPayingAmount = $invoice_total_paying_amount;
+                    $this->defaultCashPaymentProcessing();
                     //for payment processing 
-
-                    //customer transaction statement history
-                    $requestCTSData = [];
-                    $requestCTSData['amount'] =$request->invoice_total_paying_amount ?? 0 ;
-                    $requestCTSData['ledger_page_no'] = NULL;
-                    $requestCTSData['next_payment_date'] = NULL;
-                    $requestCTSData['short_note'] = "Sell Return";
-                    $requestCTSData['sell_amount'] = 0;
-                    $requestCTSData['sell_paid'] = 0;
-                    $requestCTSData['sell_due'] = 0;
-                    $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
-                    $this->amount = $request->invoice_total_paying_amount ?? 0 ;
-                    
-                    $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Return');
-                    $this->ctsCustomerId = $invoiceData->customer_id;
-                    $ttModuleInvoics = [
-                        'invoice_no' => $makeInvoice,
-                        'invoice_id' => $returnInvoice->id
-                    ];
-                    $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
-                    $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
-                    $this->processingOfAllCustomerTransaction();
-                    //customer transaction statement history   
-                    
-                    //calculation in the customer table
-                    //$dbField = 20;'current_return';
-                    //$calType = 1='plus', 2='minus'
-                    $this->updateCustomerSpecificField($request->customer_id,$dbField = 20 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
-                    //$dbField = 24;'current_paid_return';
-                    //$calType = 1='plus', 2='minus'
-                    $this->managingCustomerCalculation($request->customer_id,$dbField = 24 ,$calType = 1,$request->invoice_total_paying_amount ?? 0 );
-                    //calculation in the customer table    
-                }else{
-                    //calculation in the customer table
-                    //$dbField = 20;'current_return';
-                    //$calType = 1='plus', 2='minus'
-                    $this->managingCustomerCalculation($request->customer_id,$dbField = 20 ,$calType = 1,$request->return_invoice_total_amount_after_discount);
-                    //calculation in the customer table 
-                }         
+                }
+               
+                
+                //customer transaction statement history
+                $requestCTSData = [];
+                $requestCTSData['amount'] =$request->total_return_amount_for_customer_history_value ?? 0 ;
+                $requestCTSData['ledger_page_no'] = NULL;
+                $requestCTSData['next_payment_date'] = NULL;
+                $requestCTSData['short_note'] = "Sell Return";
+                $requestCTSData['sell_amount'] = 0;
+                $requestCTSData['sell_paid'] = 0;
+                $requestCTSData['sell_due'] = 0;
+                $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
+                $this->amount = $request->total_return_amount_for_customer_history_value ?? 0 ;
+                
+                $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Return');
+                $this->ctsCustomerId = $invoiceData->customer_id;
+                $ttModuleInvoics = [
+                    'invoice_no' =>  $returnInvoice->invoice_no,
+                    'invoice_id' => $returnInvoice->id
+                ];
+                $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+                $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
+                $this->processingOfAllCustomerTransaction();
+                //customer transaction statement history   
+                
+                //calculation in the customer table
+                //$dbField = 20;'current_return';
+                //$calType = 1='plus', 2='minus'
+                $this->updateCustomerSpecificField($request->customer_id,$dbField = 20 ,$calType = 1,$request->total_return_amount_for_customer_history_value ?? 0 );//invoice_total_paying_amount
+                //$dbField = 24;'current_paid_return';
+                //$calType = 1='plus', 2='minus'
+                $this->managingCustomerCalculation($request->customer_id,$dbField = 24 ,$calType = 1,$request->total_return_amount_for_customer_history_value ?? 0 );//invoice_total_paying_amount
+                //calculation in the customer table          
                 DB::commit();
             }else{
                 return response()->json([
@@ -178,13 +175,13 @@ class SellProductReturnController extends Controller
             
             $data['data']  = SellInvoice::where('id',$request->sell_invoice_id)->first();
             $product = view('backend.sell.sell_return.product_only',$data)->render();
-            $payment = view('backend.sell.sell_return.payment',$data)->render();
+            //$payment = view('backend.sell.sell_return.payment',$data)->render();
             $printRoute = route('admin.sell.product.return.print.product.returned.invoice.wise.returned.list',$makeInvoice);
             $printRouteHtml = '<a href="'.$printRoute.'" class="print" target="_blank">Print</a>';
             return response()->json([
                 'status'    => true,
                 'product' => $product,
-                'payment' => $payment,
+                //'payment' => $payment,
                 'print' => $printRouteHtml,
                 'message'   => "Return submited successfully!",
                 'type'      => 'success'

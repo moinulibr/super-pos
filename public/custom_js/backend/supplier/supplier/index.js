@@ -102,3 +102,20 @@ $(document).on('click','.deletingSupplierButton',function(e){
     });
 });
 
+
+
+
+$(document).on('click','.singleShowModal',function(e){
+    e.preventDefault();
+    var url = $('.showSupplierModalRoute').val();
+    var id = $(this).data('id');
+    $.ajax({
+        url:url,
+        data:{id:id},
+        success:function(response){
+            if(response.status == true){
+                $('#showSupplierModal').html(response.html).modal('show');
+            }
+        }
+    });
+});

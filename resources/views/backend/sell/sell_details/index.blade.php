@@ -25,14 +25,17 @@
     <!---page_title_of_content-->    
     @push('page_title_of_content')
         <div class="breadcrumbs layout-navbar-fixed">
-            <h4 class="font-weight-bold py-3 mb-0">Sell  </h4>
+            <h4 class="font-weight-bold py-3 mb-0">Sell</h4>
             <div class="text-muted small mt-0 mb-4 d-block breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#"><i class="feather icon-home"></i></a>
+                        <a href="{{route('home')}}"><i class="feather icon-home"></i></a>
                     </li>
                     <li class="breadcrumb-item">Sell</li>
-                    <li class="breadcrumb-item active">All Sells</li>
+                    <li class="breadcrumb-item active"><a href="{{route('admin.sell.regular.sell.index')}}">All Sells</a></li>
+                    <li class="breadcrumb-item active">
+                        <a href="{{route('admin.sell.regular.sell.index')}}">Reload</a>    
+                    </li>
                 </ol>
             </div>
             <div class="products">
@@ -77,6 +80,7 @@
                                 <td style="width:6%">
                                     <label for="">&nbsp;</label>
                                     <select class="form-control paginate" id="paginate" name="paginate" style="font-size: 12px;width:100%;">
+                                        <option value="5">5</option>
                                         <option value="10">10</option>
                                         <option value="20">20</option>
                                         <option value="30">30</option>
@@ -87,6 +91,8 @@
                                         <option value="300">300</option>
                                         <option value="500">500</option>
                                         <option value="1000">1000</option>
+                                        <option value="1500">1500</option>
+                                        <option value="2000">2000</option>
                                     </select>
                                 </td>
                                 <td style="width:1%"></td>
@@ -113,8 +119,8 @@
                                 <td style="width:20%">
                                     <label for="">&nbsp;</label>
                                     <div class="display:flex">
-                                        <a href="{{route('admin.sell.regular.sell.index')}}" class="btn btn-success btn">Reload</a>
-                                        <a href="{{route('home')}}" class="btn btn-info btn">Home</a>
+                                        {{-- <a href="{{route('admin.sell.regular.sell.index')}}" class="btn btn-success btn">Reload</a>
+                                        <a href="{{route('home')}}" class="btn btn-info btn">Home</a> --}}
                                     </div>
                                 </td>
                             </tr>

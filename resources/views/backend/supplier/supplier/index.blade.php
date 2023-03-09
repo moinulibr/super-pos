@@ -109,6 +109,11 @@
             <!-------add Supplier Modal------> 
             
 
+            <!-------show supplier Modal------> 
+            <div class="modal fade " id="showSupplierModal"  aria-modal="true"></div>
+            <input type="hidden" class="showSupplierModalRoute" value="{{ route('admin.supplier.show') }}">
+            <!-------show Supplier Modal------> 
+
             <!-------edit supplier Modal------> 
             <div class="modal fade " id="editSupplierModal"  aria-modal="true"></div>
             <input type="hidden" class="editSupplierModalRoute" value="{{ route('admin.supplier.edit') }}">
