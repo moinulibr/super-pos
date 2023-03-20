@@ -182,10 +182,10 @@
             <input type="hidden" class="sellViewSingleInvoiceOverallAdjustmentDiscountReceivingRouteUrl" value="{{route('admin.sell.regular.sell.view.single.invoice.for.overall.discount.receiving')}}">
             <!-------Single Sell overall adjustment discount Modal------> 
 
-             <!------view Single Sell payment Modal------> 
-             <div class="modal fade" id="viewSellSingleInvoiceReceivePaymentModal"  aria-modal="true"></div>
-             <input type="hidden" class="viewSellSingleInvoiceReceivePaymentModalRoute" value="{{route('admin.sell.regular.sell.view.single.invoice.wise.payment.details.modal')}}">
-             <!-------view Single Sell payment Modal------> 
+            <!------view Single Sell payment Modal------> 
+            <div class="modal fade" id="viewSellSingleInvoiceReceivePaymentModal"  aria-modal="true"></div>
+            <input type="hidden" class="viewSellSingleInvoiceReceivePaymentModalRoute" value="{{route('admin.sell.regular.sell.view.single.invoice.wise.payment.details.modal')}}">
+            <!-------view Single Sell payment Modal------> 
 
 
            {{--  <!-------delete Customer Modal------> 

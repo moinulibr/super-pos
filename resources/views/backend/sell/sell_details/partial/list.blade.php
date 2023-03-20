@@ -41,7 +41,7 @@
                     $totalItem = 0;
                 @endphp
                 @foreach ($datas as $index => $item)
-                    <tr style="@if($item->sell_type == 2) background-color:#7e7c7c;color:#ffff; @endif">
+                    <tr style="@if($item->sell_type == 2) background-color:#f1efef;color:#120606; @endif">
                         <th style="padding-top: 2px;padding-bottom: 2px;">
                             <input class="check_single_class form-control" type="checkbox"  name="checked_id[]" value="{{ $item->id }}" class="check_single_class" id="{{$item->id}}" style="box-shadow:none;">
                         </th>
@@ -51,7 +51,7 @@
                         
                         <td style="width:3%;">
                             <div class="btn-group btnGroupForMoreAction">
-                                <button type="button" class="btn btn-sm btn-success" data-toggle="dropdown" aria-expanded="true">
+                                <button type="button" class="btn btn-sm btn-info" data-toggle="dropdown" aria-expanded="true">
                                     <i class="fas fa-cog"></i>
                                 </button>
                                 <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
@@ -81,7 +81,7 @@
                         </td>
                         <td style="text-align:center;">
                             <a  class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
-                                <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}">  {{date('d-m-Y h:i:s A',strtotime($item->created_at))}} </strong>
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
                             </a>
                         </td>
                         <td style="text-align:center;"> 
@@ -90,11 +90,13 @@
                             </a> 
                         </td>
                         <td style="text-align:center;">
+                            <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}">
                             @if ($item->sell_type == 1)
                             {{$item->customer?$item->customer->name:NULL}}
                             @elseif ($item->sell_type == 2)
                             {{$item->quotation ? $item->quotation->customer_name : NULL}}
                             @endif
+                            </strong>
                         </td>
                         <td style="text-align:center;">{{$item->totalSellItemAfterRefund()}}</td>
                         <td style="text-align:center;">

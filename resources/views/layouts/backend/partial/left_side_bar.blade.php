@@ -593,7 +593,7 @@
             <!---HRM--->
 
             <!---Reports--->
-            <li class="sidenav-item @if(request()->routeIs(['admin.report.daily.transactional.report.summary', 'admin.report.daily.report.transactional.details']))  open active @endif "> {{-- @if(request()->is('admin/report/*')) open active @endif --}}
+            <li class="sidenav-item @if(request()->routeIs(['admin.report.daily.transactional.report.summary', 'admin.report.daily.report.transactional.details','admin.report.daily.transactional.profit.report']))  open active @endif "> {{-- @if(request()->is('admin/report/*')) open active @endif --}}
                 <a href="javascript:" class="sidenav-link sidenav-toggle">
                     <i class="sidenav-icon feather icon-activity"></i>
                     <div>Reports</div>
@@ -602,6 +602,13 @@
                     </div>
                 </a>
                 <ul class="sidenav-menu">
+                    @if (specialPermission_hh())
+                    <li class="sidenav-item   @if(request()->routeIs('admin.report.daily.transactional.profit.report')) active @endif ">
+                        <a href="{{route('admin.report.daily.transactional.profit.report')}}" class="sidenav-link">
+                            <div>Daily Profit Report</div>
+                        </a>
+                    </li> 
+                    @endif
                     <li class="sidenav-item   @if(request()->routeIs('admin.report.daily.transactional.report.summary')) active @endif ">
                         <a href="{{route('admin.report.daily.transactional.report.summary')}}" class="sidenav-link">
                             <div>Daily Report Summary</div>
@@ -610,6 +617,11 @@
                     <li class="sidenav-item   @if(request()->routeIs('admin.report.daily.report.transactional.details')) active @endif ">
                         <a href="{{route('admin.report.daily.report.transactional.details')}}" class="sidenav-link">
                             <div>Daily Report Details</div>
+                        </a>
+                    </li> 
+                    <li class="sidenav-item   @if(request()->routeIs('admin.report.daily.transactional.ledger.report')) active @endif ">
+                        <a href="{{route('admin.report.daily.transactional.ledger.report')}}" class="sidenav-link">
+                            <div>Daily Ledger Report</div>
                         </a>
                     </li> 
                     

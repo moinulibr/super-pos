@@ -12,7 +12,6 @@
                 <th>Phone</th>
                 <th>Email</th>
                 <th>Address</th>
-                
             </tr>
         </thead>
         <tbody>

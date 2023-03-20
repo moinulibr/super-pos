@@ -68,7 +68,7 @@ class SellController extends Controller
                 $sell->where('invoice_no','like','%'.$request->search.'%');
                 //->orWhere('customer_phone','like','%'.$request->search.'%');
             }
-            if($date_from)
+            if($request->input('date_from'))
             {
                 $sell->whereDate('created_at', '>=', $date_from)
                 ->whereDate('created_at', '<=', $date_to);
@@ -253,7 +253,7 @@ class SellController extends Controller
     }
 
     //over all discount store receiving single invoice swise 
-    public function viewSingleInvoiceForOverallDiscountReceiving(Request $request)
+    public function receivingInvoiceWiseOverallDiscount(Request $request)
     {
         //return $request;
         DB::beginTransaction();

@@ -191,7 +191,15 @@ use App\Models\Backend\ProductAttribute\Unit;
     {
         return Auth::guard('web')->user()->user_type;
     }
-
+    //developer, supper admin
+    function specialPermission_hh(){
+        return true;
+        if(userType_hh() == 1 || userType_hh() == 2){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     function regularStockId_hh()
     {

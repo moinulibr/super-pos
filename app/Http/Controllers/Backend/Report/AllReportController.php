@@ -59,5 +59,38 @@ class AllReportController extends Controller
 
 
 
+    public function dailyTransactionalProfitReport(Request $request){
+        
+        $date_to = Carbon::parse($request->input('date_to'));
+        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-10 day")));
+       
+        $sellInvoice =  SellInvoice::select('total_payable_amount','total_paid_amount','total_due_amount','total_discount_amount',
+        'total_profit','total_profit_from_product')->where('branch_id',authBranch_hh())->whereNull('deleted_at')->whereDate('created_at', '>=', $date_from)->whereDate('created_at', '<=', $date_to)->latest()->get();
+        $data['totalPayableAmount'] = $sellInvoice->sum('total_payable_amount');
+        $data['totalPaidAmount'] = $sellInvoice->sum('total_paid_amount');
+        $data['totalDueAmount'] = $sellInvoice->sum('total_due_amount');
+        $data['totalDiscountAmount'] = $sellInvoice->sum('total_discount_amount');
+        $data['totalProfitAmount'] = $sellInvoice->sum('total_profit');
+        $data['totalProfitFromProductAmount'] = $sellInvoice->sum('total_profit_from_product');
+        return view('backend.report.daily.daily_profit_report',$data);
+    }
+
+
+    public function dailyTransactionalLadgerReport(Request $request){
+        
+        $date_to = Carbon::parse($request->input('date_to'));
+        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-10 day")));
+       
+        $sellInvoice =  SellInvoice::select('total_payable_amount','total_paid_amount','total_due_amount','total_discount_amount',
+        'total_profit','total_profit_from_product')->where('branch_id',authBranch_hh())->whereNull('deleted_at')->whereDate('created_at', '>=', $date_from)->whereDate('created_at', '<=', $date_to)->latest()->get();
+        $data['totalPayableAmount'] = $sellInvoice->sum('total_payable_amount');
+        $data['totalPaidAmount'] = $sellInvoice->sum('total_paid_amount');
+        $data['totalDueAmount'] = $sellInvoice->sum('total_due_amount');
+        $data['totalDiscountAmount'] = $sellInvoice->sum('total_discount_amount');
+        $data['totalProfitAmount'] = $sellInvoice->sum('total_profit');
+        $data['totalProfitFromProductAmount'] = $sellInvoice->sum('total_profit_from_product');
+        return view('backend.report.daily.daily_ledger_report',$data);
+    }
+
 
 }

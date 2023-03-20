@@ -42,9 +42,9 @@ class InvoicePrintController extends Controller
       
         if($request->action_type == 'pdf_download'){
 
+            ini_set('max_execution_time', 3600); //60 minutes
             $sellInvoices  =  SellInvoice::whereIn('id',$request->checked_id)->get();
             $data['datas'] = $sellInvoices;
-            ini_set('max_execution_time', 180); //3 minutes
             
             $html =  header('Content-Type: text/html; charset=utf-8');
           
@@ -110,17 +110,17 @@ class InvoicePrintController extends Controller
 
                 $dynamicRows .= 
                 '<tr>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. ($index + (1)).'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->invoice_no.'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. date('d-m-Y h:i:s A',strtotime($item->created_at)).'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. html_entity_decode($customerName)  .'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_payable_amount.'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_paid_amount.'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_due_amount.'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_discount_amount.'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->total_invoice_amount.'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $item->totalSellItemAfterRefund().'</td>
-                    <td style="border: 0.5px solid gray; border-collapse: collapse;text-align:center">'. $sellType.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. ($index + (1)).'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->invoice_no.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center"><small style="font-size:11px;">'.date('d-m-Y',strtotime($item->created_at)).'</small></td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center"><small>'.html_entity_decode($customerName) .'</small></td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->total_payable_amount.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->total_paid_amount.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->total_due_amount.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->total_discount_amount.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->total_invoice_amount.'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $item->totalSellItemAfterRefund().'</td>
+                    <td style="font-size:12.5px;padding:0px !important;border:0.5px solid gray;border-collapse:collapse;text-align:center">'. $sellType.'</td>
                 </tr>';
                 if($item->sell_type == 1){
                     $totalPayableAmount += $item->total_payable_amount;

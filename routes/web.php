@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -287,6 +286,12 @@ Route::group(['middleware' => ['auth']], function ()
             Route::post('update','ReferenceController@update')->name('update');//->middleware(['permissions:unit|index']);
         
             Route::get('delete','ReferenceController@delete')->name('delete');//->middleware(['permissions:unit|index']);
+        
+
+        });  
+        Route::group(['as'=> 'admin.reference.history.', 'prefix'=>'admin/reference/history','namespace'=>'Backend\Reference'],function(){
+            //reference wise sell list
+            Route::get('/ref/{id}/wise/sell/list','ReferenceHistoryController@referenceWiseSellList')->name('reference.wise.sell.list');//->middleware(['permissions:unit|index']);
         });        
     /*
     |----------------------------------------
@@ -470,7 +475,7 @@ Route::group(['middleware' => ['auth']], function ()
                 Route::get('sell/single/invoice/profit/loss','SellController@viewSingleInvoiceProfitLoss')->name('view.single.invoice.profit.loss');
                 //over all invoice adjustment discount
                 Route::get('sell/single/invoice/overall/discount','SellController@viewSingleInvoiceForOverallDiscount')->name('view.single.invoice.for.overall.discount');
-                Route::get('sell/single/invoice/overall/discount/receiving','SellController@viewSingleInvoiceForOverallDiscountReceiving')->name('view.single.invoice.for.overall.discount.receiving');
+                Route::get('sell/single/invoice/overall/discount/receiving','SellController@receivingInvoiceWiseOverallDiscount')->name('view.single.invoice.for.overall.discount.receiving');
                 
                 //sell update calculation summery
                 Route::get('sell/single/invoice/update/calculation/summery/{id}','SellController@updateSellCalculation')->name('update.sell.calculation');
@@ -762,6 +767,8 @@ Route::group(['middleware' => ['auth']], function ()
         Route::group(['as'=> 'admin.report.','prefix'=>'admin/report', 'namespace'=>'Backend\Report'],function(){
             Route::get('daily/transactional/summary','AllReportController@dalilyTransactionalReportSummary')->name('daily.transactional.report.summary');//->middleware(['permissions:unit|index']);
             Route::get('daily/transactional/details','AllReportController@dalilyReportTransactionalSummaryDetails')->name('daily.report.transactional.details');//->middleware(['permissions:unit|index']);
+            Route::get('daily/transactional/profit/report','AllReportController@dailyTransactionalProfitReport')->name('daily.transactional.profit.report');//->middleware(['permissions:unit|index']);
+            Route::get('daily/transactional/ladger/report','AllReportController@dailyTransactionalLadgerReport')->name('daily.transactional.ledger.report');//->middleware(['permissions:unit|index']);
         });
     /*
     |-----------------------------------
