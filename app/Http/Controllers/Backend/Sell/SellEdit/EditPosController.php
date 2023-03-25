@@ -35,10 +35,11 @@ class EditPosController extends Controller
             $query->where('name','like',"%".$request->custom_search."%");
             $query->orWhere('custom_code','like',"%".$request->custom_search."%");
             $query->orWhere('company_code','like',"%".$request->custom_search."%");
-            $query->orWhere('sku','like',"%".$request->custom_search."%");
+            //$query->orWhere('sku','like',"%".$request->custom_search."%");
         }
-        $data['products']       = $query->select('name','id','photo','available_base_stock')
+        $data['products']       = $query->select('custom_code','company_code','name','id','photo','available_base_stock')
                                 ->latest()
+                                ->whereNull('deleted_at')
                                 ->paginate(21);
         $view = view('backend.sell.pos.ajax-response.landing.product-list.product_list',$data)->render();
         return response()->json([

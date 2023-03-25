@@ -182,11 +182,13 @@ use App\Models\Backend\ProductAttribute\Unit;
     {
         return Auth::guard('web')->user()->branch_id;
         //Auth::guard('web')->user()->id;
-        function authId_hh()
-        {
-            return Auth::guard('web')->user()->id;
-        }
     }
+    function authId_hh()
+    {
+        return Auth::guard('web')->user()->id;
+    }
+
+
     function userType_hh()
     {
         return Auth::guard('web')->user()->user_type;

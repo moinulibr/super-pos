@@ -691,7 +691,7 @@
     |quotation modal 
     |----------------------------------------------
     */
-        jQuery('#quotation-popup').css('overflow-y', 'auto');
+        jQuery('.quotationModalOpen').css('overflow-y', 'auto');
         jQuery(document).on('click','.quotationModalOpen',function(){
             normalPrintAfterSellIsDisabled();   
             var customer_id = jQuery('.customer_id option:selected').val();
@@ -715,7 +715,7 @@
                     if(response.status == true)
                     {
                         jQuery('.quotation_data_response').html(response.list);
-                        
+                        submitButtonEnable();
                         normalPrintAfterSellIsEnabled();
                         jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
                     }
@@ -769,6 +769,7 @@
                         {
                             jQuery('.payment_data_response').html(response.list);
                             paymentProcessingWithDueFullAmountAndPayingAmountZero();
+                            submitButtonEnable();
                         }else{
                             jQuery('#payment-popup').modal('hide');
                             alert('Please press again');
@@ -1268,13 +1269,16 @@
             var type = form.attr("method");
             var data = form.serialize();
             jQuery('.color-red').text('');
+            submitButtonDisabled();
             jQuery.ajax({
                 url: url,
                 data: data,
                 type: type,
                 datatype:"JSON",
                 beforeSend:function(){
+                    jQuery('.submit_loader').fadeIn();
                     jQuery('.processing').fadeIn();
+                    jQuery('.submit_processing_gif').fadeIn();
                 },
                 success: function(response){
                     if(response.status == true)
@@ -1293,7 +1297,9 @@
                     }
                 },
                 complete:function(){
+                    jQuery('.submit_processing_gif').fadeOut();
                     jQuery('.processing').fadeOut();
+                    jQuery('.submit_loader').fadeOut();
                 },
             });
             //end ajax

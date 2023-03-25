@@ -38,7 +38,7 @@
                     custom_search:custom_search,supplier_id:supplier_id,product_id:product_id,category_id:category_id
                 },
                 beforeSend:function(){
-                    jQuery('.processing_on').fadeIn();
+                    jQuery('.product_rendering_processing_gif').fadeIn();
                 },
                 success: function(response){
                     if(response.status == true)
@@ -47,7 +47,7 @@
                     }
                 },
                 complete:function(){
-                    jQuery('.processing_on').fadeOut();
+                    jQuery('.product_rendering_processing_gif').fadeOut();
                 },
             });
         }
@@ -102,13 +102,13 @@
                 custom_search:custom_search,supplier_id:supplier_id,product_id:product_id,category_id:category_id
             },
             beforeSend:function(){
-                jQuery('.processing_on').fadeIn();
+                jQuery('.product_rendering_processing_gif').fadeIn();
             },
             success: function(response){
                 jQuery('.display-all-product-list').html(response.html);
             },
             complete:function(){
-                jQuery('.processing_on').fadeOut();
+                jQuery('.product_rendering_processing_gif').fadeOut();
             },
         });
     });

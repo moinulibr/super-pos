@@ -39,6 +39,19 @@ License: You must have a valid license purchased only from themeforest(the above
 
         <link rel="shortcut icon" href="{{asset('backend/pos/')}}/assets/media/logos/favicon.html" />
         <style>
+            .submit_loader {
+                    background: rgba(0, 0, 0, 0.5);
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 999;
+                    display: none;
+            }
+        </style>
+        
+        <style>
             .h-90{
                 height: 90% !important;
             }
@@ -420,13 +433,6 @@ License: You must have a valid license purchased only from themeforest(the above
                     <div class="col-xl-4 col-lg-4 col-md-12 h-100">
                         <div class="card-custom gutter-b bg-white border-0">
                             <div class="card-body mb-4">
-                                <div class="row">
-                                    <div class="col-md-5"></div>
-                                    <div class="col-md-2">
-                                        <img class="product_rendering_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:40px;display:none;background-color:#FFFCFD;border-radius: 50%;">
-                                    </div>
-                                    <div class="col-md-5"></div>
-                                </div>
                                 <div class="row" style="margin-top: 10px;">
                                     <div class="col-md-12">
                                         <div class="selectmain">
@@ -460,7 +466,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                             $product = $product ."...";
                                                         }
                                                     @endphp
-                                                    {{$product}}
+                                                   {{$item->custom_code}} - {{$product}}
                                                 </option>
                                                 @endforeach
                                             </select>
@@ -480,8 +486,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                 
                             </div>
 
-                            
-                            <div class="card-body product-items" style="background-color: #efefef;">
+
+                            <!---loading gif-->
+                            <div class="row">
+                                <div class="col-md-5"></div>
+                                <div class="col-md-2">
+                                    <img class="product_rendering_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:40px;display:none;background-color:#FFFCFD;border-radius: 50%;">
+                                </div>
+                                <div class="col-md-5"></div>
+                            </div>
+                            <!---loading gif-->
+
+                            <div class="card-body product-items" style="background-color:#efefef;">
                                 <!----display all product list--->
                                 <div class="display-all-product-list">
                                     @include('backend.sell.pos.ajax-response.landing.product-list.product_list')

@@ -684,13 +684,14 @@
                     {
                         jQuery('.payment_data_response').html(response.list);
                         paymentProcessingWithDueFullAmountAndPayingAmountZero();
+                        submitButtonEnable();
                     }
                 },
                 complete:function(){
                     jQuery('.payment_processing_gif').fadeOut();
                 },
             });
-        },500);
+        },800);
     });
     /*
     |-----------------------------------------------
@@ -1167,48 +1168,53 @@
     | finally submit Purchase (final Purchase and quotation)
     |----------------------------------------------
     */ 
-    $(document).on("submit",'.storeDataFromPurchaseCart',function(e){
+    jQuery(document).on("submit",'.storeDataFromPurchaseCart',function(e){
         e.preventDefault();
-        $('.color-red').text('');
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                enctype: 'multipart/form-data',
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                beforeSend:function(){
-                    $('.processing').fadeIn();
-                },
-                success: function(response){
-                    if(response.status == 'errors')
-                    {   
-                        printErrorMsg(response.error);
-                    }
-                    if(response.status == true)
-                    {
-                        jQuery('.display_added_to_cart_list').html(response.list);
-                        jQuery('#payment-popup').modal('hide');
-                        jQuery('#quotation-popup').modal('hide');
+        jQuery('.color-red').text('');
+        submitButtonDisabled();
+        jQuery.ajax({
+            url: jQuery(this).attr('action'),
+            type: 'POST',
+            enctype: 'multipart/form-data',
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            beforeSend:function(){
+                jQuery('.processing').fadeIn();
+                jQuery('.submit_loader').fadeIn();
+                jQuery('.submit_processing_gif').fadeIn();
+            },
+            success: function(response){
+                if(response.status == 'errors')
+                {   
+                    printErrorMsg(response.error);
+                }
+                if(response.status == true)
+                {
+                    jQuery('.display_added_to_cart_list').html(response.list);
+                    jQuery('#payment-popup').modal('hide');
+                    jQuery('#quotation-popup').modal('hide');
 
-                        makingEmptyshippingRelatedInformation();
-                        makingZeroInShippingCostOtherCostDiscountAndVat();
-                        finalCalculationForThisInvoice();
-                        jQuery.notify(response.message, response.type);
-                    }
-                },
-                complete:function(){
-                    $('.processing').fadeOut();
-                },
+                    makingEmptyshippingRelatedInformation();
+                    makingZeroInShippingCostOtherCostDiscountAndVat();
+                    finalCalculationForThisInvoice();
+                    jQuery.notify(response.message, response.type);
+                }
+            },
+            complete:function(){
+                jQuery('.processing').fadeOut();
+                jQuery('.submit_processing_gif').fadeOut();
+                jQuery('.submit_loader').fadeOut();
+            },
+        });
+        //end ajax
+
+        function printErrorMsg(msg) {
+            jQuery('.color-red').css({'color':'red'});
+            jQuery.each(msg, function(key, value ) {
+                jQuery('.'+key+'_err').text(value);
             });
-            //end ajax
-
-            function printErrorMsg(msg) {
-                $('.color-red').css({'color':'red'});
-                $.each(msg, function(key, value ) {
-                    $('.'+key+'_err').text(value);
-                });
-            }
+        }
     });
 
 

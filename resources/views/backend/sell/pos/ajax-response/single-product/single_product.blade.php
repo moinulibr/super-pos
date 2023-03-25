@@ -61,6 +61,11 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
+                                                            <td style="height:49%;text-align: center;background-color:#8f7f7f;color:#ffff;">
+                                                                Company Code : {{$product->company_code }}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
                                                             <td style="height:49%;text-align: center;">
                                                                Unit : {{$product->units->short_name}}
                                                             </td>

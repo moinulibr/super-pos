@@ -4,8 +4,8 @@
             <tr>
                 <th  style="width:3%;">#</th>
                 <th style="width:5%;">Action</th>
-                <th style="width:;">Reference No</th>
                 <th style="width:;">Invoice No</th>
+                <th style="width:;">Reference No</th>
                 <th style="width:;">Chalan No</th>
                 <th style="width:;">Date(Time) </th>
                 <th style="width:;">Supplier </th>
@@ -29,8 +29,8 @@
                     <td style="width:3%;">
                         <div class="btn-group btnGroupForMoreAction">
                             <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-expanded="true">
-                                <i class="fas fa-ellipsis-v"></i>
-                                {{-- <i class="fas fa-cogs"></i> --}}
+                                <i class="fas fa-cog"></i>
+                                <!--<i class="fas fa-ellipsis-v"></i>-->
                             </button>
                             <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
                                 <a class="dropdown-item singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
@@ -41,21 +41,21 @@
                                 <a class="dropdown-item singleViewPurchaseInvoiceWisePaymentModal" data-id="{{$item->id}}" style="cursor: pointer">View Payment</a>
                                 {{-- <a class="dropdown-item singleEditModal" data-id="{{$item->id}}" href="javascript:void(0)">Edit</a>
                                 <a class="dropdown-item singleDeleteModal" data-id="{{$item->id}}" data-name="{{$item->name}}" href="javascript:void(0)">Delete</a> --}}
-                            {{-- <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:void(0)">Separated link</a>
-                            </div> --}}
+                                {{-- <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:void(0)">Separated link</a>--}}
+                            </div> 
                         </div>
-                    </td>
-                    <td> 
-                        <a  class="singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">
-                            {{$item->reference_no}} 
-                        </a>
                     </td>
                     <td> 
                         <a  class="singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">
                             {{$item->invoice_no}} 
                         </a>
                     </td> 
+                    <td> 
+                        <a  class="singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">
+                            {{$item->reference_no}} 
+                        </a>
+                    </td>
                     <td> 
                         <a  class="singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">
                             {{$item->chalan_no}} 
@@ -79,5 +79,16 @@
             @endforeach
         </tbody>
     </table>
-    {{$datas->links()}}
+</div>
+<input type="hidden" class="page_no" name="page" value="{{$page_no}}">
+                        
+<div class="row">
+    <div class="col-md-3">
+        Showing {{$datas->count()}} from {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() }} of {{ $datas->total() }}  entries 
+    </div>
+    <div class="col-md-9">
+        <div style="float: right">
+        {{ $datas->links() }}
+        </div>
+    </div>
 </div>

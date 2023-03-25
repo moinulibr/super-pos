@@ -22,6 +22,7 @@
                 {
                     $('#purchaseProductReceiveInvoiceWiseModal').html(response.html).modal('show');
                     $('.product_related_response_here').html(response.product);
+                    submitButtonEnable();
                 }
             }
         });
@@ -187,6 +188,7 @@
         $('.success_message_text').text('');
         $('.alert_danger_message_div').hide();
         $('.danger_message_text').text('');
+        submitButtonDisabled();
 
         var form = jQuery(this);
         var url = form.attr("action");
@@ -199,6 +201,8 @@
             datatype:"JSON",
             beforeSend:function(){
                 jQuery('.processing').fadeIn();
+                jQuery('.submit_processing_gif').fadeIn();
+                jQuery('.submit_loader').fadeIn();
             },
             success: function(response){
                 if(response.status == true)
@@ -209,13 +213,30 @@
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);
+                    submitButtonEnable();
                 }
                 jQuery.notify(response.message, response.type);
             },
             complete:function(){
+                jQuery('.submit_processing_gif').fadeOut();
                 jQuery('.processing').fadeOut();
+                jQuery('.submit_loader').fadeOut();
             },
         });
         //end ajax
     });
 
+
+    //submit button disabled
+    function submitButtonDisabled()
+    {
+        jQuery('.submitButton').attr('disabled',true); 
+    }
+    //submit button enabled
+    function submitButtonEnable()
+    {
+        jQuery('.submitButton').removeAttr('disabled'); 
+    }
+    //enable disabled submit button
+
+    

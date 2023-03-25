@@ -71,8 +71,8 @@
                         {{-- <img class="img-fluid" src="assets/images/carousel/element-banner2-right.jpg" alt="ix" /> --}}
                         <div class="overlay">
                             <h4>
+                                {{productCustomCodeLabel_hh()}} : {{ $item->custom_code }} <br />
                                 @foreach ($item->onlyRegularProductPricesWithPriceWhereStatusIsActive as $prices)
-                                    
                                 Price: Tk {{ $prices->price }} <br />
                                 @endforeach
                                 Stock: {{ $item->total_product_stock ?? 0 }}

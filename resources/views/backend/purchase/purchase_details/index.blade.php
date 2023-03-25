@@ -2,7 +2,16 @@
 @section('page_title') Purchase @endsection
 @push('css')
 <style>
-
+  .submit_loader {
+            background: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            display: none;
+    }
 </style>
 @endpush
 
@@ -65,18 +74,79 @@
         
 
 
-            <div class="row" style="margin-bottom: 5px;">
-                <div class="col-8"></div>
-                <div class="col-4">
-                    <input type="text" class="form-control search" style="border:1px solid #d2d4d5;" placeholder="Search" autofocus>
+        <div class="row" style="margin-bottom: 5px;background-color:#ffff;padding:5px 0px 10px 0px;">
+            <div class="col-12">
+                <div>
+                    <table  style="width: 100%;">
+                        <tr>
+                            <td style="width:6%">
+                                <label for="">&nbsp;</label>
+                                <select class="form-control paginate" id="paginate" name="paginate" style="font-size: 12px;width:100%;">
+                                    <option value="5"selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
+                                    <option value="50" >50</option>
+                                    <option value="100">100</option>
+                                    <option value="200">200</option>
+                                    <option value="300">300</option>
+                                    <option value="500">500</option>
+                                    <option value="1000">1000</option>
+                                    <option value="1500">1500</option>
+                                    <option value="2000">2000</option>
+                                </select>
+                            </td>
+                            <td style="width:1%"></td>
+                            <td style="width:14%">
+                                <label for="">Date From </label>
+                                <input type="date" class="form-control date_from">
+                            </td>
+                            <td style="width:1%"></td>
+                            <td style="width:14%">
+                                <label for="">Date To</label>
+                                <input type="date" class="form-control date_to">    
+                            </td>
+                            <td style="width:1%"></td>
+                            <td style="width:20%">
+                                <label for=""><strong>Search</strong></label>
+                                <input type="text" class="search form-control" name="search" placeholder="Search (by invoice)" autofocus autocomplete="off">
+                            </td>
+                            <td style="width:1%"></td>
+                            <td style="width:20%">
+                                <label for=""><strong>Supplier</strong></label>
+                                <input type="text" class="form-control supplier" name="supplier" placeholder="Supplier Name / Phone" autofocus autocomplete="off">
+                            </td>
+                            <td style="width:1%"></td>
+                            <td style="width:20%">
+                                <label for="">&nbsp;</label>
+                                <div class="display:flex">
+                                    {{-- <a href="{{route('admin.sell.regular.sell.index')}}" class="btn btn-success btn">Reload</a>
+                                    <a href="{{route('home')}}" class="btn btn-info btn">Home</a> --}}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
+
+                {{-- 
+                    <div class="on_processing" style="text-align: center;padding-bottom:20px;display:none;">
+                        <strong style="color:#0c0c0c;z-index:99999;background-color:#f9f9f9;padding:3px 5px;border-radious:3px solidg gray;">
+                            Processing...
+                        </strong>
+                    </div> 
+                --}}
             </div>
+        </div>
+        <br/>
             
             <!-------responsive table------> 
-            <div class="purchaseListAjaxResponseResult">
+            <div style="background-color:#ffff;width: 100%;">
+                <div class="purchaseListAjaxResponseResult" style="padding:2%;">
 
-                @include('backend.purchase.purchase_details.partial.list')
+                    @include('backend.purchase.purchase_details.partial.list')
 
+                </div>
             </div>
             <!-------responsive table------> 
 
@@ -132,9 +202,9 @@
     <!--#################################################################################-->
 
 
-    {{--purchase list url --}}
+    <!--purchase list url -->
     <input type="hidden" class="purchaseListUrl" value="{{route('admin.purchase.regular.purchase.list.ajaxresponse')}}">
-    {{--purchase list url --}}
+    <!--purchase list url -->
     
 
 

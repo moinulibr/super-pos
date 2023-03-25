@@ -9,6 +9,12 @@
             min-height: 100vh;
         }
 </style>
+
+<div class="submit_loader" style="display:none;">
+    <!--<img src="https://ebaskat-admin.s3.eu-west-1.amazonaws.com/public/assets/images/xloading.gif" alt="">-->
+</div>
+
+
 <div class="modal-dialog modal-lg modal-full" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -150,7 +156,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Cancel</button>
-                <input type="submit" value="Submit" class="btn btn-success">
+                <button type="submit" class="btn btn-info submitButton" style="padding:7px 20px;">
+                    <strong><b>Submit</b></strong> <img class="submit_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                </button>
             </div>
         </form>
     </div>

@@ -2,8 +2,9 @@
     <table id="example1" class="table table-bordered table-hover">
         <thead>
             <tr>
+                <th style="width:3%;">Sl.</th>
                 <th style="width:5%;">{{productCustomCodeLabel_hh()}}</th>
-                <th style="width:30%;">Product</th>
+                <th style="width:27%;">Product</th>
                 <th style="width:5%;">Quantity</th>
                 <th style="width:60%;">
                     <div class="table-responsive"  style="padding-bottom: 0px;margin-bottom: -7px !important;">
@@ -35,13 +36,14 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($data->sellProducts ? $data->sellProducts : NULL  as $item)
+            @foreach ($data->sellProducts ? $data->sellProducts : NULL  as $index => $item)
             <tr>
                 @php
                     $cats = json_decode($item->cart,true);
                 @endphp
+                <td style="width:3%;">{{$index + (1)}}</td>
                 <td style="width:5%;"> {{$item->custom_code}}</td>
-                <td style="width:30%;">
+                <td style="width:27%;">
                     @if (array_key_exists('productName',$cats))
                         {{$cats['productName']}}
                         @else

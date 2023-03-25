@@ -128,10 +128,9 @@ class SellController extends Controller
         }
     }
     
-    //store receiving single invoice swise payment
+    //store receiving single invoice wise payment
     public function receivingSingleInvoiceWisePayment(Request $request)
     {
-        //return $request;
         DB::beginTransaction();
         try {
             //payment process
@@ -241,7 +240,7 @@ class SellController extends Controller
 
 
 
-     //over all discount 
+    //over all discount 
     public function viewSingleInvoiceForOverallDiscount(Request $request)
     {
         $data['data']  =  SellInvoice::where('id',$request->id)->first();
@@ -255,7 +254,6 @@ class SellController extends Controller
     //over all discount store receiving single invoice swise 
     public function receivingInvoiceWiseOverallDiscount(Request $request)
     {
-        //return $request;
         DB::beginTransaction();
         try {
             //payment process

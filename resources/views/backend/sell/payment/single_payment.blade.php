@@ -1,3 +1,6 @@
+<div class="submit_loader" style="display:none;">
+    <!--<img src="https://ebaskat-admin.s3.eu-west-1.amazonaws.com/public/assets/images/xloading.gif" alt="">-->
+</div>
 
 <div class="modal-dialog modal-lg modal-full" role="document">
     <div class="modal-content">
@@ -305,7 +308,9 @@
                 <div class="form-group row justify-content-end mb-0">
                     <div class="col-md-6 text-right">
                         <button type="button" class="btn btn-danger" data-dismiss="modal" style="padding:7px 20px;">Close</button>
-                        <input type="submit" class="submitButton btn btn-primary" value="Payment" disabled style="padding:7px 20px;">
+                        <button type="submit" class="btn btn-info submitButton" style="padding:7px 20px;" disabled>
+                            <strong><b>Submit</b></strong> <img class="submit_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                        </button>
                     </div>
                 </div>
                     

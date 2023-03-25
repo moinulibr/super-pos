@@ -90,7 +90,7 @@ class SellEditController extends Controller
         $data['references'] = Reference::latest()->get();
         $data['categories'] = Category::latest()->get();
         $data['allproducts'] = Product::select('name','id')->latest()->get();
-        $data['products'] = Product::select('name','id','photo','available_base_stock')->latest()->paginate(21);
+        $data['products'] = Product::select('custom_code','company_code','name','id','photo','available_base_stock')->whereNull('deleted_at')->latest()->paginate(21);
     
         DB::beginTransaction();
         try {

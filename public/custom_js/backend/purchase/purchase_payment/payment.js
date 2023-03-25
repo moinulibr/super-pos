@@ -479,7 +479,7 @@
         $('.success_message_text').text('');
         $('.alert_danger_message_div').hide();
         $('.danger_message_text').text('');
-
+        submitButtonDisabled();
         var form = jQuery(this);
         var url = form.attr("action");
         var type = form.attr("method");
@@ -491,6 +491,8 @@
             datatype:"JSON",
             beforeSend:function(){
                 jQuery('.processing').fadeIn();
+                jQuery('.submit_processing_gif').fadeIn();
+                jQuery('.submit_loader').fadeIn();
             },
             success: function(response){
                 if(response.status == true)
@@ -503,10 +505,13 @@
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);
+                    submitButtonEnable();
                 }
             },
             complete:function(){
+                jQuery('.submit_processing_gif').fadeOut();
                 jQuery('.processing').fadeOut();
+                jQuery('.submit_loader').fadeOut();
             },
         });
         //end ajax

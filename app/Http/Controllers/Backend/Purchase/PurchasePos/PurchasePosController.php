@@ -59,10 +59,11 @@ class PurchasePosController extends Controller
             $query->where('name','like',"%".$request->custom_search."%");
             $query->orWhere('custom_code','like',"%".$request->custom_search."%");
             $query->orWhere('company_code','like',"%".$request->custom_search."%");
-            $query->orWhere('sku','like',"%".$request->custom_search."%");
+            //$query->orWhere('sku','like',"%".$request->custom_search."%");
         }
-        $data['products']       = $query->select('name','id','photo','available_base_stock')
+        $data['products']   = $query->select('custom_code','company_code','name','id','photo','available_base_stock')
                                 ->latest()
+                                ->whereNull('deleted_at')
                                 ->paginate(15);
         $view = view('backend.purchase.purchase_pos.ajax-response.landing.product-list.product_list',$data)->render();
         return response()->json([
@@ -84,9 +85,10 @@ class PurchasePosController extends Controller
         $data['suppliers']      = Supplier::latest()->get();
 
         $data['categories']     = Category::latest()->get();
-        $data['allproducts']    = Product::select('name','id')->latest()->get();
-        $data['products']       = Product::select('name','id','photo','available_base_stock')
+        $data['allproducts']    = Product::select('custom_code','company_code','name','id')->latest()->whereNull('deleted_at')->get();
+        $data['products']       = Product::select('custom_code','company_code','name','id','photo','available_base_stock')
                                         ->latest()
+                                        ->whereNull('deleted_at')
                                         ->paginate(15);
         return view('backend.purchase.purchase_pos.landing.create_pos',$data);
     }

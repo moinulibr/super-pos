@@ -22,6 +22,7 @@
                     {
                         $('#sellProductReturnModal').html(response.html).modal('show');
                         $('.return_product_related_response_here').html(response.product);
+                        submitButtonEnable();
                         //$('.sell_return_payment_options_render').html(response.payment);
                     }
                 }
@@ -274,15 +275,12 @@
         var totalPayableAmountBasedOnDueAndPaidAmount = 0;
         if( totalReturnAmountAfterDiscount == totalInvoiceDueAmount){
             totalPayableAmountBasedOnDueAndPaidAmount = 0;
-            console.log('1/1_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
         }
         else if(totalReturnAmountAfterDiscount < totalInvoiceDueAmount){
             totalPayableAmountBasedOnDueAndPaidAmount = 0;
-            console.log('1/2_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
         } 
         else if(totalReturnAmountAfterDiscount > totalInvoiceDueAmount){
             totalPayableAmountBasedOnDueAndPaidAmount = totalReturnAmountAfterDiscount - totalInvoiceDueAmount;
-            console.log('1/3_ '+ totalPayableAmountBasedOnDueAndPaidAmount);
         }
 
         $('.total_sell_return_invoice_payable_amount').text(totalPayableAmountBasedOnDueAndPaidAmount.toFixed(2));
@@ -307,7 +305,7 @@
         $('.success_message_text').text('');
         $('.alert_danger_message_div').hide();
         $('.danger_message_text').text('');
-
+        submitButtonDisabled();
         var form = jQuery(this);
         var url = form.attr("action");
         var type = form.attr("method");
@@ -319,6 +317,8 @@
             datatype:"JSON",
             beforeSend:function(){
                 jQuery('.processing').fadeIn();
+                jQuery('.submit_processing_gif').fadeIn();
+                jQuery('.submit_loader').fadeIn();
             },
             success: function(response){
                 if(response.status == true)
@@ -335,15 +335,30 @@
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);
                     jQuery.notify(response.message, response.type);
+                    submitButtonEnable();
                 }
             },
             complete:function(){
+                jQuery('.submit_processing_gif').fadeOut();
                 jQuery('.processing').fadeOut();
+                jQuery('.submit_loader').fadeOut();
             },
         });
         //end ajax
     });
 
+
+    //submit button disabled
+    function submitButtonDisabled()
+    {
+        jQuery('.submitButton_for_sell_return').attr('disabled',true); 
+    }
+    //submit button enabled
+    function submitButtonEnable()
+    {
+        jQuery('.submitButton_for_sell_return').removeAttr('disabled'); 
+    }
+    //enable disabled submit button
 
     function nanCheck(value)
     {

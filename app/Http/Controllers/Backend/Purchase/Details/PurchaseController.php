@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Backend\Purchase\Details;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Backend\Sell\SellInvoice;
-use App\Models\Backend\Purchase\PurchaseInvoice;
 
+use App\Models\Backend\Purchase\PurchaseInvoice;
+use App\Models\Backend\Supplier\Supplier;
 use App\Traits\Backend\Payment\PaymentProcessTrait;
+
 class PurchaseController extends Controller
 {
     use PaymentProcessTrait;
@@ -24,11 +27,22 @@ class PurchaseController extends Controller
                         ->whereNull('deleted_at')
                         //->orderBy('custom_serial','ASC')
                         ->paginate(50);
+        $data['page_no'] = 1;
         return view('backend.purchase.purchase_details.index',$data);
     }
 
     public function purchaseListByAjaxResponse(Request $request)
     {
+        $status         = $request->status ?? NULL;
+        $pagination     = $request->pagination ?? 2;
+        $search         = $request->search ?? NULL;
+        
+        $date_to = Carbon::parse($request->input('date_to'));
+        $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-7 day")));
+        //$date_from = Carbon::parse($request->input('date_from'));
+        //$date_to = Carbon::parse($request->input('date_to') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-7 day")));
+
+        
         $purchase  = PurchaseInvoice::query();
         if($request->ajax())
         {
@@ -38,7 +52,23 @@ class PurchaseController extends Controller
                 ->orWhere('reference_no','like','%'.$request->search.'%')
                 ->orWhere('chalan_no','like','%'.$request->search.'%');
             }
-            $data['datas']  =  $purchase->where('purchase_type',1)->latest()->paginate(50);
+            if($request->supplier){
+                $supids = Supplier::select('id','name','phone')->where('name','like','%'.$request->supplier.'%')
+                ->orWhere('phone','like','%'.$request->supplier.'%')
+                ->pluck('id')
+                ->toArray();
+                if(is_array($supids)){
+                    $purchase->whereIn('supplier_id',$supids);
+                }
+            }
+            if($request->input('date_from'))
+            {
+                $purchase->whereDate('created_at', '>=', $date_from)
+                ->whereDate('created_at', '<=', $date_to);
+            }
+
+            $data['datas']  =  $purchase->where('purchase_type',1)->latest()->paginate($pagination);
+            $data['page_no'] = $request->page ?? 1;
             $html = view('backend.purchase.purchase_details.ajax.list_ajax_response',$data)->render();
             return response()->json([
                 'status' => true,

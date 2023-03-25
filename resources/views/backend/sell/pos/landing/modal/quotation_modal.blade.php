@@ -14,6 +14,11 @@
                         </svg>
                     </button>
                 </div>
+                
+                <div class="submit_loader" style="display:none;">
+                    <!--<img src="https://ebaskat-admin.s3.eu-west-1.amazonaws.com/public/assets/images/xloading.gif" alt="">-->
+                </div>
+
                 <div class="modal-body" style="padding-left:50px;padding-right:50px;">
                     <div class="quotation_data_response"></div>
                     
@@ -21,8 +26,12 @@
                     <div class="form-group row justify-content-end mb-0">
                         <div class="col-md-6 text-right">
                             <button type="button" class="btn btn-danger" data-dismiss="modal" style="padding:7px 20px;">Close</button>
-                            <input type="submit"  class="btn btn-primary" value="Submit" style="padding:7px 20px;">
-                        </div>
+                            
+                            <button type="submit" class="btn btn-primary submitButton" style="padding:7px 20px;">
+                                <strong><b>Submit</b></strong> <img class="submit_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                            </button>
+                            
+                       </div>
                     </div>
                 </div>
             </form>
