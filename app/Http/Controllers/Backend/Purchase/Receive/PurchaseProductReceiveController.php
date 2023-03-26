@@ -146,9 +146,11 @@ class PurchaseProductReceiveController extends Controller
       
 
         $totalDeliveredQty = (($purchaseProductStockDetails->total_delivered_qty) + $stockIncrementQuantity);
-        $purchaseProductStockDetails->total_delivered_qty = $totalDeliveredQty; 
-        $purchaseProductStockDetails->remaining_delivery_qty = $purchaseProductStockDetails->total_quantity - $totalDeliveredQty;
-        $purchaseProductStockDetails->save();
+        if($totalDeliveredQty <= $purchaseProductStockDetails->total_quantity){
+            $purchaseProductStockDetails->total_delivered_qty = $totalDeliveredQty; 
+            $purchaseProductStockDetails->remaining_delivery_qty = $purchaseProductStockDetails->total_quantity - $totalDeliveredQty;
+            $purchaseProductStockDetails->save();
+        }
 
 
         //reduce stock from product stock
@@ -177,7 +179,7 @@ class PurchaseProductReceiveController extends Controller
     {
         $purchaseReceiveInvoice = new PurchaseProductReceiveInvoice();
         $purchaseReceiveInvoice->branch_id = authBranch_hh();
-        $purchaseReceiveInvoice->invoice_no = $makeInvoice; 
+        //$purchaseReceiveInvoice->invoice_no = $makeInvoice; 
         $purchaseReceiveInvoice->purchase_invoice_no = $purchaseInvoiceData->invoice_no;
         $purchaseReceiveInvoice->purchase_invoice_id = $purchaseInvoiceData->id; 
         $purchaseReceiveInvoice->supplier_id = $purchaseInvoiceData->supplier_id; 
@@ -192,6 +194,7 @@ class PurchaseProductReceiveController extends Controller
         $purchaseReceiveInvoice->received_at = date('Y-m-d h:i:s');
         $purchaseReceiveInvoice->created_by = authId_hh();
         $purchaseReceiveInvoice->save();
+        $purchaseReceiveInvoice->invoice_no = sprintf("%'.08d", $purchaseReceiveInvoice->id);
         return $purchaseReceiveInvoice;
     }
 

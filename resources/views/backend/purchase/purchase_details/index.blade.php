@@ -82,12 +82,12 @@
                             <td style="width:6%">
                                 <label for="">&nbsp;</label>
                                 <select class="form-control paginate" id="paginate" name="paginate" style="font-size: 12px;width:100%;">
-                                    <option value="5"selected>5</option>
+                                    <option value="5">5</option>
                                     <option value="10">10</option>
                                     <option value="20">20</option>
                                     <option value="30">30</option>
                                     <option value="40">40</option>
-                                    <option value="50" >50</option>
+                                    <option value="50" selected>50</option>
                                     <option value="100">100</option>
                                     <option value="200">200</option>
                                     <option value="300">300</option>

@@ -11,7 +11,7 @@
 </style>
 
 <div class="submit_loader" style="display:none;">
-    <!--<img src="https://ebaskat-admin.s3.eu-west-1.amazonaws.com/public/assets/images/xloading.gif" alt="">-->
+    <img src="{{asset('loading-img/loading1.gif')}}" style="position:absolute;margin:auto;top:0;left:0;right:0;bottom:0;height:60px;background-color:#ffff;border-radius:50%;display:block;" alt="">
 </div>
 
 

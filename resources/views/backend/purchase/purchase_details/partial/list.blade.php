@@ -16,7 +16,7 @@
                 <th style="width:;">Due Amount </th>
                 <th style="width:;">Created By </th>
                 <th style="width:;">Total Item </th>
-                <th style="width:;"><small>Product Receiving Status</small></th>
+                {{-- <th style="width:;"><small>Product Receiving Status</small></th> --}}
             </tr>
         </thead>
         <tbody>
@@ -74,7 +74,7 @@
                     <td>{{$item->due_amount}}</td>
                     <td>{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                     <td>{{$item->total_item}}</td>
-                    <td>{{$item->delivery_status}}</td>
+                    {{-- <td>{{$item->delivery_status}}</td> --}}
                 </tr>
             @endforeach
         </tbody>

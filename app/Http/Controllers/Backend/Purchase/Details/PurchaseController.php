@@ -41,7 +41,6 @@ class PurchaseController extends Controller
         $date_from = Carbon::parse($request->input('date_from') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-7 day")));
         //$date_from = Carbon::parse($request->input('date_from'));
         //$date_to = Carbon::parse($request->input('date_to') ?? date("Y-m-d h:i:s",strtotime(date("Y-m-d h:i:s")."-7 day")));
-
         
         $purchase  = PurchaseInvoice::query();
         if($request->ajax())
