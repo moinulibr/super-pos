@@ -23,7 +23,7 @@
             <div style="margin-top:20%;margin-bottom:20%;margin-right:30%;margin-left:30%;">
                 <div class="container_parent">
                     <div class="container_child" style="background-color:#4c4cad;">
-                        <a href="{{route('admin.sell.regular.sell.index')}}" style="font-size:20px;font-weight:bold;cursor: pointer;color:#ffff;"><i class="fa fa-shopping-cart" aria-hidden="true"></i></i> Sell List</strong>
+                        <a href="{{route('admin.sell.regular.sell.index')}}" style="font-size:20px;font-weight:bold;cursor: pointer;color:#ffff;"><i class="fa fa-shopping-cart" aria-hidden="true"></i> Sell List</strong>
                     </div>
                     <div class="container_child" style="background-color:#1b1b4e;">
                         <a href="{{route('home')}}" style="font-size:20px;font-weight:bold;cursor: pointer;color:#ffff;"><i class="fa fa-home" aria-hidden="true"></i> Dashboard</a>

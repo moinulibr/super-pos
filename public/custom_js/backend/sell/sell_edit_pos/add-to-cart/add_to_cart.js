@@ -1356,6 +1356,10 @@
                         window.location = response.redirectUrl;
                         normalPrintAfterSellIsEnabled();
                         jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
+                        
+                        //after sell create
+                        jQuery("#afterSellCompleteModal").css({'display':'block'});
+                        jQuery("#afterSellCompleteModal").attr('class','modal fade-in');
                     }
                 },
                 complete:function(){
@@ -1372,6 +1376,22 @@
     |----------------------------------------------
     */
     
+
+    /*
+    |-----------------------------------------------
+    | After sell created successfully 
+    |----------------------------------------------
+    */
+        jQuery(document).on('click','.closeModal',function(){
+            jQuery("#afterSellCompleteModal").attr('class','modal fade');
+            jQuery("#afterSellCompleteModal").css({'display':'none'});
+        });
+    /*
+    |-----------------------------------------------
+    | After sell created successfully 
+    |----------------------------------------------
+    */
+
 
     /*
     |--------------------------------------------------------

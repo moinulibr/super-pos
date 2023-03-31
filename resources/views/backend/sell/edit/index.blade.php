@@ -378,16 +378,19 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <div class="col-3" style="border-right: 1px solid #e9ecef;">
                                             
                                             <a href="#" class="btn btn-danger btnFullWidth white removeOrEmptyAllItemFromCreateSellCartList" style="margin-top: 1%;">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
                                                 Cancel
                                             </a>
 
                                             <!-----when quotation update or quotation to sell---->
                                             @if ($sellInvoice->sell_type == 2)    
                                                 <a href="#" class="quotationModalOpen btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;">
+                                                    <i class="fa fa-save" aria-hidden="true"></i>
                                                     Quotation Update <img class="quotation_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                                 </a> 
                                                 <a href="#" class="paymentModalOpen btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">
-                                                    <strong><b>Quotation To Sell</b></strong> <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                    <span><b>Quotation To Sell</b></span> <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                                 </a>
                                             @endif
                                             <!-----when quotation update or quotation to sell---->
@@ -396,10 +399,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <!-----when sell update---->
                                             @if ($sellInvoice->sell_type == 1) 
                                                 <a href="#" class="btn btn-dark btnFullWidth white" style="margin-top: 1%; cursor: pointer;cursor:not-allowed !important;">
+                                                    <i class="fa fa-save" aria-hidden="true"></i>
                                                     Quotation 
                                                 </a>
 
                                                 <a href="#" class="paymentModalOpen btn btn-success btnFullWidth white" style="margin-top: 1%; cursor: pointer;">{{--paymentQuotationButtonWhenCartItemMoreThenZero data-toggle="modal" data-target="#payment-popup"--}}
+                                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                                                     <strong><b>Sell Update</b></strong> <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                                 </a>
                                             @endif
@@ -411,9 +416,11 @@ License: You must have a valid license purchased only from themeforest(the above
                                             <input type="hidden" class="quotationModalOpenUrl" value="{{route('admin.sell.edit.regular.pos.sell.edit.quotation.modal.open')}}">
 
                                             <a href="" class="print normal_print_direct_from_sell_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;" target="_blank">
+                                                <i class="fa fa-print" aria-hidden="true"></i>
                                                 POS Print
                                             </a>
                                             <a class="normalPriceFromSellList pos_print_direct_from_sell_cart btn btn-primary btnFullWidth white" target="_blank" style="cursor:not-allowed !important;margin-top:1%;color:#d1cdcd;">
+                                                <i class="fa fa-print" aria-hidden="true"></i>
                                                 Print
                                             </a>
                                             {{-- data-href="{{ route('admin.sell.regular.pos.normal.print.from.direct.sell.cart') }}"--}}
@@ -518,7 +525,9 @@ License: You must have a valid license purchased only from themeforest(the above
         @include('backend.sell.edit.landing.modal.choose_customer_modal')
         @include('backend.sell.edit.landing.modal.folder_modal')
 
-       
+        <!--redirect after sell created successfully-->
+        @include('backend.sell.pos.landing.modal.redirect_after_sell_create_modal')
+
 
   
 

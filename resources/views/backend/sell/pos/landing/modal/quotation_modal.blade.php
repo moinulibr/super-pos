@@ -25,9 +25,13 @@
                     <input type="hidden" name="sell_type" value="2">
                     <div class="form-group row justify-content-end mb-0">
                         <div class="col-md-6 text-right">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" style="padding:7px 20px;">Close</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" style="padding:7px 20px;">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                                Close
+                            </button>
                             
                             <button type="submit" class="btn btn-primary submitButton" style="padding:7px 20px;">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
                                 <strong><b>Submit</b></strong> <img class="submit_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                             </button>
                             

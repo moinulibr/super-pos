@@ -1313,13 +1313,19 @@
     | finally submit sell 
     |----------------------------------------------
     */
+
+    /*
+    |-----------------------------------------------
+    | After sell created successfully 
+    |----------------------------------------------
+    */
         jQuery(document).on('click','.closeModal',function(){
             jQuery("#afterSellCompleteModal").attr('class','modal fade');
             jQuery("#afterSellCompleteModal").css({'display':'none'});
         });
     /*
     |-----------------------------------------------
-    | finally submit sell 
+    | After sell created successfully 
     |----------------------------------------------
     */
     
