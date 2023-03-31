@@ -65,7 +65,9 @@ class CustomerTransactionalController extends Controller
             $this->ctsCustomerId = $request->customer_id;
             $ttModuleInvoics = [
                 'invoice_no' => NULL,
-                'invoice_id' => NULL
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
             ];
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('-');
@@ -135,7 +137,9 @@ class CustomerTransactionalController extends Controller
             $this->ctsCustomerId = $request->customer_id;
             $ttModuleInvoics = [
                 'invoice_no' => NULL,
-                'invoice_id' => NULL
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
             ];
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');
@@ -213,7 +217,9 @@ class CustomerTransactionalController extends Controller
             $this->ctsCustomerId = $request->customer_id;
             $ttModuleInvoics = [
                 'invoice_no' => NULL,
-                'invoice_id' => NULL
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
             ];
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
@@ -290,7 +296,167 @@ class CustomerTransactionalController extends Controller
             $this->ctsCustomerId = $request->customer_id;
             $ttModuleInvoics = [
                 'invoice_no' => NULL,
-                'invoice_id' => NULL
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
+            ];
+            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
+            $this->processingOfAllCustomerTransaction();
+
+            //calculation in the customer table
+            //$dbField = 9;'previous_due_paid_now';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($request->customer_id,$dbField = 9 ,$calType = 1,$request->amount);
+            //calculation in the customer table
+            
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'type' => 'success',
+                'message' => "Date store successfully",
+            ]);
+        } catch (\Exception  $e) {
+            DB::rollback();
+            throw $e;
+            return response()->json([
+                'status' => 'exception',
+                'type' => 'warning',
+                'message'=>  $e->getMessage()
+            ]);
+        }
+    }
+
+
+
+    //receive loan data
+    public function renderReturnAdvanceAmountModal(Request $request)
+    {
+        $data['customer'] = Customer::select('id','total_advance')->findOrFail($request->id);
+        $view =  view('backend.customer.customer.transactionHistory.return_advance_amount',$data)->render();
+        return response()->json([
+            'status' => true,
+            'type' => 'success',
+            'view' => $view,
+        ]);
+    }
+    //store receive loan data
+    public function storeReturnAdvanceAmount(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            //$data['customer'] = Customer::select('id')->findOrFail($request->customer_id);
+            //$data['customer']->update(['next_payment_date'=>$request->next_payment_date]);
+    
+            //payment process
+            if(($request->amount ?? 0) > 0){
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => NULL,
+                    'main_module_invoice_id' => NULL,
+                    'module_invoice_no' => NULL,
+                    'module_invoice_id' => NULL,
+                    'user_id' => $request->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->amount ;
+                $this->defaultCashPaymentProcessing();
+                //for payment processing 
+            } //payment process
+
+
+            //customer transaction
+            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
+            $this->amount = $request->amount;
+            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due Payment');
+            $this->ctsCustomerId = $request->customer_id;
+            $ttModuleInvoics = [
+                'invoice_no' => NULL,
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
+            ];
+            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
+            $this->processingOfAllCustomerTransaction();
+
+            //calculation in the customer table
+            //$dbField = 9;'previous_due_paid_now';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($request->customer_id,$dbField = 9 ,$calType = 1,$request->amount);
+            //calculation in the customer table
+            
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'type' => 'success',
+                'message' => "Date store successfully",
+            ]);
+        } catch (\Exception  $e) {
+            DB::rollback();
+            throw $e;
+            return response()->json([
+                'status' => 'exception',
+                'type' => 'warning',
+                'message'=>  $e->getMessage()
+            ]);
+        }
+    }
+
+    //receive loan data
+    public function renderReceiveLoanAmountModal(Request $request)
+    {
+        $data['customer'] = Customer::select('id','total_loan')->findOrFail($request->id);
+        $view =  view('backend.customer.customer.transactionHistory.receive_loan_amount',$data)->render();
+        return response()->json([
+            'status' => true,
+            'type' => 'success',
+            'view' => $view,
+        ]);
+    }
+    //store receive loan data
+    public function storeReceiveLoanAmount(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            //$data['customer'] = Customer::select('id')->findOrFail($request->customer_id);
+            //$data['customer']->update(['next_payment_date'=>$request->next_payment_date]);
+    
+            //payment process
+            if(($request->amount ?? 0) > 0){
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => NULL,
+                    'main_module_invoice_id' => NULL,
+                    'module_invoice_no' => NULL,
+                    'module_invoice_id' => NULL,
+                    'user_id' => $request->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->amount ;
+                $this->defaultCashPaymentProcessing();
+                //for payment processing 
+            } //payment process
+
+
+            //customer transaction
+            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
+            $this->amount = $request->amount;
+            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due Payment');
+            $this->ctsCustomerId = $request->customer_id;
+            $ttModuleInvoics = [
+                'invoice_no' => NULL,
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
             ];
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');

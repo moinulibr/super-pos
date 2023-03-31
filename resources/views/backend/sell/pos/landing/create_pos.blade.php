@@ -519,7 +519,8 @@ License: You must have a valid license purchased only from themeforest(the above
         @include('backend.sell.pos.landing.modal.shipping_modal')
         @include('backend.sell.pos.landing.modal.shipping_cost_modal')
         @include('backend.sell.pos.landing.modal.choose_customer_modal')
-        @include('backend.sell.pos.landing.modal.folder_modal')
+
+        @include('backend.sell.pos.landing.modal.after_sell_modal')
 
        
 

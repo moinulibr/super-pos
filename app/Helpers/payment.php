@@ -716,7 +716,9 @@ use App\Models\Backend\Payment\Account;
                     8 => "Previous Due Payment", //PD Payment // Paid
                     9 => "Sell Return Payment", // SR Payment // Paid
                     10 => "Change Payment Date", // Change Payment Date
-                    11 => "Overall Sell Discount", // Sell Return Payment // 
+                    11 => "Overall Sell Discount", // Sell Return Payment // paid 
+                    12 => "Loan Payment", // Sell Return Payment // paid - credit
+                    13 => "Advance Payment", // Sell Return Payment //due - debit 
                 ]; 
             }
                     	//selling time discount
@@ -863,10 +865,14 @@ use App\Models\Backend\Payment\Account;
                     'sell_paid' => $requestData['sell_paid'] ?? 0,
                     'sell_due' => $requestData['sell_due'] ?? 0,
 
+                    'total_sell_invoice_amount' => $requestData['total_sell_invoice_amount'] ?? 0,
+                    'total_sell_invoice_paid_amount' => $requestData['total_sell_invoice_paid_amount'] ?? 0,
+                    'total_sell_invoice_due_amount' => $requestData['total_sell_invoice_due_amount'] ?? 0,
+
                     'user_id' => $requestData['user_id'] ?? NULL,
                     'tt_module_invoice_no' => $requestData['tt_module_invoice_no'] ?? NULL,
-                    'tt_module_invoice_id' => $requestData['tt_module_invoice_id'] ?? NULL,
-               
+                    'tt_module_invoice_id' => $requestData['tt_module_invoice_id'] ?? NULL, 
+
                     'sell_invoice_ids' => [
                         //'invoice_continue_with' => $requestData['invoice_continue_with'], 
                     ],

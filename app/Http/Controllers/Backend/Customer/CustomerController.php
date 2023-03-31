@@ -101,7 +101,9 @@ class CustomerController extends Controller
             $this->ctsCustomerId = $saveData->id;
             $ttModuleInvoics = [
                 'invoice_no' => NULL,
-                'invoice_id' => NULL
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
             ];
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');
@@ -192,7 +194,9 @@ class CustomerController extends Controller
             $this->ctsCustomerId = $updateData->id;
             $ttModuleInvoics = [
                 'invoice_no' => NULL,
-                'invoice_id' => NULL
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
             ];
             $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
             $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Due');

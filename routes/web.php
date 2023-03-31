@@ -263,6 +263,13 @@ Route::group(['middleware' => ['auth']], function ()
             //render receive previous due  modal
             Route::get('render/receive/previous/due/modal','CustomerTransactionalController@renderReceivePreviousDueModal')->name('render.receive.previous.due.modal');
             Route::post('store/receive/previous/due','CustomerTransactionalController@storeReceivePreviousDue')->name('store.receive.previous.due');
+            //render return advance amount modal
+            Route::get('render/return/advance/amount/modal','CustomerTransactionalController@renderReturnAdvanceAmountModal')->name('render.return.advance.amount.modal');
+            Route::post('store/return/advance/amount','CustomerTransactionalController@storeReturnAdvanceAmount')->name('store.return.advance.amount');
+            //render receive loan amount  modal
+            Route::get('render/receive/loan/amount/modal','CustomerTransactionalController@renderReceiveLoanAmountModal')->name('render.receive.loan.amount.modal');
+            Route::post('store/receive/loan/amount','CustomerTransactionalController@storeReceiveLoanAmount')->name('store.receive.loan.amount');
+        
         });
     /*
     |----------------------------------------

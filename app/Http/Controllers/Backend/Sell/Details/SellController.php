@@ -169,7 +169,10 @@ class SellController extends Controller
                 $this->ctsCustomerId = $invoiceData->customer_id;
                 $ttModuleInvoics = [
                     'invoice_no' => $invoiceData->invoice_no,
-                    'invoice_id' => $invoiceData->id
+                    'invoice_id' => $invoiceData->id,
+
+                    'tt_main_module_invoice_no' => $invoiceData->invoice_no,
+                    'tt_main_module_invoice_id' => $invoiceData->id,
                 ];
                 $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
                 $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
@@ -316,7 +319,10 @@ class SellController extends Controller
                 $this->ctsCustomerId = $invoiceData->customer_id;
                 $ttModuleInvoics = [
                     'invoice_no' => $invoiceData->invoice_no,
-                    'invoice_id' => $invoiceData->id
+                    'invoice_id' => $invoiceData->id,
+
+                    'tt_main_module_invoice_no' => $invoiceData->invoice_no,
+                    'tt_main_module_invoice_id' => $invoiceData->id,
                 ];
                 $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
                 $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');

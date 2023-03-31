@@ -151,7 +151,7 @@
                                                                     <i class="fa fa-plus tiny-icon"></i> Next Payment Date
                                                                 </button>
                                                             </li>
-                                                            <li>
+                                                            {{-- <li>
                                                                 <button class="btn w-100 btn-warning singleAddLoanModal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-plus tiny-icon"></i> Add Loan
                                                                 </button>
@@ -160,12 +160,22 @@
                                                                 <button class="btn w-100 btn-info singleAddAdvanceModal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-plus tiny-icon"></i> Add Advance
                                                                 </button>
-                                                            </li>
+                                                            </li> --}}
                                                             <li>
                                                                 <button class="btn w-100 btn-success singleReceivePreviousDueModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-plus tiny-icon"></i> Receive Previous Due
                                                                 </button>
                                                             </li>
+                                                            {{-- <li>
+                                                                <button class="btn w-100 btn-info singleReceiveLoanAmountModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
+                                                                    <i class="fa fa-plus tiny-icon"></i> Receive Loan Amount
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="btn w-100 btn-dark singleReturnAdvanceAmountModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
+                                                                    <i class="fa fa-plus tiny-icon"></i> Payment Advance
+                                                                </button>
+                                                            </li> --}}
                                                             <li>
                                                                 <button class="btn w-100 btn-danger singleEditModal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-edit tiny-icon"></i> Edit
@@ -238,6 +248,16 @@
             <div class="modal fade" id="renderReceivePreviousDueModal" aria-modal="true"></div>
             <input type="hidden" class="renderReceivePreviousDueModalRoute" value="{{ route('admin.customer.render.receive.previous.due.modal') }}">
             <!-------render receive Previous Due modal------> 
+            
+            <!-------render  return advance amount modal------> 
+            <div class="modal fade" id="renderReturnAdvanceAmountModal" aria-modal="true"></div>
+            <input type="hidden" class="renderReturnAdvanceAmountModalRoute" value="{{ route('admin.customer.render.return.advance.amount.modal') }}">
+            <!-------render return advance amount modal------> 
+            
+            <!-------render  receive loand amount modal------> 
+            <div class="modal fade" id="renderReceiveLoanAmountModal" aria-modal="true"></div>
+            <input type="hidden" class="renderReceiveLoanAmountModalRoute" value="{{ route('admin.customer.render.receive.loan.amount.modal') }}">
+            <!-------render receive loand amount modal------> 
             
 
             <!-------edit Customer Modal------> 

@@ -109,59 +109,93 @@ class SellProductReturnController extends Controller
                 );
                 
                
-                //payment process :  
-                $invoice_total_paying_amount = $request->total_sell_return_invoice_payable_amount ?? 0 ; //invoice_total_paying_amount
-                if($invoice_total_paying_amount > 0){
-                    //for payment processing 
-                    $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-                    $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell Return');
-                    $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Debit');
-                    $moduleRelatedData = [
-                        'main_module_invoice_no' => $invoiceData->invoice_no,
-                        'main_module_invoice_id' => $invoiceData->id,
-                        'module_invoice_no' => $returnInvoice->invoice_no,
-                        'module_invoice_id' => $returnInvoice->id,
-                        'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
+                /*
+                |------------------------------------------------
+                | Payment Processing :- In general  
+                |------------------------------------------------
+                */
+                    $invoice_total_paying_amount = $request->total_sell_return_invoice_payable_amount ?? 0 ; //invoice_total_paying_amount
+                    if($invoice_total_paying_amount > 0){
+                       
+                        $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                        $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell Return');
+                        $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Debit');
+                        $moduleRelatedData = [
+                            'main_module_invoice_no' => $invoiceData->invoice_no,
+                            'main_module_invoice_id' => $invoiceData->id,
+                            'module_invoice_no' => $returnInvoice->invoice_no,
+                            'module_invoice_id' => $returnInvoice->id,
+                            'user_id' => $invoiceData->customer_id,//client[customer,supplier,others staff]
+                        ];
+                        $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                        $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                        $this->invoiceTotalPayingAmount = $invoice_total_paying_amount;
+                        $this->defaultCashPaymentProcessing();
+                    }
+                /*
+                |------------------------------------------------
+                | Payment Processing :- In general  
+                |------------------------------------------------
+                */
+
+
+                /*
+                |------------------------------------------------
+                | Customer Transaction statement history
+                |------------------------------------------------
+                */
+                    $requestCTSData = [];
+                    $requestCTSData['amount'] = $request->total_return_amount_for_customer_history_value ?? 0 ;
+                    $requestCTSData['ledger_page_no'] = NULL;
+                    $requestCTSData['next_payment_date'] = NULL;
+                    $requestCTSData['short_note'] = "Sell Return";
+                    $requestCTSData['sell_amount'] = 0;
+                    $requestCTSData['sell_paid'] = 0;
+                    $requestCTSData['sell_due'] = 0;
+                    $requestCTSData['total_sell_invoice_amount'] = $invoiceData->total_payable_amount;//total_invoice_amount
+                    $requestCTSData['total_sell_invoice_paid_amount'] = $invoiceData->total_paid_amount;//total_invoice_amount
+                    $requestCTSData['total_sell_invoice_due_amount'] = $invoiceData->total_due_amount;//total_invoice_amount
+                    $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
+                    $this->amount = $request->total_return_amount_for_customer_history_value ?? 0 ;
+                    
+                    $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Return');
+                    $this->ctsCustomerId = $invoiceData->customer_id;
+                    $ttModuleInvoics = [
+                        'invoice_no' =>  $returnInvoice->invoice_no,
+                        'invoice_id' => $returnInvoice->id,
+
+                        'tt_main_module_invoice_no' => $invoiceData->invoice_no,
+                        'tt_main_module_invoice_id' => $invoiceData->id,
                     ];
-                    $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
-                    $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
-                    $this->invoiceTotalPayingAmount = $invoice_total_paying_amount;
-                    $this->defaultCashPaymentProcessing();
-                    //for payment processing 
-                }
-               
-                
-                //customer transaction statement history
-                $requestCTSData = [];
-                $requestCTSData['amount'] =$request->total_return_amount_for_customer_history_value ?? 0 ;
-                $requestCTSData['ledger_page_no'] = NULL;
-                $requestCTSData['next_payment_date'] = NULL;
-                $requestCTSData['short_note'] = "Sell Return";
-                $requestCTSData['sell_amount'] = 0;
-                $requestCTSData['sell_paid'] = 0;
-                $requestCTSData['sell_due'] = 0;
-                $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
-                $this->amount = $request->total_return_amount_for_customer_history_value ?? 0 ;
-                
-                $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Sell Return');
-                $this->ctsCustomerId = $invoiceData->customer_id;
-                $ttModuleInvoics = [
-                    'invoice_no' =>  $returnInvoice->invoice_no,
-                    'invoice_id' => $returnInvoice->id
-                ];
-                $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
-                $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
-                $this->processingOfAllCustomerTransaction();
-                //customer transaction statement history   
-                
-                //calculation in the customer table
-                //$dbField = 20;'current_return';
-                //$calType = 1='plus', 2='minus'
-                $this->updateCustomerSpecificField($request->customer_id,$dbField = 20 ,$calType = 1,$request->total_return_amount_for_customer_history_value ?? 0 );//invoice_total_paying_amount
-                //$dbField = 24;'current_paid_return';
-                //$calType = 1='plus', 2='minus'
-                $this->managingCustomerCalculation($request->customer_id,$dbField = 24 ,$calType = 1,$request->total_return_amount_for_customer_history_value ?? 0 );//invoice_total_paying_amount
-                //calculation in the customer table          
+                    $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+                    $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
+                    $this->processingOfAllCustomerTransaction();
+                /*
+                |------------------------------------------------
+                | Customer Transaction statement history
+                |------------------------------------------------
+                */
+
+
+                /*
+                |------------------------------------------------
+                | Update Customer specific field : customers table 
+                |------------------------------------------------
+                */
+                    //calculation in the customer table
+                    //$dbField = 20;'current_return';
+                    //$calType = 1='plus', 2='minus'
+                    $this->updateCustomerSpecificField($request->customer_id,$dbField = 20 ,$calType = 1,$request->total_return_amount_for_customer_history_value ?? 0 );//invoice_total_paying_amount
+                    //$dbField = 24;'current_paid_return';
+                    //$calType = 1='plus', 2='minus'
+                    $this->managingCustomerCalculation($request->customer_id,$dbField = 24 ,$calType = 1,$request->total_return_amount_for_customer_history_value ?? 0 );//invoice_total_paying_amount
+                    //calculation in the customer table      
+                /*
+                |------------------------------------------------
+                | Update Customer specific field : customers table 
+                |------------------------------------------------
+                */   
+
                 DB::commit();
             }else{
                 return response()->json([

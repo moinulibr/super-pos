@@ -1260,7 +1260,7 @@
     |-----------------------------------------------
     | finally submit sell (final sell and quotation)
     |----------------------------------------------
-    */ 
+    */  
         jQuery(document).on("submit",'.storeDataFromSellCart',function(e){
             e.preventDefault();
             normalPrintAfterSellIsDisabled();              
@@ -1294,6 +1294,10 @@
 
                         normalPrintAfterSellIsEnabled();
                         jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
+                        
+                        //after sell create
+                        jQuery("#afterSellCompleteModal").css({'display':'block'});
+                        jQuery("#afterSellCompleteModal").attr('class','modal fade-in');
                     }
                 },
                 complete:function(){
@@ -1303,6 +1307,15 @@
                 },
             });
             //end ajax
+        });
+    /*
+    |-----------------------------------------------
+    | finally submit sell 
+    |----------------------------------------------
+    */
+        jQuery(document).on('click','.closeModal',function(){
+            jQuery("#afterSellCompleteModal").attr('class','modal fade');
+            jQuery("#afterSellCompleteModal").css({'display':'none'});
         });
     /*
     |-----------------------------------------------

@@ -140,7 +140,9 @@ trait StoreDataFromSellCartTrait
         $this->ctsCustomerId = $this->sellCreateFormData['customer_id'];
         $ttModuleInvoics = [
             'invoice_no' => $sellInvoice->invoice_no,
-            'invoice_id' => $sellInvoice->id
+            'invoice_id' => $sellInvoice->id, 
+            'tt_main_module_invoice_no' => $sellInvoice->invoice_no,
+            'tt_main_module_invoice_id' => $sellInvoice->id,
         ];
         $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
         $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp($ctsCdfType);
