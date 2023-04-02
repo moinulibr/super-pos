@@ -40,8 +40,8 @@ class AllReportController extends Controller
 
         // 2, 2 == selling time receive amount.. 
         $sellingTimeReceivedAmount =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',2)->where('module_id',2)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->sum('payment_amount');
-        //2, 6 == sell return amount
-        $sellReturnAmount =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',2)->where('module_id',6)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
+        //2, 4 == sell return amount
+        $sellReturnAmount =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',2)->where('module_id',4)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
         
         //1,1 == purchase
         $purchaseingTimePaidAmount =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',1)->where('module_id',1)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->sum('payment_amount');
@@ -54,7 +54,7 @@ class AllReportController extends Controller
         $customerAddLoans =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',7)->where('module_id',7)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
         //9,9 == Customer Advance
         $customerAddAdvances =  AccountPayment::where('branch_id',authBranch_hh())->where('main_module_id',9)->where('module_id',9)->whereNull('deleted_at')->whereDate('payment_date', '>=', $date_from)->whereDate('payment_date', '<=', $date_to)->get();
-        return view('backend.report.daily.daily_report_details',compact('sellInvoices','purchaseInvoices','sellingTimeReceivedAmount','purchaseingTimePaidAmount','customerSellDueReceives','customerPreviousDueReceives','customerAddLoans','customerAddAdvances'));
+        return view('backend.report.daily.daily_report_details',compact('sellInvoices','purchaseInvoices','sellingTimeReceivedAmount','purchaseingTimePaidAmount','customerSellDueReceives','customerPreviousDueReceives','customerAddLoans','customerAddAdvances','sellReturnAmount'));
     }
 
 

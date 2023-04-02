@@ -327,24 +327,29 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </style>
                                         <div class="col-3" style="border-right: 1px solid #e9ecef;">
                                             <a href="#" class="btn btn-danger btnFullWidth white removeOrEmptyAllItemFromCreatePurchaseCartList" style="margin-top: 1%;">
+                                                <i class="fa fa-times" aria-hidden="true"></i>
                                                 Cancel
                                             </a>
 
                                             <a href="#" class="paymentQuotationButtonWhenCartItemMoreThenZero btn btn-dark btnFullWidth white" style="margin-top: 1%; display:; cursor: pointer;"><!--- data-toggle="modal" data-target="#quotation-popup"-->
-                                               Make It Quotation
+                                                <i class="fa fa-save" aria-hidden="true"></i>
+                                                Make It Quotation
                                             </a>
 
                                             <a href="#" class="paymentModalOpen paymentQuotationButtonWhenCartItemMoreThenZero btn btn-success btnFullWidth white" style="margin-top: 1%; display:; cursor: pointer;"> <!--- data-toggle="modal" data-target="#payment-popup"-->
-                                               Make It Purchase <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
+                                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                                Make It Purchase <img class="payment_processing_gif" src="{{asset('loading-img/loading1.gif')}}" alt="" style="margin-left:auto;margin-right:auto;height:20px;display:none;background-color:#ffff;border-radius: 50%;">
                                             </a>
                                             <input type="hidden" class="paymentModalOpenUrl" value="{{route('admin.purchase.regular.pos.purchase.payment.modal.open')}}">
                                             <input type="hidden" class="paymentBankingOptionUrl" value="{{route('admin.payment.common.banking.option.data')}}">
 
                                             <a href="#" data-href="{{ route('admin.purchase.regular.purchase.pos.print.from.direct.purchase.cart') }}" class="print normal_print_direct_from_purchase_cart btn btn-info btnFullWidth white" data-href="#" style="margin-top: 1%;cursor: not-allowed;">
+                                                <i class="fa fa-print" aria-hidden="true"></i>
                                                 POS Print
                                             </a>
 
                                             <a class="pos_print_direct_from_purchase_cart btn btn-primary btnFullWidth white" style="margin-top:1%;cursor: not-allowed;" data-href="{{ route('admin.purchase.regular.purchase.normal.print.from.direct.purchase.cart') }}">
+                                                <i class="fa fa-print" aria-hidden="true"></i>
                                                 Print
                                             </a>
                                         </div>

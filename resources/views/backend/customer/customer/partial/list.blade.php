@@ -11,8 +11,8 @@
                 </th>
                 <th>Phone</th>
                {{--  <th>Email</th> --}}
-                <th><small>Advance</small></th>
-                <th><small>Total Due</small></th>
+                {{-- <th><small>Advance</small></th> --}}
+                <th style="color:red;">Total Due</th>
                 <th><small>Next Payment Date</small></th>
                 <th>Address</th>
                 <th>Created By</th>
@@ -63,11 +63,11 @@
                    {{--  <td>
                         {{$item->email ?? "No Email"}}
                     </td>  --}}
-                    <td>
+                    {{-- <td>
                         {{$item->total_advance}}
-                    </td>
-                    <td>
-                        {{number_format($item->totalDueAmount(),2,'.','')}}
+                    </td> --}}
+                    <td style="color:red;">
+                        {{number_format($item->customerTransactionBalance(),2,'.','')}}
                     </td> 
                     <td>
                         {{$item->next_payment_date}}

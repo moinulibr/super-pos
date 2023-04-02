@@ -1357,9 +1357,9 @@
                         normalPrintAfterSellIsEnabled();
                         jQuery('.normalPriceFromSellList').attr('href',response.normalPrintUrl);
                         
-                        //after sell create
-                        jQuery("#afterSellCompleteModal").css({'display':'block'});
-                        jQuery("#afterSellCompleteModal").attr('class','modal fade-in');
+                        //redirect after sell create
+                        //jQuery("#afterSellCompleteModal").css({'display':'block'});
+                        //jQuery("#afterSellCompleteModal").attr('class','modal fade-in');
                     }
                 },
                 complete:function(){

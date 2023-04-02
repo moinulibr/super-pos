@@ -54,7 +54,7 @@
                                 <button type="button" class="btn btn-sm btn-info" data-toggle="dropdown" aria-expanded="true">
                                     <i class="fas fa-cog"></i>
                                 </button>
-                                <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
+                                <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;background-color:#f0f4f5">
                                     @if ($item->sell_type == 1)
                                         <a class="dropdown-item singleSellView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
                                         <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.sell.regular.normal.print.from.sell.list',$item->id)}}" style="cursor: pointer">Print</a>

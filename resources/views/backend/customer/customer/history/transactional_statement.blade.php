@@ -9,8 +9,8 @@
             <table id="example1" class="table table-bordered table-striped table-hover">
                 <thead style="background-color:#320101;color:white;height:55px;">
                     <tr style="border:1px solid white;">
-                        <th style="width:5%;text-align:center;">#</th>
-                        <th style="width:11%;text-align:center;">T.T. Invoice</th>
+                        <th style="width:3%;text-align:center;">#</th>
+                        <th style="width:10%;text-align:center;">T.T. Invoice</th>
                         <th style="width:5%;text-align:center;">
                             <small style="font-size:8px;">Ledger Page</small>
                         </th>
@@ -20,16 +20,20 @@
                             </small>
                         </th>
                         <th style="width:5%;text-align:center;">Date</th>
-                        <th style="width:23%;text-align:center;">
-                            Transaction Type
+                        <th style="width:20%;text-align:center;">
+                            <small>Transaction Type</small>
                         </th>
-                        <th style="width:11%;text-align:center;">Amount</th>
+                       
+                        <th style="width:10%;text-align:center;">Amount</th>
                         <th style="width:10%;text-align:center;background-color:aliceblue;color:#1a1717;">
                             Sell Amount
                         </th>
                         <th style="width:10%;text-align:center;background-color:aliceblue;color:#1a1717;">Paid</th>
                         <th style="width:10%;text-align:center;background-color:aliceblue;color:#1a1717;">Due</th>
                         <th style="width:11%;text-align:center;">Balance</th>
+                        <th style="width:7%;text-align:center;">
+                            <small>Module Invoice</small>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,8 +54,8 @@
                         style="background-color:#89a389;color:white"
                         @endif
                     >
-                        <td style="width:5%;text-align:center;">{{ $index + (1)}}</td>
-                        <td style="width:11%;text-align:center;">
+                        <td style="width:3%;text-align:center;">{{ $index + (1)}}</td>
+                        <td style="width:10%;text-align:center;">
                             <small>{{$tsitem->tt_module_invoice_no}}</small>
                         </td>
                         <td style="width:5%;text-align:center;">
@@ -61,10 +65,10 @@
                             {{$tsitem->next_payment_date}}
                         </td>
                         <td style="width:5%;text-align:center;">{{date('d-m-Y',strtotime($tsitem->created_at))}}</td>
-                        <td style="width:23%;text-align:center;">
+                        <td style="width:20%;text-align:center;">
                             {{ getCTSModuleBySingleModuleId_hp($tsitem->tt_module_id) }}
                         </td>
-                        <td style="width:11%;text-align:center;">{{$tsitem->amount}}</td>
+                        <th style="width:10%;text-align:center;">{{$tsitem->amount}}</th>
                         <td style="width:10%;text-align:center;background-color:aliceblue;color:#1a1717;">
                            {{$tsitem->sell_amount}}
                         </td>
@@ -75,6 +79,8 @@
                                 {{$tsitem->cdc_amount}}
                             </strong>
                         </th>
+                        <td style="width:7%;text-align:center;">{{$tsitem->tt_main_module_invoice_no}}</td>
+
                         @php
                             $totalSellAmount += $tsitem->sell_amount;
                             $totalSellPaidAmount += $tsitem->sell_paid;
@@ -87,7 +93,7 @@
                         <th style="text-align:center;">{{number_format($totalSellAmount,2,'.','') }}</th>
                         <th style="text-align:center;">{{number_format($totalSellPaidAmount,2,'.','')}}</th>
                         <th style="text-align:center;">{{number_format($totalSellDueAmount,2,'.','')}}</th>
-                        <th></th>
+                        <th colspan="2"></th>
                     </tr>
                 </tbody>
             </table>

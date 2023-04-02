@@ -195,6 +195,126 @@ use App\Models\Backend\Payment\Account;
 
 
 
+     
+    /*
+    |--------------------------------------------------------------------------
+    | Module profit/loss processing
+    |--------------------------------------------------------------------------
+    */
+        function getProfitModuleBySingleModuleId_hh($key)
+        {
+            $arrayLabel = "Not Match";
+            if(array_key_exists($key,allModule_hh()))
+            {
+                $arrayLabel = allModule_hh()[$key];
+            }
+            return $arrayLabel;
+        }
+        function getProfitModuleIdBySingleModuleLebel_hh($value)
+        {
+            $indexOfValue = "Not Match";
+            if(in_array($value,allModule_hh()))
+            {
+                foreach(allModule_hh() as $index => $val)
+                {
+                    if($value == $val)
+                    {
+                        $indexOfValue = $index;
+                        break;
+                    }
+                }
+            }
+            return $indexOfValue; 
+        }
+        function allProfitModule_hh()
+        {
+            return [
+                //value = label - never change this name/label.. coz, this label is used to another
+                1 => "Purchase", //debit
+                2 => "Sell", // credit
+                3 => "Purchase Return",//credit
+                4 => "Sell Return", //debit
+            ];
+        }
+    /*
+    |--------------------------------------------------------------------------
+    | Module profit/loss processing
+    |--------------------------------------------------------------------------
+    */
+
+    /*
+    |--------------------------------------------------------------------------
+    | CDF during profit/loss processing
+    |--------------------------------------------------------------------------
+    */
+        function getProfitCdfLabelBySingleCdfId_hh($key)
+        {
+            $arrayLabel = "Not Match";
+            if(array_key_exists($key,allCdf_hh()))
+            {
+                $arrayLabel = allCdf_hh()[$key];
+            }
+            return $arrayLabel;
+        }
+        
+        function getProfitCdfIdBySingleCdfLebel_hh($value)
+        {
+            $indexOfValue = "Not Match";
+            if(in_array($value,allCdf_hh()))
+            {
+                foreach(allCdf_hh() as $index => $val)
+                {
+                    if($value == $val)
+                    {
+                        $indexOfValue = $index;
+                        break;
+                    }
+                }
+            }
+            return $indexOfValue; 
+        }
+        function allProfitCdf_hh()
+        {
+            return [
+                //value = label
+                1 => "Credit",
+                2 => "Debit",
+                3 => "-"//not change
+            ];
+        }
+
+        //not using this..just for understand
+        //get cdf sign by single cdf id
+        function getProfitCdfSignBySingleCdfId_hh($key)
+        {
+            $arraySign = "Not Match";
+            if(array_key_exists($key,allCdfSign_hh()))
+            {
+                $arraySign = allCdfSign_hh()[$key];  
+            }
+            return $arraySign;
+        }
+        //all cdf sign
+        function allProfitCdfSign_hh()
+        {
+            return [
+                //value = label
+                1 => "+",//"Credit",
+                2 => "-"//"Debit"
+            ];
+        }
+        //not using this..just for understand
+    /*
+    |--------------------------------------------------------------------------
+    | CDF during profit/loss processing
+    |--------------------------------------------------------------------------
+    */
+
+
+
+
+
+
     /*
     |----------------------------------------------------------------------------------------
     |--------------------------------------------------------------------------

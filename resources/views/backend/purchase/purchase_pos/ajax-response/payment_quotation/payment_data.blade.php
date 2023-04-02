@@ -55,9 +55,10 @@
 
 <div class="form-group row">
     <div class="col-md-6">
-        <label class="text-body">Chalan No</label>
+        <label class="text-body">Chalan No<strong style="color:red;">*</strong></label>
         <fieldset class="form-group mb-3">
-            <input type="text" name="chalan_no" class="form-control" placeholder="Chalan No" />
+            <input type="text" name="chalan_no" class="form-control chalan_no" required placeholder="Chalan No" />
+            <i style="color:red;">This field is required</i>
         </fieldset>
     </div>
 

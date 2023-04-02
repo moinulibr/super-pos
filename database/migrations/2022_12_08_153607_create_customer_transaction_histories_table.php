@@ -24,8 +24,9 @@ class CreateCustomerTransactionHistoriesTable extends Migration
                 $table->integer('tt_module_id')->nullable()->comment('Module id (tt=transaction type)');
                 $table->string('tt_module_invoice_no',30)->nullable()->comment('Module id (tt=transaction type)');
                 $table->integer('tt_module_invoice_id')->nullable()->comment('Module id (tt=transaction type)');
-                $table->text('sell_invoice_ids')->nullable()->comment('optional: sell invoice ids, array formated..when multiple sell invoice wise payment');
-                
+                $table->integer('tt_main_module_invoice_id')->nullable()->comment('Main Module id (tt=transaction type)');
+                $table->string('tt_main_module_invoice_no',50)->nullable()->comment('Main Module id (tt=transaction type)');
+
                 $table->tinyInteger('cdf_type_id')->nullable()->comment('c=credit,d=debit,f=fund');
                 $table->decimal('amount',20,2)->default(0);
                 $table->decimal('cdc_amount',20,2)->default(0)->comment('after credit/debit calculation amount');

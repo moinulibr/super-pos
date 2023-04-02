@@ -328,7 +328,13 @@ class SellProductReturnController extends Controller
                 $this->stock_quantity_FSCT = $baseStockIncrementQuantity;
                 $this->unit_id_FSCT = $sellProduct ? $sellProduct->unit_id:0;
                 $this->stock_changing_history_process_FSCT = 1;//now
+                
+                $this->mainModuleInvoiceId_FSCT = $invoiceData->id;
+                $this->mainModuleInvoiceNo_FSCT = $invoiceData->invoice_no;
+                $this->mainModuleCreatedDate_FSCT = $invoiceData->sell_date;
+
                 $this->sellingReturnStockTypeIncrement();
+                //$this->temporaryStockChangingHistory($stockId,$productStockId,$productId,$stock,$stockChangingType,$stockChangingSign,$changingHistory,$mainModuleInvoiceId,$mainModuleInvoiceNo,$mainModuleCreatedDate)
             }
             //increment stock quantity to the particular's stock  from product stock
         /*

@@ -45,6 +45,12 @@ class Customer extends Model
         return $this->hasMany(CustomerTransactionHistory::class,'user_id','id');
     }
 
+    public function customerTransactionBalance()
+    {
+        $transcation =  CustomerTransactionHistory::select('user_id','cdc_amount')->where('user_id',$this->id)->latest()->first();
+        return  $transcation ? $transcation->cdc_amount : 0;
+    }
+
     public function totalDueAmount()
     {
         return number_format((($this->total_due + $this->total_loan) - ($this->total_return + $this->total_advance) ),2,'.','');

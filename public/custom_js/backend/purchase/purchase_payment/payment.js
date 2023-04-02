@@ -498,7 +498,8 @@
                 if(response.status == true)
                 {
                     $('#purchaseViewSingleInvoiceMakePaymentModal').html('');
-                    $('#purchaseViewSingleInvoiceMakePaymentModal').html(response.html).modal('show');
+                    //$('#purchaseViewSingleInvoiceMakePaymentModal').html(response.html).modal('show');
+                    $('#purchaseViewSingleInvoiceMakePaymentModal').modal('hide');
                     paymentProcessingWithDueFullAmountAndPayingAmountZero();
                     jQuery.notify(response.message, response.type);
                     $('.success_message_text').html(response.message);

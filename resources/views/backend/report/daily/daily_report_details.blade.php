@@ -142,6 +142,57 @@
                     </tbody>
                 </table>
                 <br/>
+                
+
+                <br/>
+                <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
+                    <tbody>
+                        <tr>
+                            <th colspan="5" style="text-align:center;background-color:rgb(194, 62, 62);color:#ffff;"><h4 style="text-align:center;">Sales Returns</h4></th>
+                        </tr>
+                        <tr role="row" class="bg-whitesmoke">
+                            <th>Date</th>
+                            <th>Invoice No</th>
+                            <th>Customer Name</th>
+                            {{-- <th>Payment Method</th>
+                                <th>Account</th> --}}
+                            <th>Receive Amount</th>
+                            <th>Receive By</th>
+                        </tr>
+                        @php
+                            $totalCustomerSellReturnAmount = 0;
+                        @endphp
+                        @foreach ($sellReturnAmount as $item)
+                        <tr role="row">
+                            <td>
+                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
+                            </td>
+                            <td>
+                               {{$item->main_module_invoice_no}}
+                            </td>
+                            <td>
+                                {{$item->customers ? $item->customers->name : NULL}}
+                            </td>
+                            <td>
+                                {{$item->payment_amount}}
+                            </td>
+                            <td>
+                                {{$item->createdBY ? $item->createdBY->name : NULL}}
+                            </td>
+                        </tr>     
+                        @php
+                            $totalCustomerSellReturnAmount += $item->payment_amount;
+                        @endphp 
+                        @endforeach
+                        <tr class="bg-whitesmoke h6">
+                            <td colspan="3" style="text-align:right">Total</td>
+                            <th>{{number_format($totalCustomerSellReturnAmount,2,'.','')}}</th>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br/>
+
 
                 <br/>
                 <table class="table table-responsive table-bordered" style="margin-left:10%;margin-right:10%;">
@@ -540,7 +591,10 @@
                                 </td>
                                 <td>{{number_format($totalSellDueAmount,2,'.','')}}</td>
                             </tr>
-                            
+                            <tr>
+                                <th colspan="3" style="text-align: right;">Sell Return</th>
+                                <th  style="background-color:red;color:#ffff;font-weight: 900;">{{number_format($totalCustomerSellReturnAmount,2,'.','')}}</th>
+                            </tr>
                             <tr style="background-color:#f1f9f1;color:black;font-weight: 900;">
                                 <td rowspan="3" style="text-align: center;vertical-align: middle;">
                                     Purchase
@@ -590,7 +644,7 @@
                                 <th colspan="3" style="text-align: right;background-color:#65f565;color:black;">
                                     <div style="width:100%;display:flex;">
                                         <div style="width:90%;">
-                                            <small>((Sell Cash Amount + Due Receive Amount + Previous Due Receive + Advance Receive) - (Purchase Paid Amount + Add Loan))</small> 
+                                            <small>((Sell Cash Amount + Due Receive Amount + Previous Due Receive + Advance Receive) - (Purchase Paid Amount + Add Loan + Sell Return))</small> 
                                             <br/>
 
                                             <small>calculation with:</small> - 
@@ -606,7 +660,7 @@
                                     </div>
                                 </th>
                                 <th style="background-color: green;color:#ffff;padding-top: 1.9%;">
-                                   {{number_format( ( ($sellingTimeReceivedAmount + $totalCustomerDueReceivedAmount + $totalCustomerPreviousDueReceivedAmount + $totalCustomerReceivedAdvanceAmount) - ($purchaseingTimePaidAmount + $totalCustomerAddLoanAmount) ) ,2,'.','')}}
+                                   {{number_format( ( ($sellingTimeReceivedAmount + $totalCustomerDueReceivedAmount + $totalCustomerPreviousDueReceivedAmount + $totalCustomerReceivedAdvanceAmount) - ($purchaseingTimePaidAmount + $totalCustomerAddLoanAmount + $totalCustomerSellReturnAmount) ) ,2,'.','')}}
                                 </th>
                             </tr>
 

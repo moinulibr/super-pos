@@ -1171,6 +1171,12 @@
     jQuery(document).on("submit",'.storeDataFromPurchaseCart',function(e){
         e.preventDefault();
         jQuery('.color-red').text('');
+       
+        if(!jQuery('.chalan_no').val()){
+            jQuery.notify("Chalan No is required", 'error');
+            return;
+        }
+        
         submitButtonDisabled();
         jQuery.ajax({
             url: jQuery(this).attr('action'),

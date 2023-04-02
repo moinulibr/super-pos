@@ -112,7 +112,7 @@
                                 <td>{{$item->payment_invoice_no}}</td>
                                 <td>{{getModuleBySingleModuleId_hh($item->module_id)}}</td>
                                 <td>{{$item->main_module_invoice_no}}</td>
-                                <td>{{$item->payment_amount}}</td>
+                                <th>{{$item->payment_amount}}</th>
                                 <td>
                                     @if ($item->cdf_type_id == 1)
                                         <span style="color:green;">Credit</span>
@@ -120,7 +120,7 @@
                                         <span style="color:red;">Debit</span>
                                     @endif
                                 </td>
-                                <td>{{$item->datewise_cdc_amount}}</td>
+                                <th>{{$item->datewise_cdc_amount}}</th>
                                 <th>{{$item->createdBY ? $item->createdBY->name : NULL}}</th>
                             </tr>
                             @endforeach

@@ -268,7 +268,13 @@ class PurchasePosController extends Controller
     public function storeDataFromPurchaseCart(Request $request)
     {   
         DB::beginTransaction();
-
+        if(!$request->chalan_no){
+            return response()->json([
+                'status'    => true,
+                'message'   => "Chalan No is required",
+                'type'      => 'error'
+            ]);
+        }
         try {
             $this->purchaseCreateFormRequestData = $request;
             $this->storeSessionDataFromPurchaseCart();   

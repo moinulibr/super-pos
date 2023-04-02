@@ -85,7 +85,7 @@ trait CustomerPaymentProcessTrait
         $ctsCdfType = $this->ctsCdsTypeId;
         $mainAmount = 0;
         if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell'){
-            $mainAmount = 0;
+            $mainAmount = $this->processingOfAllCustomerTransactionRequestData['sell_due'];;
             $changingAmount = $this->processingOfAllCustomerTransactionRequestData['sell_due'];
             $ctsCdfType = 2;//$this->ctsCdsTypeId; //plus or minus +/-
         } 
@@ -167,6 +167,66 @@ trait CustomerPaymentProcessTrait
 
     //sell return calculation formula
     private function sellReturnFormulaCalculation(){
+        $sellInvoiceId = $this->ttModuleInvoicsDataArrayFormated['tt_main_module_invoice_id'];
+        $sellCreatingTime = CustomerTransactionHistory::select('tt_main_module_invoice_id','user_id','sell_amount','sell_paid','sell_due','tt_module_id','cdf_type_id')
+        ->where('user_id',$this->ctsCustomerId)
+        ->where('tt_module_id',2)//sell creating time - sell due
+        ->where('tt_main_module_invoice_id',$sellInvoiceId)
+        ->get();
+
+        $sellDueReceiveAmount = CustomerTransactionHistory::select('tt_main_module_invoice_id','user_id','amount','tt_module_id','cdf_type_id')
+        ->where('user_id',$this->ctsCustomerId)
+        ->where('tt_module_id',7)//Sell Due Payment
+        ->where('tt_main_module_invoice_id',$sellInvoiceId)
+        ->sum('amount');
+
+        $sellOverallDiscountAmount = CustomerTransactionHistory::select('tt_main_module_invoice_id','user_id','amount','tt_module_id','cdf_type_id')
+        ->where('user_id',$this->ctsCustomerId)
+        ->where('tt_module_id',11) //"Overall Sell Discount",
+        ->where('tt_main_module_invoice_id',$sellInvoiceId)
+        ->sum('amount');
+
+        $sellTotalReturnAmount = CustomerTransactionHistory::select('tt_main_module_invoice_id','user_id','amount','tt_module_id','cdf_type_id')
+        ->where('user_id',$this->ctsCustomerId)
+        ->where('tt_module_id',6)//"Sell Return",
+        ->where('tt_main_module_invoice_id',$sellInvoiceId)
+        ->sum('amount');
+
+        $totalSellInvoiceAmount = $sellCreatingTime->sum('sell_amount') - ( $sellTotalReturnAmount + $sellOverallDiscountAmount);
+        $getTotalSellInvoicePaidAmount = $sellCreatingTime->sum('sell_paid') + $sellDueReceiveAmount;
+        
+        $totalSellInvoicePaidAmount = $getTotalSellInvoicePaidAmount;
+        if($totalSellInvoiceAmount > $getTotalSellInvoicePaidAmount){
+            $totalSellInvoicePaidAmount = $getTotalSellInvoicePaidAmount;
+        } 
+        else if($totalSellInvoiceAmount < $getTotalSellInvoicePaidAmount){
+            $totalSellInvoicePaidAmount = $totalSellInvoiceAmount;
+        }
+        else if($totalSellInvoiceAmount == $getTotalSellInvoicePaidAmount){
+            $totalSellInvoicePaidAmount = $totalSellInvoiceAmount;
+        }
+        $totalSellInvoiceDueAmount = $totalSellInvoiceAmount - $totalSellInvoicePaidAmount ;// $sellCreatingTime->sum('sell_due');
+
+        $returnAmount = 0;
+        if($totalSellInvoiceDueAmount > 0 ){
+            if($totalSellInvoiceDueAmount == $this->amount){
+                $returnAmount = $totalSellInvoiceDueAmount;
+            }
+            else if($totalSellInvoiceDueAmount > $this->amount){
+                $returnAmount = $this->amount;
+            }
+            else if( $totalSellInvoiceDueAmount < $this->amount){
+                $returnAmount = $totalSellInvoiceDueAmount;
+            }
+        }else{
+            $returnAmount = 0;
+        }
+        return $returnAmount;
+
+        /* 
+        //total 600, paid 0, due 600
+        //return 100,
+        //
         $totalInvoiceAmount = $this->processingOfAllCustomerTransactionRequestData['total_sell_invoice_amount'];
         $totalInvoicePaidAmount = $this->processingOfAllCustomerTransactionRequestData['total_sell_invoice_paid_amount'];
         $totalInvoiceDueAmount = $this->processingOfAllCustomerTransactionRequestData['total_sell_invoice_due_amount'];
@@ -188,7 +248,7 @@ trait CustomerPaymentProcessTrait
         }else{
             $changeableAmount = 0;
         }
-        return $changeableAmount;
+        return $changeableAmount; */
     }
 
     //make all formula for all module
@@ -238,8 +298,8 @@ trait CustomerPaymentProcessTrait
         $cdcAmount = 0;
         if($this->ctsCdsChangingTypeId == 1){
             if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Return'){
-                $amount = $lastAmount - $this->ctsPaymentChangingAmount;
-                $cdcAmount = 0;
+               return $amount = $lastAmount - $this->ctsPaymentChangingAmount;
+                /* $cdcAmount = 0;
                 if($amount == 0){
                     $cdcAmount = 0;
                 }
@@ -249,7 +309,7 @@ trait CustomerPaymentProcessTrait
                 else if($amount < 0){
                     $cdcAmount = 0;
                 }
-                return $cdcAmount;
+                return $cdcAmount; */
             }
             if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Due Payment'){
                return $cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;

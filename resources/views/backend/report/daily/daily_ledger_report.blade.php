@@ -191,7 +191,7 @@
                     </table>
                 </div>
 
-                <br/><br/>
+                {{-- <br/><br/>
 
                 <div class="table-responsive">
                     <table id="example1" class="table table-bordered table-striped table-hover">
@@ -240,7 +240,7 @@
                         </tbody>
                     </table>
                 </div>
-                <br/>
+                <br/> --}}
 
 
 

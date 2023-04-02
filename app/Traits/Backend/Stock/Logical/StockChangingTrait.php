@@ -23,6 +23,10 @@ trait StockChangingTrait
     protected $unit_id_FSCT;
     protected $stock_quantity_FSCT;
 
+    protected $mainModuleInvoiceId_FSCT;
+    protected $mainModuleInvoiceNo_FSCT;
+    protected $mainModuleCreatedDate_FSCT;
+
     protected $stock_changing_type_id_FSCT;
     protected $stock_changing_sign_FSCT;
     protected $stock_changing_history_FSCT;
@@ -644,9 +648,12 @@ trait StockChangingTrait
         $stock->stock_changing_sign     = $this->stock_changing_sign_FSCT;
         $stock->stock_changing_history  = json_encode( $this->stock_changing_history_FSCT);
         $stock->stock                   = $this->stock_quantity_FSCT;
+        $stock->main_module_invoice_id  = $this->mainModuleInvoiceId_FSCT;
+        $stock->main_module_invoice_no = $this->mainModuleInvoiceNo_FSCT;
+        $stock->main_module_invoice_created_date = $this->mainModuleCreatedDate_FSCT;
         $stock->status                  = 1;
-        $stock->branch_id               = authBranch_hh();
-        $stock->created_by              = authId_hh();
+        $stock->branch_id = authBranch_hh();
+        $stock->created_by = authId_hh();
         $stock->save();
         return $stock;
         // branch_id, stock_id , product_stock_id, product_id , stock_changing_type_id

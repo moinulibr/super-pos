@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Traits\Permission\Permission;
 use App\Models\Backend\Customer\Customer;
-
+use App\Models\Backend\Customer\CustomerTransactionHistory;
 use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
 
 use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
@@ -29,6 +29,7 @@ class CustomerTransactionalController extends Controller
     public function customerTransactionalStatement(Request $request)
     {
         $data['customer'] = Customer::findOrFail($request->id);
+        $data['customerTransactionalBalanceSummary'] = CustomerTransactionHistory::select('user_id','cdc_amount')->where('user_id',$request->id)->latest()->first();
         $transactionalSummary =  view('backend.customer.customer.history.transactional_summary',$data)->render();
         $transactionalStatement =  view('backend.customer.customer.history.transactional_statement',$data)->render();
         return response()->json([

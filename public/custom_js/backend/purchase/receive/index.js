@@ -210,6 +210,7 @@
                     $('.product_related_response_here').html(response.product);
                     $('.alert_success_message_div').show();
                     $('.success_message_text').html(response.message+"<br/>"+response.print);
+                    $('#purchaseProductReceiveInvoiceWiseModal').modal('hide');
                 }else{
                     $('.alert_danger_message_div').show();
                     $('.danger_message_text').text(response.message);

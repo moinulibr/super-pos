@@ -161,6 +161,11 @@ class PurchaseProductReceiveController extends Controller
             $this->stock_quantity_FSCT = $stockIncrementQuantity;
             $this->unit_id_FSCT = $purchaseProduct ? $purchaseProduct->unit_id:0;
             $this->stock_changing_history_process_FSCT = 1;//now
+                            
+            $this->mainModuleInvoiceId_FSCT = $invoiceData->id;
+            $this->mainModuleInvoiceNo_FSCT = $invoiceData->invoice_no;
+            $this->mainModuleCreatedDate_FSCT = $invoiceData->purchase_date;
+
             $this->purchaseRegularStockTypeIncrement();
         }
         //reduce stock from product stock

@@ -28,11 +28,11 @@
                     
                     <td style="width:3%;">
                         <div class="btn-group btnGroupForMoreAction">
-                            <button type="button" class="btn btn-sm" data-toggle="dropdown" aria-expanded="true">
+                            <button type="button" class="btn btn-sm btn-info" data-toggle="dropdown" aria-expanded="true">
                                 <i class="fas fa-cog"></i>
                                 <!--<i class="fas fa-ellipsis-v"></i>-->
                             </button>
-                            <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;">
+                            <div class="dropdown-menu " x-placement="top-start" style="position: absolute; will-change: top, left; top: -183px; left: 0px;background-color: #f0f4f5;">
                                 <a class="dropdown-item singlePurchaseView" data-id="{{$item->id}}" style="cursor: pointer">View</a>
                                 <a class="dropdown-item print" target="_blank" data-id="{{$item->id}}" href="{{route('admin.purchase.regular.normal.print.from.purchase.list',$item->id)}}" style="cursor: pointer">Print</a>
                                 {{-- <a class="dropdown-item print"  target="_blank" data-id="{{$item->id}}" href="{{route('admin.purchase.regular.pos.print.from.purchase.list',$item->id)}}" style="cursor: pointer">Print (POS)</a> --}}

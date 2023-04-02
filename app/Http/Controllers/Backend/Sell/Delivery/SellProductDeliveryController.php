@@ -205,13 +205,20 @@ class SellProductDeliveryController extends Controller
 
             $stockReduceFromMainBaseStock  = $minusStockQtyFromMainProductStock;
             //reduce stock from product stock
-            if($invoiceData->sell_type == 1 && $stockReduceFromMainBaseStock > 0)
+            //if($invoiceData->sell_type == 1 && $stockReduceFromMainBaseStock > 0)
+            if($invoiceData->sell_type == 1 && $deliveryingQty > 0)
             {
                 $this->stock_id_FSCT = $sellProductStockDetails->stock_id;
                 $this->product_id_FSCT = $sellProductStockDetails->product_id;
-                $this->stock_quantity_FSCT = $stockReduceFromMainBaseStock;
+                $this->stock_quantity_FSCT = $deliveryingQty;
+                //$this->stock_quantity_FSCT = $stockReduceFromMainBaseStock;
                 $this->unit_id_FSCT = $sellProduct ? $sellProduct->unit_id:0;
                 $this->stock_changing_history_process_FSCT = 1;//now
+
+                $this->mainModuleInvoiceId_FSCT = $invoiceData->id;
+                $this->mainModuleInvoiceNo_FSCT = $invoiceData->invoice_no;
+                $this->mainModuleCreatedDate_FSCT = $invoiceData->sell_date;
+
                 $this->sellingFromPossStockTypeDecrement();
             }
             $this->sellDeliveryQuantity += $stockReduceFromMainBaseStock;
