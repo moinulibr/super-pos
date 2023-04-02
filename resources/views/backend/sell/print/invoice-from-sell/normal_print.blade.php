@@ -72,28 +72,36 @@ html {
 
             <div class="invoice__metaInfo" style="margin-top:-10px;">
                 <div class="col-lg-3" style="margin-top:-10px;">
-                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                    {{-- <div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Order Details') }} </strong><br>
                         <span><strong>{{ __('Invoice Number') }} :</strong> {{ $data->invoice_no }}</span><br>
                         <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
                         <span>{{  __('Order ID')}} : <span> </span> {{ sprintf("%'.08d", $data->id) }}</span>
+                    </div>  --}}
+                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                        <span><strong>{{ __('Invoice Number') }} :</strong> {{ $data->invoice_no }}</span><br>
+                        <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
                     </div>
                 </div>
                 <div class="col-lg-5"  style="margin-top:-10px;">
-                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                    {{-- <div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Customer Details') }}</strong><br>
-                        <span>{{ __('Customer Name') }}</span>:  <span> {{ $data->customer ? $data->customer->name : "N/L" }} </span><br>
-                        <span>{{ __('Customer Phone') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span><br>
+                        <span>{{ __('Name') }}</span>:  <span> {{ $data->customer ? $data->customer->name : "N/L" }} </span><br>
+                        <span>{{ __('Phone') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span><br>
                         <span>{{ __('Address') }}</span>: <span>{{ $data->customer ? $data->customer->address : "N/L" }}</span>
-                    </div>
+                    </div> --}}
                 </div>
                 
                 <div class="col-lg-4" style="margin-top:-10px;">
-                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                    {{-- <div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Shipping Details') }}</strong><br>
                         <span>{{ __('Shipping Phone') }}</span>: <span>{{ $data->shipping ? $data->shipping->phone : "N/L" }} </span><br>
                         <span>{{ __('Shipping Address') }}</span>: <span> {{ $data->shipping ? $data->shipping->address : "N/L" }}</span><br/>
                         <span>{{ __('Receiver Details') }}</span>: <span> {{$data->receiver_details ?? NULL}} </span><br>
+                    </div> --}}
+                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                        <span>{{ __('Name') }}</span>:  <span> {{ $data->customer ? $data->customer->name : "N/L" }} </span><br>
+                        <span>{{ __('Mobile No') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span><br>
                     </div>
                 </div>
             </div>

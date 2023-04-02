@@ -42,7 +42,7 @@
                         Total Balance
                     </td>
                     <th colspan="2" style="text-align: left;background-color:#830303;color:yellow">
-                    {{ number_format($customerTransactionalBalanceSummary->cdc_amount,2,'.','')}}
+                    {{ number_format($customerTransactionalBalanceSummary ? $customerTransactionalBalanceSummary->cdc_amount : 0,2,'.','')}}
                     </th>
                 </tr>
             </tbody>

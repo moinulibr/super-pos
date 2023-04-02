@@ -72,25 +72,33 @@ html {
 
             <div class="invoice__metaInfo" style="margin-top:-10px;">
                 <div class="col-lg-3" style="margin-top:-10px;">
-                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                    {{---<div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Quotation Details') }} </strong><br>
-                        <span><strong>{{ __('Quotaton Number') }} :</strong> {{ $data->invoice_no }}</span><br>
+                        <span><strong>{{ __('Quotaton Number') }} :</strong> Qt{{ $data->invoice_no }}</span><br>
                         <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
+                    </div>---}}
+                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                        <span><strong>{{ __('Quotaton Number') }} :</strong>{{ $data->invoice_no }}</span><br>
+                        <span>{{ __('Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
                     </div>
                 </div>
                 <div class="col-lg-5"  style="margin-top:-10px;">
-                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                    {{---<div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Customer Details') }}</strong><br>
-                        <span>{{ __('Customer Name') }}</span>:  <span> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }} </span><br>
-                        <span>{{ __('Customer Phone') }}</span>:  <span> {{ $data->quotation ? $data->quotation->phone : "N/L" }}</span><br>
-                    </div>
+                        <span>{{ __('Name') }}</span>:  <span> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }} </span><br>
+                        <span>{{ __('Phone') }}</span>:  <span> {{ $data->quotation ? $data->quotation->phone : "N/L" }}</span><br>
+                    </div>---}}
                 </div>
                 
                 <div class="col-lg-4" style="margin-top:-10px;">
-                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                    {{---<div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Quotation') }}</strong><br>
                         <span>{{ __('Quotation No') }}</span>: <span>{{ $data->quotation ? $data->quotation->quotation_no : "N/L" }} </span><br>
                         <span>{{ __('Last Date') }}</span>: <span> {{ $data->quotation ? date('d-m-Y',strtotime($data->quotation->validate_date)) : "N/L" }}</span><br/>
+                    </div>---}}
+                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                        <span>{{ __('Name') }}</span>:  <span> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }} </span><br>
+                        <span>{{ __('Phone') }}</span>:  <span> {{ $data->quotation ? $data->quotation->phone : "N/L" }}</span><br>
                     </div>
                 </div>
             </div>
