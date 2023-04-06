@@ -37,7 +37,7 @@ use App\Models\Backend\Payment\Account;
         {
             if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))
             {
-                return 'color:#55a3f4 !important;';
+                return 'color:#2333eb !important;';
             }
             else if(($totalPaidAmount > 0) && ($totalAmount == $totalPaidAmount))
             {

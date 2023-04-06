@@ -87,13 +87,15 @@
                         <td style="text-align:center;"> 
                             <a class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
                                {{$item->invoice_no}}
+                                - {{$item->payment_status}}
                             </a> 
                         </td>
                         <td style="text-align:center;">
-                            <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}">
                             @if ($item->sell_type == 1)
-                            {{$item->customer?$item->customer->name:NULL}}
-                            @elseif ($item->sell_type == 2)
+                            <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}">
+                                {{$item->customer?$item->customer->name:NULL}}
+                                @elseif ($item->sell_type == 2)
+                                <strong style="color:#387891">
                             {{$item->quotation ? $item->quotation->customer_name : NULL}}
                             @endif
                             </strong>

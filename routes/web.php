@@ -269,7 +269,9 @@ Route::group(['middleware' => ['auth']], function ()
             //render receive loan amount  modal
             Route::get('render/receive/loan/amount/modal','CustomerTransactionalController@renderReceiveLoanAmountModal')->name('render.receive.loan.amount.modal');
             Route::post('store/receive/loan/amount','CustomerTransactionalController@storeReceiveLoanAmount')->name('store.receive.loan.amount');
-        
+            
+            Route::get('render/receive/all/invoice/dues/modal','CustomerTransactionalController@renderReceiveAllInvoiceDueModal')->name('render.receive.all.invoice.dues.modal');
+            Route::post('store/receiving/all/invoice/dues','CustomerTransactionalController@storeReceivingAllInvoiceDues')->name('store.receiving.all.invoice.dues');
         });
     /*
     |----------------------------------------

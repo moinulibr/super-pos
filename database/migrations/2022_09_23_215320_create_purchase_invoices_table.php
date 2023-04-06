@@ -45,7 +45,7 @@ class CreatePurchaseInvoicesTable extends Migration
                 $table->decimal('total_invoice_cost',20,2)->nullable()->comment('total invoice cost');
                 $table->decimal('total_purchase_amount',20,2)->nullable()->comment('total invoice product purchase price');
 
-                $table->string('payment_status',50)->nullable();
+                $table->tinyInteger('payment_status',2)->nullable();
                 $table->string('payment_type',20)->nullable();
                 
                 $table->integer('supplier_id')->nullable();

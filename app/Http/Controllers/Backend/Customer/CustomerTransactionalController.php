@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\Permission\Permission;
 use App\Models\Backend\Customer\Customer;
 use App\Models\Backend\Customer\CustomerTransactionHistory;
+use App\Models\Backend\Sell\SellInvoice;
 use App\Traits\Backend\Payment\CustomerPaymentProcessTrait;
 
 use App\Traits\Backend\Customer\Logical\ManagingCalculationOfCustomerSummaryTrait;
@@ -485,5 +486,88 @@ class CustomerTransactionalController extends Controller
             ]);
         }
     }
+
+
+    //=======================================
+    //render.receive.all.invoice.dues.modal
+    //store.receiving.all.invoice.dues
+    //receive loan data
+    public function renderReceiveAllInvoiceDueModal(Request $request)
+    {
+        $data['customer'] = Customer::select('id','total_due','previous_total_due')->findOrFail($request->id);
+        $data['sell'] = SellInvoice::select('id','customer_id','total_due_amount','total_paid_amount','total_payable_amount','sell_date')->where('customer_id',$request->id)->latest()->get();
+        $view =  view('backend.customer.customer.transactionHistory.receive_all_invoice_due',$data)->render();
+        return response()->json([
+            'status' => true,
+            'type' => 'success',
+            'view' => $view,
+        ]);
+    }
+    public function storeReceivingAllInvoiceDues(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            //$data['customer'] = Customer::select('id')->findOrFail($request->customer_id);
+            //$data['customer']->update(['next_payment_date'=>$request->next_payment_date]);
+    
+            //payment process
+            if(($request->amount ?? 0) > 0){
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Receive Customer Previous Due');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => NULL,
+                    'main_module_invoice_id' => NULL,
+                    'module_invoice_no' => NULL,
+                    'module_invoice_id' => NULL,
+                    'user_id' => $request->customer_id,//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($request);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $request->amount ;
+                $this->defaultCashPaymentProcessing();
+                //for payment processing 
+            } //payment process
+
+
+            //customer transaction
+            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($request);
+            $this->amount = $request->amount;
+            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp('Previous Due Payment');
+            $this->ctsCustomerId = $request->customer_id;
+            $ttModuleInvoics = [
+                'invoice_no' => NULL,
+                'invoice_id' => NULL,
+                'tt_main_module_invoice_no' => NULL,
+                'tt_main_module_invoice_id' => NULL,
+            ];
+            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp('Paid');
+            $this->processingOfAllCustomerTransaction();
+
+            //calculation in the customer table
+            //$dbField = 9;'previous_due_paid_now';
+            //$calType = 1='plus', 2='minus'
+            $this->managingCustomerCalculation($request->customer_id,$dbField = 9 ,$calType = 1,$request->amount);
+            //calculation in the customer table
+            
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'type' => 'success',
+                'message' => "Date store successfully",
+            ]);
+        } catch (\Exception  $e) {
+            DB::rollback();
+            throw $e;
+            return response()->json([
+                'status' => 'exception',
+                'type' => 'warning',
+                'message'=>  $e->getMessage()
+            ]);
+        }
+    }
+
 
 }

@@ -256,21 +256,48 @@ trait UpdateSellSummaryCalculationTrait
         //total profit calculation
         
 
+        $status = NULL;//ordered
+        $deliveryStatus = NULL;
+        $paidStatus = NULL;
+        if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount == 0)){
+            $status = 1;//ordered
+            $deliveryStatus = NULL;
+            $paidStatus = NULL;
+        }
+       
+        else if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount > 0)){
+            $status = 4;//partial refunded
+            $deliveryStatus = 4;//partial refunded
+            $paidStatus = 4;//partial refunded
+        }
+        else if($totalSellingAmount == $totalRefundedAmount && ($totalRefundedAmount > 0)){
+            $status = 5;//refunded
+            $deliveryStatus = 5;//refunded
+            $paidStatus = 5;//refunded
+        }
+       
+
+
         //payment status and payment type
         $paymentStatus = "";
         $payment_type = "";
-        if($totalPayableAmount == $newPaidAmount)
-        {
-            $paymentStatus = "Paid";
-            $payment_type = "Full Payment";
+       if($paidStatus == 5){
+            $paymentStatus = 5; //Refunded
+            $payment_type = "Full Refunded";
         }
-        else if($totalPayableAmount > $newPaidAmount &&  $newPaidAmount > 0){
-            $paymentStatus = "Parital Payment";
-            $payment_type = "Partial Payment";
-        }
-        else if($totalPayableAmount > $newPaidAmount &&  $newPaidAmount == 0){
-            $paymentStatus = "Not Paid";
-            $payment_type = "Not Paid";
+        else if($paidStatus < 5 || $paidStatus == NULL){
+            if($totalPayableAmount == $newPaidAmount){
+                $paymentStatus = 1;
+                $payment_type = "Full Payment";
+            }
+            else if($totalPayableAmount > $newPaidAmount &&  $newPaidAmount > 0){
+                $paymentStatus = 2;//"Parital Payment";
+                $payment_type = "Partial Payment";
+            }
+            else if($totalPayableAmount > $newPaidAmount &&  $newPaidAmount == 0){
+                $paymentStatus = 3;//"Not Paid";
+                $payment_type = "Not Paid";
+            }
         }
         $existingData->payment_status = $paymentStatus;
         $existingData->payment_type	 = $payment_type;

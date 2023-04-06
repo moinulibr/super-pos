@@ -41,7 +41,7 @@ class CreateSellReturnProductInvoicesTable extends Migration
                
                 $table->tinyInteger('return_status')->nullable();
 
-                $table->string('payment_status',50)->nullable();
+                $table->tinyInteger('payment_status',2)->nullable();
 
                 $table->string('return_note',250)->nullable();
                 $table->string('receive_note',250)->nullable();

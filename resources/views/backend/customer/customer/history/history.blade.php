@@ -265,6 +265,12 @@
             <input type="hidden" class="editCustomerModalRoute" value="{{ route('admin.customer.edit') }}">
             <!-------edit Customer Modal------> 
 
+ 
+            <!-------render  receive Receive All Invoice Due modal------> 
+            <div class="modal fade" id="renderReceiveAllInvoiceDueModal" aria-modal="true"></div>
+            <input type="hidden" class="renderReceiveAllInvoiceDueModalRoute" value="{{ route('admin.customer.render.receive.all.invoice.dues.modal') }}">
+            <!-------render receive Receive All Invoice Due modal------> 
+            
 
         
         <!--@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@-->

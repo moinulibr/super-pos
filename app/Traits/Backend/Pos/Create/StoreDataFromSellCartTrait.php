@@ -461,15 +461,15 @@ trait StoreDataFromSellCartTrait
         $payment_type = "";
         if($totalPayableAmount == $totalPaidAmount)
         {
-            $paymentStatus = "Paid";
+            $paymentStatus = 1;
             $payment_type = "Full Payment";
         }
         else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount > 0){
-            $paymentStatus = "Parital Payment";
+            $paymentStatus = 2;
             $payment_type = "Partial Payment";
         }
         else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount == 0){
-            $paymentStatus = "Not Paid";
+            $paymentStatus = 3;
             $payment_type = "Not Paid";
         }
         $sellInvoice->payment_status = $paymentStatus;

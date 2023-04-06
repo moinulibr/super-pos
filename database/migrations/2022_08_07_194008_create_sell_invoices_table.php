@@ -70,7 +70,7 @@ class CreateSellInvoicesTable extends Migration
                 $table->decimal('total_profit',20,2)->default(0)->comment('total_selling_profit - total_refunded_reduced_profit (should be- without extra all cost)');
 
 
-                $table->string('payment_status',50)->nullable()->comment('Full Paid, Full Due, Partial Paid');
+                $table->tinyInteger('payment_status',2)->nullable()->comment('Full Paid, Full Due, Partial Paid');
                 $table->string('payment_type',20)->nullable()->comment('parital payment, full payment');
                 
                 $table->integer('customer_id')->nullable();
