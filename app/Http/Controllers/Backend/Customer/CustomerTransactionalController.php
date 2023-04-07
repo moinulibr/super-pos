@@ -494,8 +494,8 @@ class CustomerTransactionalController extends Controller
     //receive loan data
     public function renderReceiveAllInvoiceDueModal(Request $request)
     {
-        $data['customer'] = Customer::select('id','total_due','previous_total_due')->findOrFail($request->id);
-        $data['sell'] = SellInvoice::select('id','customer_id','total_due_amount','total_paid_amount','total_payable_amount','sell_date')->where('customer_id',$request->id)->latest()->get();
+        $data['customer'] = Customer::select('id','total_due','previous_total_due','name','phone','address')->findOrFail($request->id);
+        $data['sellInvoices'] = SellInvoice::select('payment_status','invoice_no','id','customer_id','total_due_amount','total_paid_amount','total_payable_amount','sell_date')->where('total_payable_amount','>',0)->whereIn('payment_status',[2,3])->where('customer_id',$request->id)->latest()->get();
         $view =  view('backend.customer.customer.transactionHistory.receive_all_invoice_due',$data)->render();
         return response()->json([
             'status' => true,
@@ -505,6 +505,7 @@ class CustomerTransactionalController extends Controller
     }
     public function storeReceivingAllInvoiceDues(Request $request)
     {
+        return $request;
         DB::beginTransaction();
         try {
             //$data['customer'] = Customer::select('id')->findOrFail($request->customer_id);

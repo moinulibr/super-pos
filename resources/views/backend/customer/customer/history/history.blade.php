@@ -2,8 +2,18 @@
 @section('page_title') Customer @endsection
 @push('css')
 <style>
-
+    .submit_loader {
+            background: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            display: none;
+    }
 </style>
+
 @endpush
 
 
@@ -147,6 +157,11 @@
                                                         </button>
                                                         <ul class="dropdown-menu dropdown-menu-left" role="menu" style="">
                                                             <li>
+                                                                <button class="btn w-100 btn-success receiveAllInvoiceDuesModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
+                                                                    <i class="fa fa-plus tiny-icon"></i> Receive Invoice All Due
+                                                                </button>
+                                                            </li>
+                                                            <li>
                                                                 <button class="btn w-100 btn-danger singleNextPaymentDateModal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-plus tiny-icon"></i> Next Payment Date
                                                                 </button>
@@ -162,10 +177,11 @@
                                                                 </button>
                                                             </li> --}}
                                                             <li>
-                                                                <button class="btn w-100 btn-success singleReceivePreviousDueModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
+                                                                <button class="btn w-100 btn-info singleReceivePreviousDueModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-plus tiny-icon"></i> Receive Previous Due
                                                                 </button>
-                                                            </li>
+                                                            </li> 
+                                                            
                                                             {{-- <li>
                                                                 <button class="btn w-100 btn-info singleReceiveLoanAmountModal" data-bs-toggle="modal" data-id="{{$customer->id}}" >
                                                                     <i class="fa fa-plus tiny-icon"></i> Receive Loan Amount
