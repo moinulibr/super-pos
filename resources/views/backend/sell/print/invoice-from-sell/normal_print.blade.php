@@ -60,7 +60,8 @@ html {
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
                     <div class="invoice__orderDetails" style="text-align: center;font-size: 14px">
-                        <strong style="font-size: 19px">{{ companyNameInInvoice_hh() }}</strong><br>
+                        <strong style="font-size:25px;padding-bottom:0px;margin-bottom:0px;">{{ companyBanglaNameInInvoice_hh() }}</strong><br>
+                        <strong style="font-size:22px;padding-top:0px;margin-top: 0px;">{{ companyNameInInvoice_hh() }}</strong><br>
                         <span>{{ companyAddressLineOneInInvoice_hh() }}</span> 
                         {{ companyAddressLineTwoInInvoice_hh() }}<br>
                         <span><strong>Call:  {{ companyPhone_hh() }} {{ companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL }} {{ companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL }}</strong> </span><br>
@@ -70,7 +71,7 @@ html {
             </div>
             <hr>
 
-            <div class="invoice__metaInfo" style="margin-top:-10px;">
+            <div class="invoice__metaInfo" style="margin-top:-10px;margin-bottom:0px;">
                 <div class="col-lg-3" style="margin-top:-10px;">
                     {{-- <div class="invoice__orderDetails" style="margin-top:1px;">
                         <strong  style="font-size: 15px">{{ __('Order Details') }} </strong><br>
@@ -79,8 +80,8 @@ html {
                         <span>{{  __('Order ID')}} : <span> </span> {{ sprintf("%'.08d", $data->id) }}</span>
                     </div>  --}}
                     <div class="invoice__orderDetails" style="margin-top:1px;">
-                        <span><strong>{{ __('Invoice Number') }} :</strong> {{ $data->invoice_no }}</span><br>
-                        <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
+                        <span>{{ __('Name') }}</span>:  <span> {{ $data->customer ? $data->customer->name : "N/L" }} </span><br>
+                        <span>{{ __('Mobile No') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span>
                     </div>
                 </div>
                 <div class="col-lg-5"  style="margin-top:-10px;">
@@ -90,6 +91,10 @@ html {
                         <span>{{ __('Phone') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span><br>
                         <span>{{ __('Address') }}</span>: <span>{{ $data->customer ? $data->customer->address : "N/L" }}</span>
                     </div> --}}
+                    <div class="invoice__orderDetails" style="margin-top:1px;">
+                        <span>{{ __('Address') }}</span>: <span>{{ $data->customer ? $data->customer->address : "N/L" }}</span>
+                        {{--<span>{{__('Ref') }}</span>: <span>{{ $data->referenceBy ? $data->referenceBy->name : 'N/L' }}</span>--}}
+                    </div>
                 </div>
                 
                 <div class="col-lg-4" style="margin-top:-10px;">
@@ -100,20 +105,20 @@ html {
                         <span>{{ __('Receiver Details') }}</span>: <span> {{$data->receiver_details ?? NULL}} </span><br>
                     </div> --}}
                     <div class="invoice__orderDetails" style="margin-top:1px;">
-                        <span>{{ __('Name') }}</span>:  <span> {{ $data->customer ? $data->customer->name : "N/L" }} </span><br>
-                        <span>{{ __('Mobile No') }}</span>:  <span> {{ $data->customer ? $data->customer->phone : "N/L" }}</span><br>
+                        <span>{{ __('Invoice') }} : {{ $data->id }}</span><br>
+                        <span>{{ __('Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span>
                     </div>
                 </div>
             </div>
             
-            <div class="row">
+            <div class="row" style="margin-top:2px;">
 
                 <div class="col-lg-12">
                     <div class="invoice_table">
                         <div class="mr-table">
                             <div class="table-responsive">
-                                <table id="example2" class="table table-hover dt-responsive" cellspacing="0"
-                                    width="100%">
+                                <table  cellspacing="0"
+                                    width="100%"> {{---class="table table-hover dt-responsive"---}}
                                     <thead style="border-top:1px solid rgba(0, 0, 0, 0.1) !important;">
                                         <tr>
                                             <th style="padding:0px 6px !important;">{{ __('Sl.') }}</th>
@@ -161,6 +166,10 @@ html {
                                             </td>
                                         </tr> 
                                         @endforeach
+                                      
+                                        <tr >
+                                            <th colspan="6" style="border-bottom:1px solid rgba(24,28,33,.06);height:10px;"></th>
+                                        </tr>
                                         <tr>
                                             <th colspan="2" style="padding:0px 6px !important;">Less : 
                                                 <span style="margin-left:2px;">

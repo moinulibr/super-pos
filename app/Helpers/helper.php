@@ -79,6 +79,11 @@ use App\Models\Backend\ProductAttribute\Unit;
             return env('APP_COMPANY_NAME_IN_INVOICE');
             return "মেসার্স খান সেনিটারি";
         }
+        function companyBanglaNameInInvoice_hh()
+        { 
+            return env('APP_COMPANY_BANGLA_NAME_IN_INVOICE');
+            return "মেসার্স খান সেনিটারি";
+        }
         function companyPhone_hh()
         { 
             return env('APP_COMPANY_PHONE');

@@ -16,9 +16,10 @@
                     </th>
                     <th  style="width:3%;">#</th>
                     <th style="width:5%;">Action</th>
-                    <th style="width:;text-align:center;">Date(Time) </th>
+                    <th style="width:;text-align:center;">Date</th>
                     <th style="width:;text-align:center;">Invoice No</th>
                     <th style="width:;text-align:center;">Customer </th>
+                    <th style="width:;text-align:center;">Type</th>
                     <th style="width:;text-align:center;">Total Item </th>
                     <th style="width:;text-align:center;">Bill Amount </th>
                     <th style="width:;text-align:center;">Less Amount </th>
@@ -28,7 +29,6 @@
                     <th style="width:;text-align:center;">Payment Status </th>
                     <th style="width:;text-align:center;">Created By </th>
                     <th style="width:;text-align:center;">Reference By</th>
-                    <th style="width:;text-align:center;">Type</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,13 +81,12 @@
                         </td>
                         <td style="text-align:center;">
                             <a  class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
-                                {{date('d-m-Y h:i:s A',strtotime($item->created_at))}}
+                                {{date('d-m-Y',strtotime($item->created_at))}}
                             </a>
                         </td>
                         <td style="text-align:center;"> 
                             <a class="singleSellView" data-id="{{$item->id}}" style="cursor: pointer">
                                {{$item->invoice_no}}
-                                - {{$item->payment_status}}
                             </a> 
                         </td>
                         <td style="text-align:center;">
@@ -99,6 +98,9 @@
                             {{$item->quotation ? $item->quotation->customer_name : NULL}}
                             @endif
                             </strong>
+                        </td>
+                        <td style="text-align:center;">
+                            {{$item->sell_type == 1 ? 'Sell' : 'Quotation'}}
                         </td>
                         <td style="text-align:center;">{{$item->totalSellItemAfterRefund()}}</td>
                         <td style="text-align:center;">
@@ -122,9 +124,7 @@
 
                         <td style="text-align:center;">{{$item->createdBy ? $item->createdBy->name : NULL}}</td>
                         <td style="text-align:center;">{{$item->referenceBy?$item->referenceBy->name:NULL}}</td>
-                        <td style="text-align:center;">
-                            {{$item->sell_type == 1 ? 'Sell' : 'Quotation'}}
-                        </td>
+                        
                         @php
                             if($item->sell_type == 1){
                                 $totalPayableAmount += $item->total_payable_amount;
@@ -140,7 +140,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="6" style="text-align:right">Total</th>
+                    <th colspan="7" style="text-align:right">Total</th>
                     <th style="text-align:center;">{{$totalItem}}</th>
                     <th style="text-align:center;">{{number_format($totalPayableAmount,2,'.','')}}</th>
                     <th style="text-align:center;">{{number_format($totalLessAmount,2,'.','')}}</th>

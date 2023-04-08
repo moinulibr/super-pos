@@ -60,7 +60,8 @@ html {
                 <div class="col-lg-3"></div>
                 <div class="col-lg-6">
                     <div class="invoice__orderDetails" style="text-align: center;font-size: 14px">
-                        <strong style="font-size: 19px">{{ companyNameInInvoice_hh() }}</strong><br>
+                        <strong style="font-size:25px;padding-bottom:0px;margin-bottom:0px;">{{ companyBanglaNameInInvoice_hh() }}</strong><br>
+                        <strong style="font-size:22px;padding-top:0px;margin-top: 0px;">{{ companyNameInInvoice_hh() }}</strong><br>
                         <span>{{ companyAddressLineOneInInvoice_hh() }}</span> 
                         {{ companyAddressLineTwoInInvoice_hh() }}<br>
                         <span><strong>Call:  {{ companyPhone_hh() }} {{ companyPhoneOne_hh() ? ','. companyPhoneOne_hh() : NULL }} {{ companyPhoneTwo_hh() ? ','. companyPhoneTwo_hh() : NULL }}</strong> </span><br>
@@ -78,8 +79,8 @@ html {
                         <span>{{ __('Order Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
                     </div>---}}
                     <div class="invoice__orderDetails" style="margin-top:1px;">
-                        <span><strong>{{ __('Quotaton Number') }} :</strong>{{ $data->invoice_no }}</span><br>
-                        <span>{{ __('Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span><br>
+                        <span>{{ __('Name') }}</span>:  <span> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }} </span><br>
+                        <span>{{ __('Phone') }}</span>:  <span> {{ $data->quotation ? $data->quotation->phone : "N/L" }}</span>
                     </div>
                 </div>
                 <div class="col-lg-5"  style="margin-top:-10px;">
@@ -87,6 +88,10 @@ html {
                         <strong  style="font-size: 15px">{{ __('Customer Details') }}</strong><br>
                         <span>{{ __('Name') }}</span>:  <span> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }} </span><br>
                         <span>{{ __('Phone') }}</span>:  <span> {{ $data->quotation ? $data->quotation->phone : "N/L" }}</span><br>
+                    </div>---}}
+                    {{---<div class="invoice__orderDetails" style="margin-top:1px;">
+                        <span>{{ __('Address') }}</span>: <span>{{ $data->customer ? $data->customer->address : "N/L" }}</span><br/>
+                        <span>{{__('Ref') }}</span>: <span>{{ $data->referenceBy ? $data->referenceBy->name : 'N/L' }}</span>
                     </div>---}}
                 </div>
                 
@@ -97,8 +102,8 @@ html {
                         <span>{{ __('Last Date') }}</span>: <span> {{ $data->quotation ? date('d-m-Y',strtotime($data->quotation->validate_date)) : "N/L" }}</span><br/>
                     </div>---}}
                     <div class="invoice__orderDetails" style="margin-top:1px;">
-                        <span>{{ __('Name') }}</span>:  <span> {{ $data->quotation ? $data->quotation->customer_name : "N/L" }} </span><br>
-                        <span>{{ __('Phone') }}</span>:  <span> {{ $data->quotation ? $data->quotation->phone : "N/L" }}</span><br>
+                        <span>{{ __('Quotaton Number') }} : {{ $data->invoice_no }}</span><br>
+                        <span>{{ __('Date') }} : <span> </span> {{ date('d-m-Y',strtotime($data->created_at)) }}</span>
                     </div>
                 </div>
             </div>
@@ -108,8 +113,8 @@ html {
                     <div class="invoice_table">
                         <div class="mr-table">
                             <div class="table-responsive">
-                                <table id="example2" class="table table-hover dt-responsive" cellspacing="0"
-                                    width="100%">
+                                <table  cellspacing="0"
+                                    width="100%"> {{---- class="table table-hover dt-responsive"---}}
                                     <thead style="border-top:1px solid rgba(0, 0, 0, 0.1) !important;">
                                         <tr>
                                             <th style="padding:0px 6px !important;">{{ __('Sl.') }}</th>
@@ -157,6 +162,9 @@ html {
                                             </td>
                                         </tr> 
                                         @endforeach
+                                        <tr>
+                                            <th colspan="6" style="border-bottom:1px solid rgba(24,28,33,.06);height:10px;"></th>
+                                        </tr>
                                         <tr>
                                             <th colspan="2" style="padding:0px 6px !important;">Less : 
                                                 <span style="margin-left:2px;">
