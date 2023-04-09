@@ -367,8 +367,8 @@
 
 
     
-    //-------------------------------------------------
-    
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
     //receive loan amount modal
     $(document).on('click','.receiveAllInvoiceDuesModal',function(e){
         e.preventDefault();
@@ -388,6 +388,18 @@
         var customerGivenAmount =$('.totalCustomerGivenAmount').val();
         var totalsumOfAllSinglePayingAmounts = sumOfAllSinglePayingAmount();
         var totalSumOfAllDueAmount = sumOfAllDueAmount();
+        
+        var remainingOrOverallDiscount = 0;
+        if(totalSumOfAllDueAmount > customerGivenAmount){
+            remainingOrOverallDiscount = totalSumOfAllDueAmount - customerGivenAmount;
+        }
+        else if(totalSumOfAllDueAmount == customerGivenAmount){
+            remainingOrOverallDiscount = 0;
+        }else if(totalSumOfAllDueAmount < customerGivenAmount){
+            remainingOrOverallDiscount = 0;
+        }
+        $('.overallTotalDiscountAmount').val(remainingOrOverallDiscount);
+
         //|| customerGivenAmount < totalSumOfAllDueAmount
         if(customerGivenAmount == 0 ){
             $('.singleAndCustomReceivingAmount').val(0);
@@ -401,6 +413,7 @@
         }
         submitButtonEnableDisabled();
     });
+
 
     function allChangedCheckAndUncheckOption(){
         $(".checkSingleReceiveIvoiceDue").each(function ()
@@ -627,6 +640,9 @@
         {
             usedAmountWithCurrentPressingAmount += parseFloat(nanCheck($(this).val())) || 0;
         });
+
+        $('.sumOfAlltotalPayingAmountAsText').text(usedAmountWithCurrentPressingAmount.toFixed(2));
+        
         return usedAmountWithCurrentPressingAmount;
     }
 
@@ -709,6 +725,9 @@
     }
     //enable disabled submit button
 
+    //----------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------
+    
 
     function nanCheck(val){
         var value = 0;
