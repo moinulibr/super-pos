@@ -369,7 +369,7 @@
     
     //----------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------
-    //receive loan amount modal
+    //all invoice payment receive
     $(document).on('click','.receiveAllInvoiceDuesModal',function(e){
         e.preventDefault();
         var url = $('.renderReceiveAllInvoiceDueModalRoute').val();
@@ -379,16 +379,40 @@
             data:{id:id},
             success:function(response){
                 $('#renderReceiveAllInvoiceDueModal').html(response.view).modal('show');//hide modal
+                defaultTotalInvoiceWiseDue();
                 submitButtonDisabled();
             }
         });
     });
 
-    $(document).on('keyup','.totalCustomerGivenAmount',function(){
-        var customerGivenAmount =$('.totalCustomerGivenAmount').val();
-        var totalsumOfAllSinglePayingAmounts = sumOfAllSinglePayingAmount();
+    $(document).on('keyup','.invoiceTotalPayingAmount, .totalCustomerGivenAmount',function(){
+        totalCustomerGivenAmountFromCustomer();
+        submitButtonEnableDisabled();
+    });
+
+    function totalCustomerGivenAmountFromCustomer(){
+        var totalCustomerGivenAmount = $('.totalCustomerGivenAmount').val();
+        var totalSumOfAllSinglePayingAmounts = sumOfAllSinglePayingAmount();
         var totalSumOfAllDueAmount = sumOfAllDueAmount();
-        
+
+        var totalPayingAmount = 0;
+        var returnAmount = 0;
+        if(totalSumOfAllDueAmount > totalCustomerGivenAmount){
+            totalPayingAmount = totalCustomerGivenAmount;
+            returnAmount = 0;
+        }
+        else if(totalSumOfAllDueAmount == totalCustomerGivenAmount){
+            totalPayingAmount = totalSumOfAllDueAmount;
+            returnAmount = 0;
+        }else if(totalSumOfAllDueAmount < totalCustomerGivenAmount){
+            totalPayingAmount = totalSumOfAllDueAmount;
+            returnAmount = totalCustomerGivenAmount - totalSumOfAllDueAmount;
+        }
+        $('.returnAmountToCustomer').val(returnAmount);
+
+        $('.invoiceTotalPayingAmount').val(totalPayingAmount);
+        var customerGivenAmount = totalPayingAmount ;//$('.invoiceTotalPayingAmount').val();
+
         var remainingOrOverallDiscount = 0;
         if(totalSumOfAllDueAmount > customerGivenAmount){
             remainingOrOverallDiscount = totalSumOfAllDueAmount - customerGivenAmount;
@@ -411,8 +435,8 @@
         else if(customerGivenAmount > 0){
             allChangedCheckAndUncheckOption();
         }
-        submitButtonEnableDisabled();
-    });
+    }
+
 
 
     function allChangedCheckAndUncheckOption(){
@@ -420,25 +444,23 @@
         {
             var invoiceId = $(this).attr('id');
             //$(this).val(invoiceId).change();
-            console.log('all top invoice :'+ invoiceId);
             var payingDueAmount = checkAndUncheckItemDuePayingAmount(invoiceId);
-            console.log('all top single Value :'+ payingDueAmount);
             
             $('.singleAndCustomReceivingAmount_'+invoiceId).val(payingDueAmount);
 
             if(payingDueAmount == 0)
             {
-                console.log('all top checked false 0');
                 $(this).prop('checked', false).change();
                 $(this).val('').change();
             }else{
-                console.log('all top checked ture 1');
                 $(this).prop("checked", true).change();
                 $(this).val(invoiceId).change();
             }
+            singleInvoiceWiseDueAmount(invoiceId);
         });
     }
 
+    //single and Custom receiveing amount
     $(document).on('keyup','.singleAndCustomReceivingAmount',function(){
         var invoiceId = $(this).data('id');
         var pressingVal = $(this).val();
@@ -451,12 +473,15 @@
             $('.checkSingleReceiveIvoiceDue_'+invoiceId).prop("checked", true).change();
             $('.checkSingleReceiveIvoiceDue_'+invoiceId).val(invoiceId).change();
         }
+
+        singleInvoiceWiseDueAmount(invoiceId);
+
         submitButtonEnableDisabled();
     });
 
     function changedCheckAndUncheckItemWhenPayingSingleAmountBySinglePressing(invoiceId)
     {
-        var customerGivenAmount = parseFloat(nanCheck($('.totalCustomerGivenAmount').val()));
+        var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
 
         var usedAmountWithCurrentPressingAmount = 0;
         $(".singleAndCustomReceivingAmount").each(function ()
@@ -509,8 +534,8 @@
     // checked all order list 
     $(document).on('click','.checkAllReceiveIvoiceDue',function()
     {
-        var totalCustomerGivenAmount = $('.totalCustomerGivenAmount').val();
-        if(totalCustomerGivenAmount > 0){
+        var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val();
+        if(invoiceTotalPayingAmount > 0){
             if (this.checked == false)
             {   
                 $('.checkSingleReceiveIvoiceDue').prop('checked', false).change();
@@ -519,6 +544,9 @@
                     var invoiceId = $(this).attr('id');
                     $(this).val('').change();
                     $('.singleAndCustomReceivingAmount_'+invoiceId).val(0);
+
+                    singleInvoiceWiseDueAmount(invoiceId);
+
                 });
             }
             else
@@ -533,10 +561,9 @@
 
     
     //check single order list
-    $(document).on('click','.checkSingleReceiveIvoiceDue',function()
-    {
-        var totalCustomerGivenAmount = $('.totalCustomerGivenAmount').val();
-        if(totalCustomerGivenAmount > 0){
+    $(document).on('click','.checkSingleReceiveIvoiceDue',function(){
+        var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val();
+        if(invoiceTotalPayingAmount > 0){
             var $db = $('input[type=checkbox]');
             if($db.filter(':checked').length <= 0)
             {
@@ -552,7 +579,6 @@
                 $('.singleAndCustomReceivingAmount_'+invoiceId).val(0);
             }else{
                 var payingAmountNow = checkAndUncheckItemDuePayingAmount(invoiceId);
-                console.log('top singel amount:- '+ payingAmountNow);
                 $('.singleAndCustomReceivingAmount_'+invoiceId).val(payingAmountNow);
                 if(payingAmountNow == 0)
                 {
@@ -575,6 +601,7 @@
             {
                 $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
             }
+            singleInvoiceWiseDueAmount(invoiceId);
         }
         submitButtonEnableDisabled();
     });
@@ -582,7 +609,7 @@
 
     function checkAndUncheckItemDuePayingAmount(invoiceId)
     {
-        var customerGivenAmount = parseFloat(nanCheck($('.totalCustomerGivenAmount').val()));
+        var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
 
         var usedAmountWithCurrentPressingAmount = 0;
         $(".singleAndCustomReceivingAmount").each(function ()
@@ -605,7 +632,7 @@
         
         var currentDueReceivingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()))|| 0;
         var currentInvoiceDueTotalAmount = parseFloat(nanCheck($('.singleInvoiceDueAmount_'+invoiceId).val()));
-        console.log('pressing amount1 '+ currentDueReceivingAmount);
+
         var pressingLimitAmount = 0;
         if(currentInvoiceDueTotalAmount == currentDueReceivingAmount){
             pressingLimitAmount = currentInvoiceDueTotalAmount;
@@ -616,9 +643,7 @@
         else if(currentInvoiceDueTotalAmount < currentDueReceivingAmount){
             pressingLimitAmount = currentInvoiceDueTotalAmount;
         }
-        console.log('current invoice due '+ currentInvoiceDueTotalAmount);
-        console.log('pressing limit amount '+ pressingLimitAmount);
-       
+
         var lastLimitOfPressingAmount = 0; 
         if(remainingAmount ==  pressingLimitAmount){
             lastLimitOfPressingAmount = pressingLimitAmount; 
@@ -629,10 +654,61 @@
         else if(remainingAmount < pressingLimitAmount){
             lastLimitOfPressingAmount = remainingAmount; 
         }
-        console.log('last limit amount '+ lastLimitOfPressingAmount);
-        console.log('pressing amount2 '+ currentInvoiceDueTotalAmount);
         return lastLimitOfPressingAmount;
     }
+
+
+    //current invoice due after payment : by 3 parameter
+    function singleInvoiceWiseDueAmount(invoiceId){
+        var payingAmount =  $('.singleAndCustomReceivingAmount_'+invoiceId).val();
+        var dueAmount =  $('.singleInvoiceDueAmount_'+invoiceId).val();
+        var totalDue = 0;
+        if(dueAmount == payingAmount){
+            totalDue = 0;
+        }
+        else if(dueAmount > payingAmount){
+            totalDue = dueAmount - payingAmount;
+        }
+        else if(dueAmount < payingAmount){
+            totalDue = dueAmount - payingAmount;
+        }
+        $('.currentSingleDueAmount_'+invoiceId).text(totalDue.toFixed(2));
+        currentTotalInvoiceWiseDue();
+    }
+    function currentTotalInvoiceWiseDue(){
+        var sumOfAllInvoiceTotalDueAmount = 0;
+        $(".currentSingleDueAmount").each(function ()
+        {
+            sumOfAllInvoiceTotalDueAmount += parseFloat(nanCheck($(this).text())) || 0;
+        });
+        $('.totalCurrentDueAmountAsText').text(sumOfAllInvoiceTotalDueAmount.toFixed(2));
+    }
+    function defaultTotalInvoiceWiseDue(){
+        var sumOfAllInvoiceTotalDueAmount = 0;
+        $(".singleInvoiceDueAmount").each(function ()
+        {
+            var invoiceId = $(this).data('id');
+            var invoiceDueAmount = parseFloat(nanCheck($(this).val())) || 0;
+            sumOfAllInvoiceTotalDueAmount += invoiceDueAmount;
+            $('.currentSingleDueAmount_'+invoiceId).text(invoiceDueAmount.toFixed(2));
+        });
+        $('.totalCurrentDueAmountAsText').text(sumOfAllInvoiceTotalDueAmount.toFixed(2));
+        setTtalPayingAndRemainingDueAmount();
+    }
+    //current invoice due after payment : by 3 parameter
+
+    //total paying amount and total remaining due amount set here
+    function setTtalPayingAndRemainingDueAmount(){
+        var totalPayingAmount = sumOfAllSinglePayingAmount();
+        $('.invoiceTotalPayingAmount').val(totalPayingAmount.toFixed(2));
+        
+        var dueAmount =  sumOfAllDueAmount();
+        var totalDueAmount = dueAmount - totalPayingAmount; 
+        $('.overallTotalDiscountAmount').val(totalDueAmount); 
+       
+    }
+    //total paying amount and total remaining due amount set here
+ 
 
     function sumOfAllSinglePayingAmount(){
         var usedAmountWithCurrentPressingAmount = 0;
@@ -645,6 +721,7 @@
         
         return usedAmountWithCurrentPressingAmount;
     }
+
 
     function sumOfAllDueAmount(){
         var totalDueAmount = 0;
@@ -662,6 +739,31 @@
             submitButtonDisabled();
         }
     }
+
+    //------------------------------------------------------------
+    // overall discount section
+    //------------------------------------------------------------
+        $(document).on('change','.overallOrRemainingType',function(){
+            var overallOrRemainingType = $('.overallOrRemainingType option:selected').val();
+            if(overallOrRemainingType == 1){ //remaining due
+                $('.nextPaymentDate').removeAttr('disabled');
+
+                $('.checkAllOverallDiscount').attr('disabled',true);
+                $('.checkSingleOverallDiscount').attr('disabled',true);
+                $('.overallSingleInvoiceLessAmount').attr('disabled',true);
+                $('.overallSingleInvoiceLessAmount').val(0);
+            }else{ //overall discount
+                $('.nextPaymentDate').attr('disabled',true);
+                $('.nextPaymentDate').val('');
+
+                $('.overallSingleInvoiceLessAmount').removeAttr('disabled');
+                $('.checkSingleOverallDiscount').removeAttr('disabled');
+                $('.checkAllOverallDiscount').removeAttr('disabled');
+            }
+        });
+    //------------------------------------------------------------
+    // overall discount section
+    //------------------------------------------------------------
 
 
     jQuery(document).on("submit",'.storeReceieAllInvoiceDueData',function(e){
