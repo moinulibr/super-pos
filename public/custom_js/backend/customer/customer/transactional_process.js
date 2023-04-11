@@ -380,6 +380,7 @@
             success:function(response){
                 $('#renderReceiveAllInvoiceDueModal').html(response.view).modal('show');//hide modal
                 defaultTotalInvoiceWiseDue();
+                $('.invoiceTotalPayingAmountAsDisplay').val(0); 
                 submitButtonDisabled();
             }
         });
@@ -392,7 +393,6 @@
 
     function totalCustomerGivenAmountFromCustomer(){
         var totalCustomerGivenAmount = $('.totalCustomerGivenAmount').val();
-        var totalSumOfAllSinglePayingAmounts = sumOfAllSinglePayingAmount();
         var totalSumOfAllDueAmount = sumOfAllDueAmount();
 
         var totalPayingAmount = 0;
@@ -409,10 +409,11 @@
             returnAmount = totalCustomerGivenAmount - totalSumOfAllDueAmount;
         }
         $('.returnAmountToCustomer').val(returnAmount);
-
+        
         $('.invoiceTotalPayingAmount').val(totalPayingAmount);
+        $('.invoiceTotalPayingAmountAsDisplay').val(totalPayingAmount);//this would be over write in the bottom section for perfect result
         var customerGivenAmount = totalPayingAmount ;//$('.invoiceTotalPayingAmount').val();
-
+        
         var remainingOrOverallDiscount = 0;
         if(totalSumOfAllDueAmount > customerGivenAmount){
             remainingOrOverallDiscount = totalSumOfAllDueAmount - customerGivenAmount;
@@ -440,8 +441,7 @@
 
 
     function allChangedCheckAndUncheckOption(){
-        $(".checkSingleReceiveIvoiceDue").each(function ()
-        {
+        $(".checkSingleReceiveIvoiceDue").each(function (){
             var invoiceId = $(this).attr('id');
             //$(this).val(invoiceId).change();
             var payingDueAmount = checkAndUncheckItemDuePayingAmount(invoiceId);
@@ -562,7 +562,8 @@
     
     //check single order list
     $(document).on('click','.checkSingleReceiveIvoiceDue',function(){
-        var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val();
+
+        var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val() || 0;
         if(invoiceTotalPayingAmount > 0){
             var $db = $('input[type=checkbox]');
             if($db.filter(':checked').length <= 0)
@@ -602,6 +603,12 @@
                 $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
             }
             singleInvoiceWiseDueAmount(invoiceId);
+        }
+        else{
+            $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
+            $('.checkSingleReceiveIvoiceDue').prop('checked', false).change();
+            $('.singleAndCustomReceivingAmount').val(0);
+            $('.checkSingleReceiveIvoiceDue').val('');
         }
         submitButtonEnableDisabled();
     });
@@ -658,7 +665,7 @@
     }
 
 
-    //current invoice due after payment : by 3 parameter
+    //current invoice due after payment : by 1 parameter
     function singleInvoiceWiseDueAmount(invoiceId){
         var payingAmount =  $('.singleAndCustomReceivingAmount_'+invoiceId).val();
         var dueAmount =  $('.singleInvoiceDueAmount_'+invoiceId).val();
@@ -673,16 +680,19 @@
             totalDue = dueAmount - payingAmount;
         }
         $('.currentSingleDueAmount_'+invoiceId).text(totalDue.toFixed(2));
-        currentTotalInvoiceWiseDue();
+        
+        setTotalCurrentDueAmount();
     }
+
     function currentTotalInvoiceWiseDue(){
         var sumOfAllInvoiceTotalDueAmount = 0;
         $(".currentSingleDueAmount").each(function ()
         {
             sumOfAllInvoiceTotalDueAmount += parseFloat(nanCheck($(this).text())) || 0;
         });
-        $('.totalCurrentDueAmountAsText').text(sumOfAllInvoiceTotalDueAmount.toFixed(2));
+        return sumOfAllInvoiceTotalDueAmount;
     }
+
     function defaultTotalInvoiceWiseDue(){
         var sumOfAllInvoiceTotalDueAmount = 0;
         $(".singleInvoiceDueAmount").each(function ()
@@ -693,21 +703,36 @@
             $('.currentSingleDueAmount_'+invoiceId).text(invoiceDueAmount.toFixed(2));
         });
         $('.totalCurrentDueAmountAsText').text(sumOfAllInvoiceTotalDueAmount.toFixed(2));
-        setTtalPayingAndRemainingDueAmount();
+        $('.totalCurrentDueAmountAsValue').val(sumOfAllInvoiceTotalDueAmount.toFixed(2));
+        setTotalPayingAndRemainingDueAmount();
+    }
+
+    function setTotalCurrentDueAmount(){
+        var sumOfAllInvoiceTotalDueAmount = currentTotalInvoiceWiseDue();
+        $('.totalCurrentDueAmountAsText').text(sumOfAllInvoiceTotalDueAmount.toFixed(2));
+        $('.totalCurrentDueAmountAsValue').val(sumOfAllInvoiceTotalDueAmount.toFixed(2));
+
+        //===================================
+        var totalSumOfAllSinglePayingAmounts = sumOfAllSinglePayingAmount();
+        //var totalSumOfAllDueAmount = sumOfAllDueAmount();
+        var totalSumOfAllCurrentDueAmount = currentTotalInvoiceWiseDue();
+        //var totalPayingAmountByCustomer = totalSumOfAllDueAmount - totalSumOfAllCurrentDueAmount;
+        $('.invoiceTotalPayingAmountAsDisplay').val(totalSumOfAllSinglePayingAmounts.toFixed(2));
+        $('.overallTotalDiscountAmount').val(totalSumOfAllCurrentDueAmount.toFixed(2));
+        //===================================
     }
     //current invoice due after payment : by 3 parameter
 
-    //total paying amount and total remaining due amount set here
-    function setTtalPayingAndRemainingDueAmount(){
+    //set total paying amount and total remaining due amount set here
+    function setTotalPayingAndRemainingDueAmount(){
         var totalPayingAmount = sumOfAllSinglePayingAmount();
         $('.invoiceTotalPayingAmount').val(totalPayingAmount.toFixed(2));
         
         var dueAmount =  sumOfAllDueAmount();
         var totalDueAmount = dueAmount - totalPayingAmount; 
         $('.overallTotalDiscountAmount').val(totalDueAmount); 
-       
     }
-    //total paying amount and total remaining due amount set here
+    //set total paying amount and total remaining due amount set here
  
 
     function sumOfAllSinglePayingAmount(){
@@ -725,8 +750,7 @@
 
     function sumOfAllDueAmount(){
         var totalDueAmount = 0;
-        $(".singleInvoiceDueAmount").each(function ()
-        {
+        $(".singleInvoiceDueAmount").each(function (){
             totalDueAmount += parseFloat(nanCheck($(this).val())) || 0;
         });
         return totalDueAmount;

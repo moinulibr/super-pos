@@ -82,7 +82,7 @@
                                                 Total Paying Amount
                                             </div>
                                             <div style="float:left;width:50%;">
-                                                <input type="text" disabled class="form-control invoiceTotalPayingAmount inputFieldValidatedOnlyNumeric" style="background-color:#f1f1f1;font-weight:bold;">
+                                                <input type="text" disabled class="form-control invoiceTotalPayingAmountAsDisplay inputFieldValidatedOnlyNumeric" style="background-color:#f1f1f1;font-weight:bold;">
                                                 <input type="hidden"  name="invoiceTotalPayingAmount" class="form-control invoiceTotalPayingAmount">
                                             </div>
                                         </div>
@@ -213,7 +213,7 @@
                                         </th>
                                         <th style="text-align:center;">
                                             {{ number_format($sellInvoices->sum('total_due_amount'),2,'.','')}}
-                                            <input type="hidden" name="" value="{{$sellInvoices->sum('total_due_amount')}}">
+                                            <input type="hidden" name="total_customer_due_amount" class="totalInvoiceDueAmount" value="{{$sellInvoices->sum('total_due_amount')}}">
                                         </th>
                                         <th style="text-align:center;">
                                             <span class="sumOfAlltotalPayingAmountAsText">00</span>
@@ -221,6 +221,7 @@
                                         <th style="text-align:center;"></th>
                                         <th style="text-align:center;">
                                             <span class="totalCurrentDueAmountAsText">00</span>
+                                            <input type="hidden" name="total_current_due_amount" class="totalCurrentDueAmountAsValue">
                                         </th>
                                         <th style="text-align:center;">
                                             {{ number_format($sellInvoices->sum('total_profit'),2,'.','')}}
