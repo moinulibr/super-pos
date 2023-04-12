@@ -159,7 +159,7 @@
                                             <!---paying amount-->
                                             <th style="width:15%;text-align:center;">
                                                 @if ($item->total_due_amount > 0)
-                                                <input type="text" name="single_invoice_paying_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric singleAndCustomReceivingAmount_{{$item->id}} singleAndCustomReceivingAmount" data-id="{{$item->id}}" style="background-color:#ffff;">
+                                                <input type="text" name="single_invoice_paying_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric singleAndCustomReceivingAmount_{{$item->id}} singleAndCustomReceivingAmount" data-id="{{$item->id}}" style="background-color:#ffff;text-align:center;">
                                                 @else
                                                 <input type="text" disabled class="form-control" style="background-color:green;">
                                                 @endif
@@ -184,7 +184,7 @@
                                             <th style="width:5%;text-align:center;">{{$item->total_profit}}</th>
                                             <!---overall Less amount-->
                                             <th style="width:10%;">
-                                                <input type="text" name="single_invoice_overall_discount_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric overallSingleInvoiceDiscountAmount_{{$item->id}} overallSingleInvoiceLessAmount" disabled data-id="{{$item->id}}" style="background-color:#ffff;">
+                                                <input type="text" name="single_invoice_overall_discount_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric overallSingleInvoiceDiscountAmount_{{$item->id}} overallSingleInvoiceLessAmount" disabled data-id="{{$item->id}}" style="background-color:#ffff;text-align:center;">
                                             </th>
                                             <!---overall check-->
                                             <th style="width:5%;text-align:center;">

@@ -386,11 +386,13 @@
         });
     });
 
+    //total customer given amount
     $(document).on('keyup','.invoiceTotalPayingAmount, .totalCustomerGivenAmount',function(){
         totalCustomerGivenAmountFromCustomer();
         submitButtonEnableDisabled();
     });
 
+    //total customer given amount from customer
     function totalCustomerGivenAmountFromCustomer(){
         var totalCustomerGivenAmount = $('.totalCustomerGivenAmount').val();
         var totalSumOfAllDueAmount = sumOfAllDueAmount();
@@ -439,7 +441,7 @@
     }
 
 
-
+    //all chenged check and uncheck option
     function allChangedCheckAndUncheckOption(){
         $(".checkSingleReceiveIvoiceDue").each(function (){
             var invoiceId = $(this).attr('id');
@@ -464,7 +466,7 @@
     $(document).on('keyup','.singleAndCustomReceivingAmount',function(){
         var invoiceId = $(this).data('id');
         var pressingVal = $(this).val();
-        var finalPayingAmount = changedCheckAndUncheckItemWhenPayingSingleAmountBySinglePressing(invoiceId);
+        var finalPayingAmount = changeToCheckOrUncheckOptionSinglePaymentProcessing(invoiceId);
         $('.singleAndCustomReceivingAmount_'+invoiceId).val(finalPayingAmount);
         if(finalPayingAmount == 0){
             $('.checkSingleReceiveIvoiceDue_'+invoiceId).prop('checked', false).change();
@@ -479,7 +481,8 @@
         submitButtonEnableDisabled();
     });
 
-    function changedCheckAndUncheckItemWhenPayingSingleAmountBySinglePressing(invoiceId)
+    //change to check or uncheck option single payment processing
+    function changeToCheckOrUncheckOptionSinglePaymentProcessing(invoiceId)
     {
         var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
 
@@ -683,7 +686,9 @@
         
         setTotalCurrentDueAmount();
     }
+    //current invoice due after payment : by 1 parameter
 
+    //current total invoice wise total due
     function currentTotalInvoiceWiseDue(){
         var sumOfAllInvoiceTotalDueAmount = 0;
         $(".currentSingleDueAmount").each(function ()
@@ -693,6 +698,7 @@
         return sumOfAllInvoiceTotalDueAmount;
     }
 
+    //default total invoice wise due
     function defaultTotalInvoiceWiseDue(){
         var sumOfAllInvoiceTotalDueAmount = 0;
         $(".singleInvoiceDueAmount").each(function ()
@@ -707,6 +713,7 @@
         setTotalPayingAndRemainingDueAmount();
     }
 
+    //set total current due amount
     function setTotalCurrentDueAmount(){
         var sumOfAllInvoiceTotalDueAmount = currentTotalInvoiceWiseDue();
         $('.totalCurrentDueAmountAsText').text(sumOfAllInvoiceTotalDueAmount.toFixed(2));
@@ -721,7 +728,7 @@
         $('.overallTotalDiscountAmount').val(totalSumOfAllCurrentDueAmount.toFixed(2));
         //===================================
     }
-    //current invoice due after payment : by 3 parameter
+   
 
     //set total paying amount and total remaining due amount set here
     function setTotalPayingAndRemainingDueAmount(){
@@ -734,7 +741,7 @@
     }
     //set total paying amount and total remaining due amount set here
  
-
+    //sum of all single paying amount
     function sumOfAllSinglePayingAmount(){
         var usedAmountWithCurrentPressingAmount = 0;
         $(".singleAndCustomReceivingAmount").each(function ()
@@ -747,7 +754,7 @@
         return usedAmountWithCurrentPressingAmount;
     }
 
-
+    //sum of all due amount
     function sumOfAllDueAmount(){
         var totalDueAmount = 0;
         $(".singleInvoiceDueAmount").each(function (){
@@ -756,6 +763,7 @@
         return totalDueAmount;
     }
 
+    //submit button enable disabled
     function submitButtonEnableDisabled(){
         if(sumOfAllSinglePayingAmount() > 0){
             submitButtonEnable();
@@ -785,6 +793,231 @@
                 $('.checkAllOverallDiscount').removeAttr('disabled');
             }
         });
+        
+        //all chenged check and uncheck option
+        function overallAllChangedCheckAndUncheckOption(){
+            $(".checkSingleReceiveIvoiceDue").each(function (){
+                var invoiceId = $(this).attr('id');
+                //$(this).val(invoiceId).change();
+                var payingDueAmount = checkAndUncheckItemDuePayingAmount(invoiceId);
+                
+                $('.singleAndCustomReceivingAmount_'+invoiceId).val(payingDueAmount);
+
+                if(payingDueAmount == 0)
+                {
+                    $(this).prop('checked', false).change();
+                    $(this).val('').change();
+                }else{
+                    $(this).prop("checked", true).change();
+                    $(this).val(invoiceId).change();
+                }
+                singleInvoiceWiseDueAmount(invoiceId);
+            });
+        }
+
+        //single and Custom receiveing amount
+        $(document).on('keyup','.overallSingleInvoiceLessAmount',function(){
+            var invoiceId = $(this).data('id');
+            var pressingVal = $(this).val();
+            var finalPayingAmount = changeToCheckOrUncheckOptionSinglePaymentProcessing(invoiceId);
+            $('.singleAndCustomReceivingAmount_'+invoiceId).val(finalPayingAmount);
+            if(finalPayingAmount == 0){
+                $('.checkSingleReceiveIvoiceDue_'+invoiceId).prop('checked', false).change();
+                $('.checkSingleReceiveIvoiceDue_'+invoiceId).val('').change();
+            }else{
+                $('.checkSingleReceiveIvoiceDue_'+invoiceId).prop("checked", true).change();
+                $('.checkSingleReceiveIvoiceDue_'+invoiceId).val(invoiceId).change();
+            }
+
+            singleInvoiceWiseDueAmount(invoiceId);
+
+            submitButtonEnableDisabled();
+        });
+
+        //change to check or uncheck option single payment processing
+        function changeToOverallCheckOrUncheckOptionSinglePaymentProcessing(invoiceId)
+        {
+            var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
+
+            var usedAmountWithCurrentPressingAmount = 0;
+            $(".singleAndCustomReceivingAmount").each(function ()
+            {
+                usedAmountWithCurrentPressingAmount += parseFloat(nanCheck($(this).val())) || 0;
+            });
+            var currentPressingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()));
+            var totalUsedAmount = usedAmountWithCurrentPressingAmount - currentPressingAmount;
+            
+            var remainingAmount = 0;
+            if(customerGivenAmount == totalUsedAmount){
+                remainingAmount = 0;
+            }
+            else if(customerGivenAmount > totalUsedAmount){
+                remainingAmount = customerGivenAmount - totalUsedAmount;
+            }
+            else if(customerGivenAmount < totalUsedAmount){
+                remainingAmount = 0;
+            }
+            
+            var currentPressingAmountRightNow = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()))|| 0;
+            var currentInvoiceDueTotalAmount = parseFloat(nanCheck($('.singleInvoiceDueAmount_'+invoiceId).val()));
+
+            var pressingLimitAmount = 0;
+            if(currentInvoiceDueTotalAmount == currentPressingAmountRightNow){
+                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            }
+            else if(currentInvoiceDueTotalAmount > currentPressingAmountRightNow){
+                pressingLimitAmount = currentPressingAmountRightNow;
+            }
+            else if(currentInvoiceDueTotalAmount < currentPressingAmountRightNow){
+                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            }
+        
+            var lastLimitOfPressingAmount = 0; 
+            if(remainingAmount ==  pressingLimitAmount){
+                lastLimitOfPressingAmount = pressingLimitAmount; 
+            } 
+            else if(remainingAmount >  pressingLimitAmount){
+                lastLimitOfPressingAmount = pressingLimitAmount; 
+            }
+            else if(remainingAmount < pressingLimitAmount){
+                lastLimitOfPressingAmount = remainingAmount; 
+            }
+            return lastLimitOfPressingAmount;
+        }
+
+
+        // checked all order list 
+        $(document).on('click','.checkAllOverallDiscount',function()
+        {
+            var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val();
+            if(invoiceTotalPayingAmount > 0){
+                if (this.checked == false)
+                {   
+                    $('.checkSingleReceiveIvoiceDue').prop('checked', false).change();
+                    $(".checkSingleReceiveIvoiceDue").each(function ()
+                    {
+                        var invoiceId = $(this).attr('id');
+                        $(this).val('').change();
+                        $('.singleAndCustomReceivingAmount_'+invoiceId).val(0);
+
+                        singleInvoiceWiseDueAmount(invoiceId);
+
+                    });
+                }
+                else
+                {
+                    $('.checkSingleReceiveIvoiceDue').prop("checked", true).change();
+                    allChangedCheckAndUncheckOption();
+                }
+            }
+            submitButtonEnableDisabled();
+        });
+        // checked all order list 
+
+        
+        //check single order list
+        $(document).on('click','.checkSingleOverallDiscount',function(){
+
+            var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val() || 0;
+            if(invoiceTotalPayingAmount > 0){
+                var $db = $('input[type=checkbox]');
+                if($db.filter(':checked').length <= 0)
+                {
+                    $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
+                    $('.singleAndCustomReceivingAmount').val(0);
+                }
+
+                var invoiceId = $(this).attr('id');
+                if (this.checked == false)
+                {
+                    $(this).prop('checked', false).change();
+                    $(this).val('').change();
+                    $('.singleAndCustomReceivingAmount_'+invoiceId).val(0);
+                }else{
+                    var payingAmountNow = checkAndUncheckItemDuePayingAmount(invoiceId);
+                    $('.singleAndCustomReceivingAmount_'+invoiceId).val(payingAmountNow);
+                    if(payingAmountNow == 0)
+                    {
+                        $(this).prop('checked', false).change();
+                        $(this).val('').change();
+                    }else{
+                        $(this).prop("checked", true).change();
+                        $(this).val(invoiceId).change();
+                    }
+                }
+                
+                var invoiceIds = [];
+                $('input.checkSingleReceiveIvoiceDue[type=checkbox]').each(function () {
+                    if(this.checked){
+                        var receivingVal = $(this).val();
+                        invoiceIds.push(receivingVal);
+                    }
+                });
+                if(invoiceIds.length <= 0)
+                {
+                    $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
+                }
+                singleInvoiceWiseDueAmount(invoiceId);
+            }
+            else{
+                $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
+                $('.checkSingleReceiveIvoiceDue').prop('checked', false).change();
+                $('.singleAndCustomReceivingAmount').val(0);
+                $('.checkSingleReceiveIvoiceDue').val('');
+            }
+            submitButtonEnableDisabled();
+        });
+        //check single order list
+
+        function overallCheckAndUncheckItemDuePayingAmount(invoiceId)
+        {
+            var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
+
+            var usedAmountWithCurrentPressingAmount = 0;
+            $(".singleAndCustomReceivingAmount").each(function ()
+            {
+                usedAmountWithCurrentPressingAmount += parseFloat(nanCheck($(this).val())) || 0;
+            });
+            var currentPressingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()));
+            var totalUsedAmount = usedAmountWithCurrentPressingAmount - currentPressingAmount;
+            
+            var remainingAmount = 0;
+            if(customerGivenAmount == totalUsedAmount){
+                remainingAmount = 0;
+            }
+            else if(customerGivenAmount > totalUsedAmount){
+                remainingAmount = customerGivenAmount - totalUsedAmount;
+            }
+            else if(customerGivenAmount < totalUsedAmount){
+                remainingAmount = 0;
+            }
+            
+            var currentDueReceivingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()))|| 0;
+            var currentInvoiceDueTotalAmount = parseFloat(nanCheck($('.singleInvoiceDueAmount_'+invoiceId).val()));
+
+            var pressingLimitAmount = 0;
+            if(currentInvoiceDueTotalAmount == currentDueReceivingAmount){
+                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            }
+            else if(currentInvoiceDueTotalAmount > currentDueReceivingAmount){
+                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            }
+            else if(currentInvoiceDueTotalAmount < currentDueReceivingAmount){
+                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            }
+
+            var lastLimitOfPressingAmount = 0; 
+            if(remainingAmount ==  pressingLimitAmount){
+                lastLimitOfPressingAmount = pressingLimitAmount; 
+            } 
+            else if(remainingAmount >  pressingLimitAmount){
+                lastLimitOfPressingAmount = pressingLimitAmount; 
+            }
+            else if(remainingAmount < pressingLimitAmount){
+                lastLimitOfPressingAmount = remainingAmount; 
+            }
+            return lastLimitOfPressingAmount;
+        }
     //------------------------------------------------------------
     // overall discount section
     //------------------------------------------------------------
