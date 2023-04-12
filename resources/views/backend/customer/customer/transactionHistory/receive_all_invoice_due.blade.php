@@ -83,27 +83,27 @@
                                             </div>
                                             <div style="float:left;width:50%;">
                                                 <input type="text" disabled class="form-control invoiceTotalPayingAmountAsDisplay inputFieldValidatedOnlyNumeric" style="background-color:#f1f1f1;font-weight:bold;">
-                                                <input type="hidden"  name="invoiceTotalPayingAmount" class="form-control invoiceTotalPayingAmount">
+                                                <input type="hidden"  name="total_paying_amount" class="form-control invoiceTotalPayingAmount">
                                             </div>
                                         </div>
                                     </th>
                                     <th colspan="3" style="text-align: right;">
                                         <div style="display:flex;width:100%;">
                                             <div style="float:left;width:35%;text-align:right">
-                                               <select name="overallDiscountType"  class="form-control overallOrRemainingType">
+                                               <select name="overall_discount_remaining_Type" id="overallOrRemainingType" class="form-control overallOrRemainingType">
                                                     <option value="1">Remaining (Current) Due</option>
                                                     <option value="2">Overall Less</option>
                                                </select>
                                             </div>
                                             <div style="float:left;width:25%;">
-                                                <input type="hidden" name="overallTotalDiscountAmount" class="form-control overallTotalDiscountAmount">
+                                                <input type="hidden" name="overall_total_discount_or_remaining_amount" class="form-control overallTotalDiscountAmount">
                                                 <input type="text" disabled class="form-control overallTotalDiscountAmount inputFieldValidatedOnlyNumeric" style="background-color:#f5e4e4;font-weight:bold;">
                                             </div>
                                             <div style="float:left;width:15%;vertical-align: middle;">
                                                 <input type="text" disabled value="Next Date" class="form-control">
                                             </div>
                                             <div style="float:left;width:25%;">
-                                                <input type="date" class="form-control nextPaymentDate" name="nextPaymentDate">
+                                                <input type="date" class="form-control nextPaymentDate" name="next_payment_date">
                                             </div>
                                         </div>
                                     </th>
@@ -181,11 +181,13 @@
                                                 <span class="currentSingleDueAmount currentSingleDueAmount_{{$item->id}}">0</span>
                                             </th>
                                             <!---Current Due end-->
-                                            <th style="width:5%;text-align:center;">{{$item->total_profit}}</th>
-                                            <!---overall Less amount-->
+                                            <th style="width:5%;text-align:center;color:green">{{$item->total_profit}}</th>
+                                            
+                                            <!---overall discount amount-->
                                             <th style="width:10%;">
-                                                <input type="text" name="single_invoice_overall_discount_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric overallSingleInvoiceDiscountAmount_{{$item->id}} overallSingleInvoiceLessAmount" disabled data-id="{{$item->id}}" style="background-color:#ffff;text-align:center;">
+                                                <input type="text" name="single_invoice_overall_discount_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric overallSingleInvoiceDiscountAmount_{{$item->id}} overallSingleInvoiceDiscountAmount" disabled data-id="{{$item->id}}" style="background-color:#ffff;text-align:center;">
                                             </th>
+
                                             <!---overall check-->
                                             <th style="width:5%;text-align:center;">
                                                 <input type="hidden" class="singleInvoiceProfitAmount singleInvoiceProfitAmount_{{$item->id}}" value="{{$item->total_profit}}" data-id="{{$item->id}}">
@@ -211,7 +213,7 @@
                                             {{ number_format($sellInvoices->sum('total_paid_amount'),2,'.','')}}
                                             <input type="hidden" name="" value="{{$sellInvoices->sum('total_paid_amount')}}">
                                         </th>
-                                        <th style="text-align:center;">
+                                        <th style="text-align:center;color:red;">
                                             {{ number_format($sellInvoices->sum('total_due_amount'),2,'.','')}}
                                             <input type="hidden" name="total_customer_due_amount" class="totalInvoiceDueAmount" value="{{$sellInvoices->sum('total_due_amount')}}">
                                         </th>
@@ -219,16 +221,17 @@
                                             <span class="sumOfAlltotalPayingAmountAsText">00</span>
                                         </th>
                                         <th style="text-align:center;"></th>
-                                        <th style="text-align:center;">
+                                        <th style="text-align:center;color:red;">
                                             <span class="totalCurrentDueAmountAsText">00</span>
                                             <input type="hidden" name="total_current_due_amount" class="totalCurrentDueAmountAsValue">
                                         </th>
-                                        <th style="text-align:center;">
+                                        <th style="text-align:center;;color:green">
                                             {{ number_format($sellInvoices->sum('total_profit'),2,'.','')}}
                                             <input type="hidden" name="" value="{{$sellInvoices->sum('total_profit')}}">
                                         </th>
                                         <th style="text-align:center;">
                                             <span class="totalOverallDiscountAmountAsText">00</span>
+                                            <input type="hidden" name="total_overall_discount_amount" class="totalOverallDiscountAmountAsValue">
                                         </th>
                                         <th style="text-align:center;"></th>
                                     </tr>          

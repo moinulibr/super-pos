@@ -390,6 +390,16 @@
     $(document).on('keyup','.invoiceTotalPayingAmount, .totalCustomerGivenAmount',function(){
         totalCustomerGivenAmountFromCustomer();
         submitButtonEnableDisabled();
+
+        //for overall discount
+        $('.checkAllOverallDiscount').attr('disabled',true);
+        $('.checkSingleOverallDiscount').attr('disabled',true);
+        $('.checkSingleOverallDiscount').prop('checked', false).change();
+
+        $('.overallSingleInvoiceDiscountAmount').attr('disabled',true);
+        $('.overallSingleInvoiceDiscountAmount').val(0);
+        $("#overallOrRemainingType option[value=1]").prop('selected', true);
+        //for overall discount
     });
 
     //total customer given amount from customer
@@ -782,28 +792,34 @@
 
                 $('.checkAllOverallDiscount').attr('disabled',true);
                 $('.checkSingleOverallDiscount').attr('disabled',true);
-                $('.overallSingleInvoiceLessAmount').attr('disabled',true);
-                $('.overallSingleInvoiceLessAmount').val(0);
+                $('.checkSingleOverallDiscount').prop('checked', false).change();
+
+                $('.overallSingleInvoiceDiscountAmount').attr('disabled',true);
+                $('.overallSingleInvoiceDiscountAmount').val(0);
             }else{ //overall discount
                 $('.nextPaymentDate').attr('disabled',true);
                 $('.nextPaymentDate').val('');
 
-                $('.overallSingleInvoiceLessAmount').removeAttr('disabled');
+                $('.overallSingleInvoiceDiscountAmount').removeAttr('disabled');
                 $('.checkSingleOverallDiscount').removeAttr('disabled');
-                $('.checkAllOverallDiscount').removeAttr('disabled');
+                //$('.checkAllOverallDiscount').removeAttr('disabled');
+
+                overallAllChangedCheckAndUncheckOption();
             }
+            setSumOfAlloverallDiscountAmount();
         });
         
         //all chenged check and uncheck option
         function overallAllChangedCheckAndUncheckOption(){
-            $(".checkSingleReceiveIvoiceDue").each(function (){
+
+            $(".overallSingleInvoiceDiscountAmount").each(function (){
                 var invoiceId = $(this).attr('id');
                 //$(this).val(invoiceId).change();
-                var payingDueAmount = checkAndUncheckItemDuePayingAmount(invoiceId);
+                var singleInvoiceOverallDiscountAmount = overallCheckAndUncheckDiscountAmount(invoiceId);
                 
-                $('.singleAndCustomReceivingAmount_'+invoiceId).val(payingDueAmount);
+                $('.overallSingleInvoiceDiscountAmount_'+invoiceId).val(singleInvoiceOverallDiscountAmount);
 
-                if(payingDueAmount == 0)
+                if(singleInvoiceOverallDiscountAmount == 0)
                 {
                     $(this).prop('checked', false).change();
                     $(this).val('').change();
@@ -811,106 +827,109 @@
                     $(this).prop("checked", true).change();
                     $(this).val(invoiceId).change();
                 }
-                singleInvoiceWiseDueAmount(invoiceId);
             });
         }
 
         //single and Custom receiveing amount
-        $(document).on('keyup','.overallSingleInvoiceLessAmount',function(){
+        $(document).on('keyup','.overallSingleInvoiceDiscountAmount',function(){
             var invoiceId = $(this).data('id');
             var pressingVal = $(this).val();
-            var finalPayingAmount = changeToCheckOrUncheckOptionSinglePaymentProcessing(invoiceId);
-            $('.singleAndCustomReceivingAmount_'+invoiceId).val(finalPayingAmount);
-            if(finalPayingAmount == 0){
-                $('.checkSingleReceiveIvoiceDue_'+invoiceId).prop('checked', false).change();
-                $('.checkSingleReceiveIvoiceDue_'+invoiceId).val('').change();
-            }else{
-                $('.checkSingleReceiveIvoiceDue_'+invoiceId).prop("checked", true).change();
-                $('.checkSingleReceiveIvoiceDue_'+invoiceId).val(invoiceId).change();
+            var finalOverallDiscountAmount = changeToOverallCheckOrUncheckOption(invoiceId);
+            var totalDiscountAmount = 0;
+            if(finalOverallDiscountAmount == pressingVal){
+                totalDiscountAmount = pressingVal;
             }
+            else if(finalOverallDiscountAmount < pressingVal){
+                totalDiscountAmount = finalOverallDiscountAmount;
+            }
+            else if(finalOverallDiscountAmount > pressingVal){
+                totalDiscountAmount = pressingVal;
+            }
+            $('.overallSingleInvoiceDiscountAmount_'+invoiceId).val(totalDiscountAmount);
 
-            singleInvoiceWiseDueAmount(invoiceId);
-
-            submitButtonEnableDisabled();
+            if(totalDiscountAmount == 0){
+                $('.checkSingleOverallDiscount_'+invoiceId).prop('checked', false).change();
+                $('.checkSingleOverallDiscount_'+invoiceId).val('').change();
+            }else{
+                $('.checkSingleOverallDiscount_'+invoiceId).prop("checked", true).change();
+                $('.checkSingleOverallDiscount_'+invoiceId).val(invoiceId).change();
+            }
+            setSumOfAlloverallDiscountAmount();
         });
 
-        //change to check or uncheck option single payment processing
-        function changeToOverallCheckOrUncheckOptionSinglePaymentProcessing(invoiceId)
-        {
-            var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
+        //change to check or uncheck option for single : and keyup action for single
+        function changeToOverallCheckOrUncheckOption(invoiceId){
+
+            var overallTotalDiscountAmount = parseFloat(nanCheck($('.overallTotalDiscountAmount').val()));
 
             var usedAmountWithCurrentPressingAmount = 0;
-            $(".singleAndCustomReceivingAmount").each(function ()
+            $(".overallSingleInvoiceDiscountAmount").each(function ()
             {
                 usedAmountWithCurrentPressingAmount += parseFloat(nanCheck($(this).val())) || 0;
             });
-            var currentPressingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()));
+            var currentPressingAmount = parseFloat(nanCheck($('.overallSingleInvoiceDiscountAmount_'+invoiceId).val()));
             var totalUsedAmount = usedAmountWithCurrentPressingAmount - currentPressingAmount;
             
-            var remainingAmount = 0;
-            if(customerGivenAmount == totalUsedAmount){
-                remainingAmount = 0;
+            var remainingOverallDiscountAmount = 0;
+            if(overallTotalDiscountAmount == totalUsedAmount){
+                remainingOverallDiscountAmount = 0;
             }
-            else if(customerGivenAmount > totalUsedAmount){
-                remainingAmount = customerGivenAmount - totalUsedAmount;
+            else if(overallTotalDiscountAmount > totalUsedAmount){
+                remainingOverallDiscountAmount = overallTotalDiscountAmount - totalUsedAmount;
             }
-            else if(customerGivenAmount < totalUsedAmount){
-                remainingAmount = 0;
+            else if(overallTotalDiscountAmount < totalUsedAmount){
+                remainingOverallDiscountAmount = 0;
             }
             
-            var currentPressingAmountRightNow = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()))|| 0;
-            var currentInvoiceDueTotalAmount = parseFloat(nanCheck($('.singleInvoiceDueAmount_'+invoiceId).val()));
-
+            var currentDiscountAmountPressing = parseFloat(nanCheck($('.overallSingleInvoiceDiscountAmount_'+invoiceId).val()))|| 0;
+            var currentInvoiceProfitOrDiscountAmount = parseFloat(nanCheck($('.singleInvoiceProfitAmount_'+invoiceId).val()));
             var pressingLimitAmount = 0;
-            if(currentInvoiceDueTotalAmount == currentPressingAmountRightNow){
-                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            if(currentInvoiceProfitOrDiscountAmount == currentDiscountAmountPressing){
+                pressingLimitAmount = currentInvoiceProfitOrDiscountAmount;
             }
-            else if(currentInvoiceDueTotalAmount > currentPressingAmountRightNow){
-                pressingLimitAmount = currentPressingAmountRightNow;
+            else if(currentInvoiceProfitOrDiscountAmount > currentDiscountAmountPressing){
+                pressingLimitAmount = currentInvoiceProfitOrDiscountAmount;
             }
-            else if(currentInvoiceDueTotalAmount < currentPressingAmountRightNow){
-                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            else if(currentInvoiceProfitOrDiscountAmount < currentDiscountAmountPressing){
+                pressingLimitAmount = currentInvoiceProfitOrDiscountAmount;
             }
-        
+
             var lastLimitOfPressingAmount = 0; 
-            if(remainingAmount ==  pressingLimitAmount){
+            if(remainingOverallDiscountAmount ==  pressingLimitAmount){
                 lastLimitOfPressingAmount = pressingLimitAmount; 
             } 
-            else if(remainingAmount >  pressingLimitAmount){
+            else if(remainingOverallDiscountAmount >  pressingLimitAmount){
                 lastLimitOfPressingAmount = pressingLimitAmount; 
             }
-            else if(remainingAmount < pressingLimitAmount){
-                lastLimitOfPressingAmount = remainingAmount; 
+            else if(remainingOverallDiscountAmount < pressingLimitAmount){
+                lastLimitOfPressingAmount = remainingOverallDiscountAmount; 
             }
             return lastLimitOfPressingAmount;
         }
+        //change to check or uncheck option for single : and keyup action for single
 
 
         // checked all order list 
         $(document).on('click','.checkAllOverallDiscount',function()
         {
-            var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val();
-            if(invoiceTotalPayingAmount > 0){
-                if (this.checked == false)
-                {   
-                    $('.checkSingleReceiveIvoiceDue').prop('checked', false).change();
-                    $(".checkSingleReceiveIvoiceDue").each(function ()
+            var invoiceTotalOverallDiscountAmount = $('.overallTotalDiscountAmount').val();
+            if(invoiceTotalOverallDiscountAmount > 0){
+                if (this.checked == false){  
+
+                    $('.checkSingleOverallDiscount').prop('checked', false).change();
+                    $(".checkSingleOverallDiscount").each(function ()
                     {
                         var invoiceId = $(this).attr('id');
                         $(this).val('').change();
-                        $('.singleAndCustomReceivingAmount_'+invoiceId).val(0);
-
-                        singleInvoiceWiseDueAmount(invoiceId);
-
+                        $('.overallSingleInvoiceDiscountAmount_'+invoiceId).val(0);
                     });
                 }
-                else
-                {
-                    $('.checkSingleReceiveIvoiceDue').prop("checked", true).change();
-                    allChangedCheckAndUncheckOption();
+                else{
+                    $('.checkSingleOverallDiscount').prop("checked", true).change();
+                    overallAllChangedCheckAndUncheckOption();
                 }
             }
-            submitButtonEnableDisabled();
+            setSumOfAlloverallDiscountAmount();
         });
         // checked all order list 
 
@@ -918,13 +937,13 @@
         //check single order list
         $(document).on('click','.checkSingleOverallDiscount',function(){
 
-            var invoiceTotalPayingAmount = $('.invoiceTotalPayingAmount').val() || 0;
-            if(invoiceTotalPayingAmount > 0){
+            var invoiceTotalOverallDiscountAmount = $('.overallTotalDiscountAmount').val() || 0;
+            if(invoiceTotalOverallDiscountAmount > 0){
                 var $db = $('input[type=checkbox]');
                 if($db.filter(':checked').length <= 0)
                 {
-                    $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
-                    $('.singleAndCustomReceivingAmount').val(0);
+                    $('.checkAllOverallDiscount').prop('checked', false).change();
+                    $('.overallSingleInvoiceDiscountAmount').val(0);
                 }
 
                 var invoiceId = $(this).attr('id');
@@ -932,11 +951,12 @@
                 {
                     $(this).prop('checked', false).change();
                     $(this).val('').change();
-                    $('.singleAndCustomReceivingAmount_'+invoiceId).val(0);
+                    $('.overallSingleInvoiceDiscountAmount_'+invoiceId).val(0);
                 }else{
-                    var payingAmountNow = checkAndUncheckItemDuePayingAmount(invoiceId);
-                    $('.singleAndCustomReceivingAmount_'+invoiceId).val(payingAmountNow);
-                    if(payingAmountNow == 0)
+                    //var currentOverallDiscountAmount = overallCheckAndUncheckDiscountAmount(invoiceId);
+                    var currentOverallDiscountAmount = changeToOverallCheckOrUncheckOption(invoiceId);
+                    $('.overallSingleInvoiceDiscountAmount_'+invoiceId).val(currentOverallDiscountAmount);
+                    if(currentOverallDiscountAmount == 0)
                     {
                         $(this).prop('checked', false).change();
                         $(this).val('').change();
@@ -947,7 +967,7 @@
                 }
                 
                 var invoiceIds = [];
-                $('input.checkSingleReceiveIvoiceDue[type=checkbox]').each(function () {
+                $('input.checkSingleOverallDiscount[type=checkbox]').each(function () {
                     if(this.checked){
                         var receivingVal = $(this).val();
                         invoiceIds.push(receivingVal);
@@ -955,68 +975,81 @@
                 });
                 if(invoiceIds.length <= 0)
                 {
-                    $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
+                    $('.checkAllOverallDiscount').prop('checked', false).change();
                 }
-                singleInvoiceWiseDueAmount(invoiceId);
             }
             else{
-                $('.checkAllReceiveIvoiceDue').prop('checked', false).change();
-                $('.checkSingleReceiveIvoiceDue').prop('checked', false).change();
-                $('.singleAndCustomReceivingAmount').val(0);
-                $('.checkSingleReceiveIvoiceDue').val('');
+                $('.checkAllOverallDiscount').prop('checked', false).change();
+                $('.checkSingleOverallDiscount').prop('checked', false).change();
+                $('.overallSingleInvoiceDiscountAmount').val(0);
+                $('.checkSingleOverallDiscount').val();
             }
-            submitButtonEnableDisabled();
+            setSumOfAlloverallDiscountAmount();
         });
         //check single order list
 
-        function overallCheckAndUncheckItemDuePayingAmount(invoiceId)
-        {
-            var customerGivenAmount = parseFloat(nanCheck($('.invoiceTotalPayingAmount').val()));
+        //when change overall or remaining option button
+        function overallCheckAndUncheckDiscountAmount(invoiceId){
+
+            var overallTotalDiscountAmount = parseFloat(nanCheck($('.overallTotalDiscountAmount').val()));
 
             var usedAmountWithCurrentPressingAmount = 0;
-            $(".singleAndCustomReceivingAmount").each(function ()
+            $(".overallSingleInvoiceDiscountAmount").each(function ()
             {
                 usedAmountWithCurrentPressingAmount += parseFloat(nanCheck($(this).val())) || 0;
             });
-            var currentPressingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()));
+            var currentPressingAmount = parseFloat(nanCheck($('.overallSingleInvoiceDiscountAmount_'+invoiceId).val()));
             var totalUsedAmount = usedAmountWithCurrentPressingAmount - currentPressingAmount;
             
-            var remainingAmount = 0;
-            if(customerGivenAmount == totalUsedAmount){
-                remainingAmount = 0;
+            var remainingOverallDiscountAmount = 0;
+            if(overallTotalDiscountAmount == totalUsedAmount){
+                remainingOverallDiscountAmount = 0;
             }
-            else if(customerGivenAmount > totalUsedAmount){
-                remainingAmount = customerGivenAmount - totalUsedAmount;
+            else if(overallTotalDiscountAmount > totalUsedAmount){
+                remainingOverallDiscountAmount = overallTotalDiscountAmount - totalUsedAmount;
             }
-            else if(customerGivenAmount < totalUsedAmount){
-                remainingAmount = 0;
+            else if(overallTotalDiscountAmount < totalUsedAmount){
+                remainingOverallDiscountAmount = 0;
             }
             
-            var currentDueReceivingAmount = parseFloat(nanCheck($('.singleAndCustomReceivingAmount_'+invoiceId).val()))|| 0;
-            var currentInvoiceDueTotalAmount = parseFloat(nanCheck($('.singleInvoiceDueAmount_'+invoiceId).val()));
+            var currentDiscountAmountPressing = parseFloat(nanCheck($('.overallSingleInvoiceDiscountAmount_'+invoiceId).val()))|| 0;
+            var currentInvoiceProfitOrDiscountAmount = parseFloat(nanCheck($('.singleInvoiceProfitAmount_'+invoiceId).val()));
 
             var pressingLimitAmount = 0;
-            if(currentInvoiceDueTotalAmount == currentDueReceivingAmount){
-                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            if(currentInvoiceProfitOrDiscountAmount == currentDiscountAmountPressing){
+                pressingLimitAmount = currentInvoiceProfitOrDiscountAmount;
             }
-            else if(currentInvoiceDueTotalAmount > currentDueReceivingAmount){
-                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            else if(currentInvoiceProfitOrDiscountAmount > currentDiscountAmountPressing){
+                pressingLimitAmount = currentInvoiceProfitOrDiscountAmount;
             }
-            else if(currentInvoiceDueTotalAmount < currentDueReceivingAmount){
-                pressingLimitAmount = currentInvoiceDueTotalAmount;
+            else if(currentInvoiceProfitOrDiscountAmount < currentDiscountAmountPressing){
+                pressingLimitAmount = currentInvoiceProfitOrDiscountAmount;
             }
 
             var lastLimitOfPressingAmount = 0; 
-            if(remainingAmount ==  pressingLimitAmount){
+            if(remainingOverallDiscountAmount ==  pressingLimitAmount){
                 lastLimitOfPressingAmount = pressingLimitAmount; 
             } 
-            else if(remainingAmount >  pressingLimitAmount){
+            else if(remainingOverallDiscountAmount >  pressingLimitAmount){
                 lastLimitOfPressingAmount = pressingLimitAmount; 
             }
-            else if(remainingAmount < pressingLimitAmount){
-                lastLimitOfPressingAmount = remainingAmount; 
+            else if(remainingOverallDiscountAmount < pressingLimitAmount){
+                lastLimitOfPressingAmount = remainingOverallDiscountAmount; 
             }
             return lastLimitOfPressingAmount;
+        }
+
+        function sumOfAlloverallDiscountAmount(){
+            var usedAmountWithCurrentPressingAmount = 0;
+            $(".overallSingleInvoiceDiscountAmount").each(function (){
+                usedAmountWithCurrentPressingAmount += parseFloat(nanCheck($(this).val())) || 0;
+            });
+            return usedAmountWithCurrentPressingAmount;
+        }
+        function setSumOfAlloverallDiscountAmount(){
+           var totalOverallDiscountAmount = sumOfAlloverallDiscountAmount();
+            $('.totalOverallDiscountAmountAsText').text(totalOverallDiscountAmount.toFixed(2));
+            $('.totalOverallDiscountAmountAsValue').val(totalOverallDiscountAmount.toFixed(2));
         }
     //------------------------------------------------------------
     // overall discount section
@@ -1053,7 +1086,7 @@
                     customerList();
                     setTimeout(function(){
                         jQuery('#renderReceiveAllInvoiceDueModal').modal('hide');//hide modal
-                    },500);
+                    },200);
                 }
             },
             complete:function(){
