@@ -255,6 +255,10 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_profit = number_format((($existingData->total_profit_from_product + $invoicePlusableChargeForInvoiceProfit) - ($invoiceMinusableCostForInvoiceProfit)),2,'.','');
         //total profit calculation
         
+        //have to work about this 3 below status
+        //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
+        //payment_status => 1=Full Paid, 2=Partial Paid, 3=Full Due, 4=Partial Refund, 5=Refunded 
+        //delivery status => 1=Full Delivered, 2=Partial delivered, 3=Not Delivered, 4=Partial Refund, 5=Refunded 
 
         $status = NULL;//ordered
         $deliveryStatus = NULL;
@@ -287,7 +291,7 @@ trait UpdateSellSummaryCalculationTrait
         }
         else if($paidStatus < 5 || $paidStatus == NULL){
             if($totalPayableAmount == $newPaidAmount){
-                $paymentStatus = 1;
+                $paymentStatus = 1;//full paid
                 $payment_type = "Full Payment";
             }
             else if($totalPayableAmount > $newPaidAmount &&  $newPaidAmount > 0){

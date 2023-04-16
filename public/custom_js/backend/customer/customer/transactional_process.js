@@ -381,6 +381,7 @@
                 $('#renderReceiveAllInvoiceDueModal').html(response.view).modal('show');//hide modal
                 defaultTotalInvoiceWiseDue();
                 $('.invoiceTotalPayingAmountAsDisplay').val(0); 
+                $('.invoiceTotalPayingAmount').val(0); 
                 submitButtonDisabled();
             }
         });
@@ -735,6 +736,7 @@
         var totalSumOfAllCurrentDueAmount = currentTotalInvoiceWiseDue();
         //var totalPayingAmountByCustomer = totalSumOfAllDueAmount - totalSumOfAllCurrentDueAmount;
         $('.invoiceTotalPayingAmountAsDisplay').val(totalSumOfAllSinglePayingAmounts.toFixed(2));
+       
         $('.overallTotalDiscountAmount').val(totalSumOfAllCurrentDueAmount.toFixed(2));
         //===================================
     }
@@ -760,6 +762,7 @@
         });
 
         $('.sumOfAlltotalPayingAmountAsText').text(usedAmountWithCurrentPressingAmount.toFixed(2));
+        $('.sumOfAlltotalPayingAmountAsValue').val(usedAmountWithCurrentPressingAmount.toFixed(2));
         
         return usedAmountWithCurrentPressingAmount;
     }
@@ -806,7 +809,7 @@
 
                 overallAllChangedCheckAndUncheckOption();
             }
-            setSumOfAlloverallDiscountAmount();
+            setSumOfAllOverallDiscountAmount();
         });
         
         //all chenged check and uncheck option
@@ -854,7 +857,7 @@
                 $('.checkSingleOverallDiscount_'+invoiceId).prop("checked", true).change();
                 $('.checkSingleOverallDiscount_'+invoiceId).val(invoiceId).change();
             }
-            setSumOfAlloverallDiscountAmount();
+            setSumOfAllOverallDiscountAmount();
         });
 
         //change to check or uncheck option for single : and keyup action for single
@@ -929,7 +932,7 @@
                     overallAllChangedCheckAndUncheckOption();
                 }
             }
-            setSumOfAlloverallDiscountAmount();
+            setSumOfAllOverallDiscountAmount();
         });
         // checked all order list 
 
@@ -984,7 +987,7 @@
                 $('.overallSingleInvoiceDiscountAmount').val(0);
                 $('.checkSingleOverallDiscount').val();
             }
-            setSumOfAlloverallDiscountAmount();
+            setSumOfAllOverallDiscountAmount();
         });
         //check single order list
 
@@ -1046,7 +1049,7 @@
             });
             return usedAmountWithCurrentPressingAmount;
         }
-        function setSumOfAlloverallDiscountAmount(){
+        function setSumOfAllOverallDiscountAmount(){
            var totalOverallDiscountAmount = sumOfAlloverallDiscountAmount();
             $('.totalOverallDiscountAmountAsText').text(totalOverallDiscountAmount.toFixed(2));
             $('.totalOverallDiscountAmountAsValue').val(totalOverallDiscountAmount.toFixed(2));

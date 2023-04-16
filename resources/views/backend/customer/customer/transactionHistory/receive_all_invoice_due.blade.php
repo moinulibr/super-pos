@@ -59,7 +59,7 @@
                                                 Customer Given Amount
                                             </div>
                                             <div style="float:left;width:48%;">
-                                                <input type="text" class="form-control totalCustomerGivenAmount inputFieldValidatedOnlyNumeric" style="background-color:#fff;font-weight:bold;">    
+                                                <input type="text" class="form-control totalCustomerGivenAmount inputFieldValidatedOnlyNumeric" name="customer_given_amount" style="background-color:#fff;font-weight:bold;">    
                                             </div>
                                         </div>
                                     </th>
@@ -169,9 +169,10 @@
                                             <!---paying check-->
                                             <th style="width:7%;text-align:center;">
                                                 <input type="hidden" name="single_invoice_due_amount_{{$item->id}}" class="singleInvoiceDueAmount singleInvoiceDueAmount_{{$item->id}}" value="{{$item->total_due_amount}}" data-id="{{$item->id}}">
+                                                <input type="hidden" name="single_invoice_no_{{$item->id}}" class="" value="{{$item->invoice_no}}">
                                                 @if ($item->total_due_amount > 0)
                                                 <input type="hidden" value="{{$item->id}}" name="sell_invoice_id">
-                                                <input class="checkSingleReceiveIvoiceDue form-control checkSingleReceiveIvoiceDue_{{$item->id}}" type="checkbox"  name="checked_id[]" value="{{ $item->id }}" id="{{$item->id}}" style="box-shadow:none;">
+                                                <input class="checkSingleReceiveIvoiceDue form-control checkSingleReceiveIvoiceDue_{{$item->id}}" type="checkbox"  name="checked_id[]" value="" id="{{$item->id}}" style="box-shadow:none;">
                                                     @else
                                                     <input class="form-control" type="checkbox" disabled style="box-shadow:none;" >
                                                 @endif
@@ -185,16 +186,16 @@
                                             
                                             <!---overall discount amount-->
                                             <th style="width:10%;">
+                                                <input type="hidden" name="single_invoice_profit_amount_{{$item->id}}" class="singleOverallDiscountAmount singleOverallDiscountAmount_{{$item->id}}" value="{{$item->total_profit}}" data-id="{{$item->id}}">
                                                 <input type="text" name="single_invoice_overall_discount_amount_{{$item->id}}" class="form-control inputFieldValidatedOnlyNumeric overallSingleInvoiceDiscountAmount_{{$item->id}} overallSingleInvoiceDiscountAmount" disabled data-id="{{$item->id}}" style="background-color:#ffff;text-align:center;">
                                             </th>
 
                                             <!---overall check-->
                                             <th style="width:5%;text-align:center;">
                                                 <input type="hidden" class="singleInvoiceProfitAmount singleInvoiceProfitAmount_{{$item->id}}" value="{{$item->total_profit}}" data-id="{{$item->id}}">
-                                                <input type="hidden" name="single_invoice_overall_discount_amount_{{$item->id}}" class="singleOverallDiscountAmount singleOverallDiscountAmount_{{$item->id}}" value="{{$item->total_profit}}" data-id="{{$item->id}}">
                                                 @if ($item->total_profit > 0)
                                                 <input type="hidden" value="{{$item->id}}" name="sell_invoice_id">
-                                                <input class="checkSingleOverallDiscount form-control checkSingleOverallDiscount_{{$item->id}}" disabled type="checkbox"  name="checked_overall_discount_id[]" value="{{ $item->id }}" id="{{$item->id}}" style="box-shadow:none;">
+                                                <input class="checkSingleOverallDiscount form-control checkSingleOverallDiscount_{{$item->id}}" disabled type="checkbox"  name="checked_overall_discount_id[]" value="" id="{{$item->id}}" style="box-shadow:none;">
                                                     @else
                                                     <input class="form-control" type="checkbox" disabled style="box-shadow:none;" >
                                                 @endif
@@ -219,6 +220,7 @@
                                         </th>
                                         <th style="text-align:center;">
                                             <span class="sumOfAlltotalPayingAmountAsText">00</span>
+                                            <input type="hidden" name="current_total_paying_amount" class="sumOfAlltotalPayingAmountAsValue">00</input>
                                         </th>
                                         <th style="text-align:center;"></th>
                                         <th style="text-align:center;color:red;">

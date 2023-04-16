@@ -42,9 +42,7 @@ trait CustomerPaymentProcessTrait
     //insert account payment invoice
     protected function insertCustomerTransactionHistory()
     {   
-        //$this->ctsCustomerId
-        $this->makeCurrentCdcAmount();
-        $lastAmountOfThisCustomer = $this->currentCdcAmountAfterCalculationByCtsCdfType();
+        $lastAmountOfThisCustomer = $this->lastCdcAmountWithCalculation();;
         
         $customerTransaction = new CustomerTransactionHistory();
         $rand = rand(01,99);
@@ -77,90 +75,106 @@ trait CustomerPaymentProcessTrait
         $customerTransaction->save();
         return $customerTransaction;
     }
-    
-    //depend on its.. first call this method
-    public function makeCurrentCdcAmount()
-    {
-        $changingAmount = 0;
-        $ctsCdfType = $this->ctsCdsTypeId;
+
+    //this method will be called : begin of the line
+    private function lastCdcAmountWithCalculation(){
+
+        $lastPaymentAmount = CustomerTransactionHistory::select('cdc_amount','user_id')->where('user_id',$this->ctsCustomerId)->latest()->first();
+        if($lastPaymentAmount)
+        {
+            $lastAmount = $lastPaymentAmount->cdc_amount;
+        }else{
+            $lastAmount = 0;
+        }
+
         $mainAmount = 0;
+        $changingAmount = 0;
+        $changeAmountWithCalculation = $lastAmount;
+        $ctsCdfType = $this->ctsCdsTypeId;
         if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell'){
             $mainAmount = $this->processingOfAllCustomerTransactionRequestData['sell_due'];;
             $changingAmount = $this->processingOfAllCustomerTransactionRequestData['sell_due'];
+            $changeAmountWithCalculation = $lastAmount + $changingAmount;
             $ctsCdfType = 2;//$this->ctsCdsTypeId; //plus or minus +/-
         } 
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Previous Due'){
             $mainAmount = $this->amount;
             $changingAmount = $this->amount;
+            $changeAmountWithCalculation = $lastAmount + $changingAmount;
             $ctsCdfType = 2;//$this->ctsCdsTypeId; //plus or minus +/-
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Return'){
             $mainAmount = $this->amount;
             $changingAmount = $this->sellReturnFormulaCalculation();
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//$this->ctsCdsTypeId; //plus or minus +/-
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Quotation'){
             $mainAmount = $this->amount;
             $changingAmount = 0;
+            $changeAmountWithCalculation = $lastAmount + $changingAmount;
             $ctsCdfType = 3;//no change
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Due Payment'){
             $mainAmount = $this->amount;
-            $changingAmount = $this->amount;;//$this->commonFormulaCalculation($ttModuleIdDue = 2,$ttModuleIdPaid = 7);
+            $changingAmount = $this->amount;//$this->commonFormulaCalculation($ttModuleIdDue = 2,$ttModuleIdPaid = 7);
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//Paid    => 2= sell due , 7= sell due payment
-            
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Previous Due Payment'){
             $mainAmount = $this->amount;
             $changingAmount = $this->commonFormulaCalculation($ttModuleIdDue = 1,$ttModuleIdPaid = 8);
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//Paid    => 1= Previous Due , 8=Previous Due Payment
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Change Payment Date'){
             $mainAmount = $this->amount;
             $changingAmount = 0;
+            $changeAmountWithCalculation = $lastAmount + $changingAmount;
             $ctsCdfType = 3;//no change
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Overall Sell Discount'){
             $mainAmount = $this->amount;
             $changingAmount = $this->commonFormulaCalculation($ttModuleIdDue = 2,$ttModuleIdPaid = 11);
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//Paid   => 2= sell due , 7= Overall Sell Discount
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Advance'){
             $mainAmount = $this->amount;
             $changingAmount = $this->amount;//$this->commonFormulaCalculation($ttModuleIdDue = 2,$ttModuleIdPaid = 5);
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//Paid
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Loan'){
             $mainAmount = $this->amount;
             $changingAmount = $this->amount;//$this->commonFormulaCalculation($ttModuleIdDue = 2,$ttModuleIdPaid = 4);
+            $changeAmountWithCalculation = $lastAmount + $changingAmount;
             $ctsCdfType = 2;//Due
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Return Payment'){
             //next time maybe implement. not now
             $mainAmount = $this->amount;
             $changingAmount = $this->amount;
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//Paid   => 
         }
         else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Loan Payment'){
             //next time maybe implement. not now
             $mainAmount = $this->amount;
             $changingAmount = 0;
+            $changeAmountWithCalculation = $lastAmount - $changingAmount;
             $ctsCdfType = 1;//Paid
         }else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Advance Payment'){
             //next time maybe implement. not now
             $mainAmount = $this->amount;
             $changingAmount = 0;
+            $changeAmountWithCalculation = $lastAmount + $changingAmount;
             $ctsCdfType = 2;//Due
         }
-        else{
-            $changingAmount = $this->amount;
-            $mainAmount = $this->amount;
-            $ctsCdfType = $this->ctsCdsTypeId;//plus or minus +/-
-        }
         $this->ctsPaymentMainAmount = $mainAmount;
-        $this->ctsPaymentChangingAmount = $changingAmount;
         $this->ctsCdsChangingTypeId = $ctsCdfType;
-        return true;
+        return $this->ctsPaymentChangingAmount = $changeAmountWithCalculation;
+
         allCTSModule_hp();//its when check only
         getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId);//its when check only
     }
@@ -222,33 +236,6 @@ trait CustomerPaymentProcessTrait
             $returnAmount = 0;
         }
         return $returnAmount;
-
-        /* 
-        //total 600, paid 0, due 600
-        //return 100,
-        //
-        $totalInvoiceAmount = $this->processingOfAllCustomerTransactionRequestData['total_sell_invoice_amount'];
-        $totalInvoicePaidAmount = $this->processingOfAllCustomerTransactionRequestData['total_sell_invoice_paid_amount'];
-        $totalInvoiceDueAmount = $this->processingOfAllCustomerTransactionRequestData['total_sell_invoice_due_amount'];
-        $changeableAmount = 0;
-        if($totalInvoiceDueAmount > 0){
-            $dueChangeAmount = 0;
-            if($totalInvoiceDueAmount == $this->amount){
-                $dueChangeAmount = $totalInvoiceDueAmount;
-            }
-            else if($totalInvoiceDueAmount > $this->amount){
-                $dueChangeAmount = $this->amount;
-            }
-            else if($totalInvoiceDueAmount < $this->amount){
-                $dueChangeAmount = $totalInvoiceDueAmount;
-            }else{
-                $dueChangeAmount = $this->amount;
-            }
-            $changeableAmount = $dueChangeAmount;
-        }else{
-            $changeableAmount = 0;
-        }
-        return $changeableAmount; */
     }
 
     //make all formula for all module
@@ -282,107 +269,6 @@ trait CustomerPaymentProcessTrait
         return $changeableAmount;
     }
 
-    //second time call this method
-    //current cdc amount after culculation by cdf type id
-    private function currentCdcAmountAfterCalculationByCtsCdfType(){
-        //required parameter 2 : $this->ctsCdsTypeId, $this->currentPaymentAmount
-
-        $lastPaymentAmount = CustomerTransactionHistory::select('cdc_amount','user_id')->where('user_id',$this->ctsCustomerId)->latest()->first();
-        if($lastPaymentAmount)
-        {
-            $lastAmount = $lastPaymentAmount->cdc_amount;
-        }else{
-            $lastAmount = 0;
-        }
-
-        $cdcAmount = 0;
-        if($this->ctsCdsChangingTypeId == 1){
-            if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Return'){
-               return $amount = $lastAmount - $this->ctsPaymentChangingAmount;
-                /* $cdcAmount = 0;
-                if($amount == 0){
-                    $cdcAmount = 0;
-                }
-                else if($amount > 0){
-                    $cdcAmount = $amount;
-                }
-                else if($amount < 0){
-                    $cdcAmount = 0;
-                }
-                return $cdcAmount; */
-            }
-            if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Due Payment'){
-               return $cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;
-            }
-            else{
-                return $cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;//$this->currentPaymentAmount;
-            }
-            return $cdcAmount;
-        }
-        else if($this->ctsCdsChangingTypeId == 2){
-            return $cdcAmount = $lastAmount + $this->ctsPaymentChangingAmount;
-            if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Previous Due'){
-                return $cdcAmount = $lastAmount + $this->ctsPaymentChangingAmount;
-            }
-        }
-        return  $cdcAmount;
-
-
-
-
-        $cdcAmount = 0;
-        if($this->ctsCdsChangingTypeId == 1) // credit = paid
-        {
-            if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Advance'){
-                $cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;
-            }
-            else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Sell Return'){
-                $amount = $lastAmount - $this->ctsPaymentChangingAmount;
-                $cdcAmount = 0;
-                if($amount == 0){
-                    $cdcAmount = 0;
-                }
-                else if($amount > 0){
-                    $cdcAmount = $amount;
-                }
-                else if($amount < 0){
-                    $cdcAmount = 0;
-                }
-            }else{
-                $cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;//$this->currentPaymentAmount;
-            }
-        }
-        else if($this->ctsCdsChangingTypeId == 2)
-        {
-            if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Previous Due'){
-                return $cdcAmount = $lastAmount + $this->ctsPaymentChangingAmount;
-            }
-            else if(getCTSModuleBySingleModuleId_hp($this->ctsTTModuleId) == 'Loan'){
-               return $cdcAmount = $lastAmount + $this->ctsPaymentChangingAmount;
-            }
-            else{
-                if($lastAmount == 0){
-                    $cdcAmount = 0;//$this->ctsPaymentChangingAmount
-                }else{
-                    if($lastAmount > $this->ctsPaymentChangingAmount){
-                        $cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;
-                    }
-                    else if($lastAmount < $this->ctsPaymentChangingAmount){
-                        $cdcAmount = $this->ctsPaymentChangingAmount - $lastAmount;
-                    }
-                    else if($lastAmount == $this->ctsPaymentChangingAmount){
-                        $cdcAmount = $lastAmount;
-                    }
-                }
-                return $cdcAmount;
-            }
-            //$cdcAmount = $lastAmount - $this->ctsPaymentChangingAmount;//$this->currentPaymentAmount;
-        }
-        else{
-           $cdcAmount = $lastAmount;
-        }
-        return $cdcAmount;
-    }
 
 
 

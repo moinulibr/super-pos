@@ -826,19 +826,19 @@ use App\Models\Backend\Payment\Account;
             {
                 return [
                     //value = label
-                    1 => "Previous Due",//(Opening Due) //due
-                    2 => "Sell", //                     //Due
+                    1 => "Previous Due",//(Opening Due) //due 2
+                    2 => "Sell", //                     //Due 2
                     3 => "Quotation",//                 //nothing
-                    4 => "Loan",//                      // Due
-                    5 => "Advance", //                  // Paid
-                    6 => "Sell Return",//               // Paid
-                    7 => "Sell Due Payment",//SD Payment // Paid
-                    8 => "Previous Due Payment", //PD Payment // Paid
-                    9 => "Sell Return Payment", // SR Payment // Paid
-                    10 => "Change Payment Date", // Change Payment Date
-                    11 => "Overall Sell Discount", // Sell Return Payment // paid 
-                    12 => "Loan Payment", // Sell Return Payment // paid - credit
-                    13 => "Advance Payment", // Sell Return Payment //due - debit 
+                    4 => "Loan",//                      // Due 2
+                    5 => "Advance", //                  // Paid 1
+                    6 => "Sell Return",//               // Paid 1
+                    7 => "Sell Due Payment",//SD Payment // Paid 1
+                    8 => "Previous Due Payment", //PD Payment // Paid 1
+                    9 => "Sell Return Payment", // SR Payment // Paid 1
+                    10 => "Change Payment Date", // Change Payment Date 3
+                    11 => "Overall Sell Discount", // Sell Return Payment // paid 1
+                    12 => "Loan Payment", // Sell Return Payment // paid - credit 1
+                    13 => "Advance Payment", // Sell Return Payment //due - debit 2
                 ]; 
             }
                     	//selling time discount
