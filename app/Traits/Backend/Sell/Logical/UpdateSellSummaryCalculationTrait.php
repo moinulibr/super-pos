@@ -138,7 +138,7 @@ trait UpdateSellSummaryCalculationTrait
         
         $existingData = SellInvoice::select('id','sell_quantity','total_selling_amount','total_refunded_amount','refundable_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
         'total_selling_profit','total_invoice_amount','overall_discount_amount','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty',
-        'subtotal','total_discount','total_vat','shipping_cost','others_cost','round_amount','total_payable_amount',
+        'subtotal','total_discount','total_vat','shipping_cost','others_cost','round_amount','total_payable_amount','status','delivery_status','total_delivered_qty',
         'paid_amount','due_amount','total_discount_amount','refund_charge','reference_amount','total_paid_amount','total_due_amount','total_sell_item','total_refunded_item','total_item','payment_status','payment_type'
         )->where('id',$primaryId)->first();
 
@@ -255,41 +255,24 @@ trait UpdateSellSummaryCalculationTrait
         $existingData->total_profit = number_format((($existingData->total_profit_from_product + $invoicePlusableChargeForInvoiceProfit) - ($invoiceMinusableCostForInvoiceProfit)),2,'.','');
         //total profit calculation
         
-        //have to work about this 3 below status
-        //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
-        //payment_status => 1=Full Paid, 2=Partial Paid, 3=Full Due, 4=Partial Refund, 5=Refunded 
-        //delivery status => 1=Full Delivered, 2=Partial delivered, 3=Not Delivered, 4=Partial Refund, 5=Refunded 
 
-        $status = NULL;//ordered
-        $deliveryStatus = NULL;
-        $paidStatus = NULL;
+        //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
+        $status = $existingData->status;//ordered
         if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount == 0)){
             $status = 1;//ordered
-            $deliveryStatus = NULL;
-            $paidStatus = NULL;
         }
-       
         else if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount > 0)){
             $status = 4;//partial refunded
-            $deliveryStatus = 4;//partial refunded
-            $paidStatus = 4;//partial refunded
         }
         else if($totalSellingAmount == $totalRefundedAmount && ($totalRefundedAmount > 0)){
             $status = 5;//refunded
-            $deliveryStatus = 5;//refunded
-            $paidStatus = 5;//refunded
         }
        
-
-
-        //payment status and payment type
-        $paymentStatus = "";
-        $payment_type = "";
-       if($paidStatus == 5){
-            $paymentStatus = 5; //Refunded
-            $payment_type = "Full Refunded";
-        }
-        else if($paidStatus < 5 || $paidStatus == NULL){
+        //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
+        //payment_status => 1=Full Paid, 2=Partial Paid, 3=Full Due, 4=Partial Refund, 5=Refunded    
+        $paymentStatus = $existingData->payment_status;
+        $payment_type = "Not Paid";
+        if($status == 1 || $status == 4){
             if($totalPayableAmount == $newPaidAmount){
                 $paymentStatus = 1;//full paid
                 $payment_type = "Full Payment";
@@ -301,11 +284,49 @@ trait UpdateSellSummaryCalculationTrait
             else if($totalPayableAmount > $newPaidAmount &&  $newPaidAmount == 0){
                 $paymentStatus = 3;//"Not Paid";
                 $payment_type = "Not Paid";
-            }
+            } 
         }
+        else if($status == 2){
+            $paymentStatus = 3;
+              $payment_type = "Quotation";     
+        } 
+        else if($status == 3){
+            $paymentStatus = 5;
+              $payment_type = "Cancel";
+        }
+        else if($status == 5){
+            $paymentStatus = 5;
+              $payment_type = "Refunded";
+        }
+        $existingData->status = $status;
         $existingData->payment_status = $paymentStatus;
         $existingData->payment_type	 = $payment_type;
         //payment status and payment type
+
+
+        //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
+        //delivery status => 1=Full Delivered, 2=Partial delivered, 3=Not Delivered, 4=Partial Refund, 5=Refunded, 6=Cancel
+        $deliveryStatus = $existingData->delivery_status;
+        if($status == 1 || $status == 4){
+            $totalDeliveredQuantity = $existingData->sellProducts->sum('delivered_qty');
+            if($totalDeliveredQuantity == $totalQuantity){
+                $deliveryStatus = 1;    
+            }
+            else if($totalDeliveredQuantity < $totalQuantity){
+                $deliveryStatus = 2;    
+            }
+        }
+        else if($status == 2){
+            $deliveryStatus = 2;     
+        } 
+        else if($status == 3){
+            $deliveryStatus = 3;
+        }
+        else if($status == 5){
+            $deliveryStatus = 5;
+        }
+        $existingData->delivery_status	 = $deliveryStatus;
+        //delivery status
 
         $existingData->save();
         return true;

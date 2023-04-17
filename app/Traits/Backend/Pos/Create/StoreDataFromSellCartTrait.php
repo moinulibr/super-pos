@@ -80,74 +80,93 @@ trait StoreDataFromSellCartTrait
         
         $sellInvoice->save();
 
-        //general statement- ledger 
-        if(($this->sellCreateFormData['invoice_total_paying_amount'] ?? 0) > 0)
-        {
-            //for payment processing 
-            $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-            $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
-            $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
-            $moduleRelatedData = [
-                'main_module_invoice_no' => $sellInvoice->invoice_no,
-                'main_module_invoice_id' => $sellInvoice->id,
-                'module_invoice_no' => $sellInvoice->invoice_no,
-                'module_invoice_id' => $sellInvoice->id,
-                'user_id' => $this->sellCreateFormData['customer_id'],//client[customer,supplier,others staff]
-            ];
-            $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
-            $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($this->sellCreateFormData);// $paymentAllData;
-            $this->invoiceTotalPayingAmount = $this->sellCreateFormData['invoice_total_paying_amount'] ?? 0 ;
-            $this->processingPayment();
-        }
-        //general statement- ledger 
 
-        //customer transaction statement history
-        $sellType = $this->sellCreateFormData['sell_type'];
-        $sellAmount = 0;
-        $paidAmount = 0;
-        $dueAmount = 0;
-        $ctsTypeModule = '';
-        $ctsCdfType = '';
-        $note = "";
-        if($sellType == 1)//final sell
-        {
-            $ctsTypeModule = 'Sell';
-            $ctsCdfType = 'Due';
-            $note = "Create sell";
-            $sellAmount = $sellInvoice->total_payable_amount;
-            $paidAmount = $sellInvoice->total_paid_amount;
-            $dueAmount = $sellInvoice->due_amount;
-        }else{ // quotation
-            $ctsTypeModule = 'Quotation';
-            $ctsCdfType = 'No Change';
-            $note = "Create quotation";
+        /*
+        |-----------------------------------------------
+        | payment process : general : statement- ledger 
+        |-----------------------------------------------
+        */
+            if(($this->sellCreateFormData['invoice_total_paying_amount'] ?? 0) > 0){
+
+                //for payment processing 
+                $this->mainPaymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                $this->paymentModuleId = getModuleIdBySingleModuleLebel_hh('Sell');
+                $this->paymentCdfTypeId = getCdfIdBySingleCdfLebel_hh('Credit');
+                $moduleRelatedData = [
+                    'main_module_invoice_no' => $sellInvoice->invoice_no,
+                    'main_module_invoice_id' => $sellInvoice->id,
+                    'module_invoice_no' => $sellInvoice->invoice_no,
+                    'module_invoice_id' => $sellInvoice->id,
+                    'user_id' => $this->sellCreateFormData['customer_id'],//client[customer,supplier,others staff]
+                ];
+                $this->paymentProcessingRequiredOfAllRequestOfModuleRelatedData = $moduleRelatedData;
+                $this->paymentProcessingRelatedOfAllRequestData = paymentDataProcessingWhenSellingSubmitFromPos_hh($this->sellCreateFormData);// $paymentAllData;
+                $this->invoiceTotalPayingAmount = $this->sellCreateFormData['invoice_total_paying_amount'] ?? 0 ;
+                $this->processingPayment();
+            }
+        /*
+        |-----------------------------------------------
+        | payment process : general : statement- ledger 
+        |-----------------------------------------------
+        */
+
+        
+        
+        /*
+        |-----------------------------------------
+        | customer transaction History
+        |-----------------------------------------
+        */
+            $sellType = $this->sellCreateFormData['sell_type'];
             $sellAmount = 0;
             $paidAmount = 0;
             $dueAmount = 0;
-        }
-        $requestCTSData = [];
-        $requestCTSData['amount'] = 0;
-        $requestCTSData['ledger_page_no'] = NULL;
-        $requestCTSData['next_payment_date'] = NULL;
-        $requestCTSData['short_note'] =   $note;
-        $requestCTSData['sell_amount'] = $sellAmount;//$sellInvoice->total_payable_amount;
-        $requestCTSData['sell_paid'] = $paidAmount;
-        $requestCTSData['sell_due'] = $dueAmount;
-        $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
-        $this->amount = $sellInvoice->total_payable_amount;
-        
-        $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp($ctsTypeModule);
-        $this->ctsCustomerId = $this->sellCreateFormData['customer_id'];
-        $ttModuleInvoics = [
-            'invoice_no' => $sellInvoice->invoice_no,
-            'invoice_id' => $sellInvoice->id, 
-            'tt_main_module_invoice_no' => $sellInvoice->invoice_no,
-            'tt_main_module_invoice_id' => $sellInvoice->id,
-        ];
-        $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
-        $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp($ctsCdfType);
-        $this->processingOfAllCustomerTransaction();
-        //customer transaction statement history   
+            $ctsTypeModule = '';
+            $ctsCdfType = '';
+            $note = "";
+            if($sellType == 1)//final sell
+            {
+                $ctsTypeModule = 'Sell';
+                $ctsCdfType = 'Due';
+                $note = "Create sell";
+                $sellAmount = $sellInvoice->total_payable_amount;
+                $paidAmount = $sellInvoice->total_paid_amount;
+                $dueAmount = $sellInvoice->due_amount;
+            }else{ // quotation
+                $ctsTypeModule = 'Quotation';
+                $ctsCdfType = 'No Change';
+                $note = "Create quotation";
+                $sellAmount = 0;
+                $paidAmount = 0;
+                $dueAmount = 0;
+            }
+            $requestCTSData = [];
+            $requestCTSData['amount'] = 0;
+            $requestCTSData['ledger_page_no'] = NULL;
+            $requestCTSData['next_payment_date'] = NULL;
+            $requestCTSData['short_note'] =   $note;
+            $requestCTSData['sell_amount'] = $sellAmount;//$sellInvoice->total_payable_amount;
+            $requestCTSData['sell_paid'] = $paidAmount;
+            $requestCTSData['sell_due'] = $dueAmount;
+            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
+            $this->amount = $sellInvoice->total_payable_amount;
+            
+            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp($ctsTypeModule);
+            $this->ctsCustomerId = $this->sellCreateFormData['customer_id'];
+            $ttModuleInvoics = [
+                'invoice_no' => $sellInvoice->invoice_no,
+                'invoice_id' => $sellInvoice->id, 
+                'tt_main_module_invoice_no' => $sellInvoice->invoice_no,
+                'tt_main_module_invoice_id' => $sellInvoice->id,
+            ];
+            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp($ctsCdfType);
+            $this->processingOfAllCustomerTransaction();
+        /*
+        |-----------------------------------------
+        | customer transaction History
+        |-----------------------------------------
+        */
 
 
         //calculation in the customer table
@@ -461,15 +480,15 @@ trait StoreDataFromSellCartTrait
         $payment_type = "";
         if($totalPayableAmount == $totalPaidAmount)
         {
-            $paymentStatus = 1;
+            $paymentStatus = 1;//Full Paid
             $payment_type = "Full Payment";
         }
         else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount > 0){
-            $paymentStatus = 2;
+            $paymentStatus = 2;//Parital Paid
             $payment_type = "Partial Payment";
         }
         else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount == 0){
-            $paymentStatus = 3;
+            $paymentStatus = 3;//Not Paid
             $payment_type = "Not Paid";
         }
         $sellInvoice->payment_status = $paymentStatus;
@@ -496,7 +515,7 @@ trait StoreDataFromSellCartTrait
         if($customer)
         {
             $sellInvoice->customer_type_id = $customer->customer_type_id;  
-            $sellInvoice->customer_phone = $customer->phone;  
+            //$sellInvoice->customer_phone = $customer->phone;  
         }else{
             $sellInvoice->customer_type_id = 2;  //temporary
         }
@@ -504,8 +523,8 @@ trait StoreDataFromSellCartTrait
         {
             $sellInvoice->sell_date = date('Y-m-d h:i:s');
         }
-        $sellInvoice->status = 1;
-        $sellInvoice->delivery_status = 1;
+        $sellInvoice->status = $this->sellCreateFormData['sell_type'] == 1 ? 1 : 2; //1=ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded
+        $sellInvoice->delivery_status = 3; //1=Full Delivered, 2=Partial Delivered, 3=Not Delivery, 4=Partial Refund, 5=Refunded
         $sellInvoice->created_by = authId_hh();
 
         $sellInvoice->save();

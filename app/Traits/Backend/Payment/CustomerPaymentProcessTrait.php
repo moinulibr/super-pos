@@ -42,6 +42,7 @@ trait CustomerPaymentProcessTrait
     //insert account payment invoice
     protected function insertCustomerTransactionHistory()
     {   
+        //this method must be called top of this method
         $lastAmountOfThisCustomer = $this->lastCdcAmountWithCalculation();;
         
         $customerTransaction = new CustomerTransactionHistory();
@@ -70,7 +71,6 @@ trait CustomerPaymentProcessTrait
         $customerTransaction->short_note = $this->processingOfAllCustomerTransactionRequestData['short_note'];
         $customerTransaction->save();
 
-        
         $customerTransaction->cdc_amount = $lastAmountOfThisCustomer;
         $customerTransaction->save();
         return $customerTransaction;

@@ -79,6 +79,12 @@ class SellProductDeliveryController extends Controller
                 //module = SellProduct, moduleTypeId = 1
                 $this->sellModuleWiseUpdateDbField($moduleTypeId = 1, $primaryId = $request->sell_invoice_id);
 
+                //sell invoice update with all caculation
+                if($invoiceData){
+                    $this->updateSellInvoiceCalculation($invoiceData->id);
+                }
+                //sell invoice update with all caculation
+                
                 DB::commit();
             }else{
                 return response()->json([
