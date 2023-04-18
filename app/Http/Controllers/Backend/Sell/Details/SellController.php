@@ -63,13 +63,33 @@ class SellController extends Controller
                 }
             }
             
-            if($request->search)
-            {
+            if($request->search){
                 $sell->where('invoice_no','like','%'.$request->search.'%');
                 //->orWhere('customer_phone','like','%'.$request->search.'%');
             }
-            if($request->input('date_from'))
-            {
+            if($request->payment_status){
+                $sell->where('payment_status',$request->payment_status);
+            }   
+            if($request->delivery_status){
+                $sell->where('delivery_status',$request->delivery_status);
+            }  
+            if($request->sold_type){
+                //1 = direct sold, 2 = sold from quotation, 3 = quotation - this quotation is sold, 4 = quotation
+                $soldType = [];
+                if($request->sold_type == 1){
+                    $soldType = [1];
+                }
+                else if($request->sold_type == 2){
+                    $soldType = [2];
+                }
+                else if($request->sold_type == 3){
+                    $soldType = [2,3];
+                }else if($request->sold_type == 4){
+                    $soldType = [4];
+                }
+                $sell->whereIn('sold_type',$soldType);
+            }
+            if($request->input('date_from')){
                 $sell->whereDate('created_at', '>=', $date_from)
                 ->whereDate('created_at', '<=', $date_to);
             }

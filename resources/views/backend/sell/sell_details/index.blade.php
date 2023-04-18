@@ -87,9 +87,9 @@
             <div class="row" style="margin-bottom: 5px;background-color:#ffff;padding:5px 0px 10px 0px;">
                 <div class="col-12">
                     <div>
-                        <table  style="width: 100%;">
+                        <table  style="width:100%;">
                             <tr>
-                                <td style="width:6%">
+                                <td style="width:5%">
                                     <label for="">&nbsp;</label>
                                     <select class="form-control paginate" id="paginate" name="paginate" style="font-size: 12px;width:100%;">
                                         <option value="5">5</option>
@@ -108,32 +108,59 @@
                                     </select>
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width:14%">
+                                <td style="width:9%">
                                     <label for="">Date From </label>
                                     <input type="date" class="form-control date_from">
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width:14%">
+                                <td style="width:9%">
                                     <label for="">Date To</label>
                                     <input type="date" class="form-control date_to">    
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width:20%">
+                                <td style="width:15%">
                                     <label for=""><strong>Search</strong></label>
                                     <input type="text" class="search form-control" name="search" placeholder="Search (by invoice)" autofocus autocomplete="off">
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width:20%">
+                                <td style="width:15%">
                                     <label for=""><strong>Customer</strong></label>
                                     <input type="text" class="form-control customer" name="customer" placeholder="Customer Name / Phone" autofocus autocomplete="off">
                                 </td>
                                 <td style="width:1%"></td>
-                                <td style="width:20%">
-                                    <label for="">&nbsp;</label>
-                                    <div class="display:flex">
-                                        {{-- <a href="{{route('admin.sell.regular.sell.index')}}" class="btn btn-success btn">Reload</a>
-                                        <a href="{{route('home')}}" class="btn btn-info btn">Home</a> --}}
-                                    </div>
+                                <td style="width:10%">
+                                    <label for=""><strong>Payment Status</strong></label>
+                                    <select class="form-control payment_status"  name="payment_status">
+                                        <option value="">Payment Status</option>
+                                        <option value="1">Full Paid</option>
+                                        <option value="2">Partial Paid</option>
+                                        <option value="3">Unpaid</option>
+                                        <option value="4">Partial Refund</option>
+                                        <option value="5">Refunded</option>
+                                    </select>
+                                </td>
+                                <td style="width:1%"></td>
+                                <td style="width:10%">
+                                    <label for=""><strong>Sell Type</strong></label>
+                                    <select class="form-control sold_type"  name="sold_type">
+                                        <option value="">Sell Type</option>
+                                        <option value="1">Sell</option>
+                                        <option value="4">Quotation</option>
+                                        <option value="2"><small>Quotation TO Sell</small></option>
+                                        <option value="3"><small>Quotation & Sell</small></option>
+                                    </select>
+                                </td>
+                                <td style="width:1%"></td>
+                                <td style="width:10%;display:none;">
+                                    <label for=""><strong>Delivery Status</strong></label>
+                                    <select class="form-control delivery_status"  name="delivery_status">
+                                        <option value="">Delivery Status</option>
+                                        <option value="1">Full Delivered</option>
+                                        <option value="2">Partial Delivery</option>
+                                        <option value="3">Delivery Pending</option>
+                                        <option value="4">Parital Refund</option>
+                                        <option value="5">Refunded</option>
+                                    </select>
                                 </td>
                             </tr>
                         </table>

@@ -8,6 +8,9 @@
         var createUrl = $('.sellListUrl').val();
         var page_no     = parseInt($('.page_no').val());
         var pagination  = $('.paginate :selected').val();
+        var payment_status  = $('.payment_status :selected').val();
+        var sold_type  = $('.sold_type :selected').val();
+        var delivery_status  = $('.delivery_status :selected').val();
 
         var date_from = $('.date_from').val();
         var date_to = $('.date_to').val();
@@ -19,7 +22,7 @@
         $.ajax({
             url:url,
             data:{
-                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to
+                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to,payment_status:payment_status,sold_type:sold_type,delivery_status:delivery_status
             },
             success:function(response){
                 if(response.status == true)
@@ -45,7 +48,10 @@
         var createUrl = $('.sellListUrl').val();
         var page_no     = parseInt($('.page_no').val());
         var pagination  = $('.paginate :selected').val();
-        
+        var payment_status  = $('.payment_status :selected').val();
+        var sold_type  = $('.sold_type :selected').val();
+        var delivery_status  = $('.delivery_status :selected').val();
+
         var date_from = $('.date_from').val();
         var date_to = $('.date_to').val();
 
@@ -55,7 +61,7 @@
         $.ajax({
             url: url,
             data:{
-                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to
+                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to,payment_status:payment_status,sold_type:sold_type,delivery_status:delivery_status
             },
             type: "GET",
             datatype:"HTML",
@@ -69,7 +75,7 @@
     }
 //-----------------------------------------------------------------------
 
-    $(document).on('click change','.date_from,.date_to,.paginate',function(){
+    $(document).on('click change','.date_from,.date_to,.paginate,.payment_status,.sold_type,.delivery_status',function(){
         sellList();
     });
 
@@ -86,6 +92,9 @@
         var createUrl = $('.sellListUrl').val();
         var page_no     = parseInt($('.page_no').val());
         var pagination  = $('.paginate :selected').val();
+        var payment_status  = $('.payment_status :selected').val();
+        var sold_type  = $('.sold_type :selected').val();
+        var delivery_status  = $('.delivery_status :selected').val();
 
         var date_from = $('.date_from').val();
         var date_to = $('.date_to').val();
@@ -95,7 +104,7 @@
         $.ajax({
             url: url,
             data:{
-                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to
+                pagination:pagination,search:search,customer:customer,page_no:page_no,date_from:date_from,date_to:date_to,payment_status:payment_status,sold_type:sold_type,delivery_status:delivery_status
             },
             type: "GET",
             datatype:"HTML",

@@ -257,7 +257,7 @@ trait UpdateSellSummaryCalculationTrait
         
 
         //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
-        $status = $existingData->status;//ordered
+        $status = $existingData->status;//ordered, here default 2 or 3
         if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount == 0)){
             $status = 1;//ordered
         }
@@ -287,7 +287,7 @@ trait UpdateSellSummaryCalculationTrait
             } 
         }
         else if($status == 2){
-            $paymentStatus = 3;
+            $paymentStatus = 3;//
               $payment_type = "Quotation";     
         } 
         else if($status == 3){
@@ -325,7 +325,7 @@ trait UpdateSellSummaryCalculationTrait
         else if($status == 5){
             $deliveryStatus = 5;
         }
-        $existingData->delivery_status	 = $deliveryStatus;
+        $existingData->delivery_status = $deliveryStatus;
         //delivery status
 
         $existingData->save();

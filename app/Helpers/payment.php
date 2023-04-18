@@ -8,6 +8,58 @@ use App\Models\Backend\Payment\Account;
     | Payment status by total amount and paid amount
     |----------------------------------------------------------------------------------------
     */
+        function paymentStatus_hp($totalAmount,$totalPaidAmount)
+        {
+            if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))
+            {
+                echo '<span class="badge badge-info"> Partial Paid </span>';
+            }
+            else if(($totalPaidAmount > 0) && ($totalAmount == $totalPaidAmount))
+            {
+                echo '<span class="badge badge-success"> Full Paid </span>';
+            } 
+            else if(($totalPaidAmount > 0 ) && ($totalAmount < $totalPaidAmount))
+            {
+                echo '<span class="badge badge-primary"> Over Paid </span>';
+            }
+            else if(($totalPaidAmount == 0) && ($totalAmount > 0))
+            {
+                echo '<span class="badge badge-danger">Due</span>';
+            }
+            else if(($totalAmount == 0))
+            {
+                echo '<span class="badge badge-dark">Refunded</span>';
+            }else{
+                echo '<span class="badge badge-default"> not processed </span>';
+            }
+        }
+
+        function paymentStatusColorOfLabel_hp($totalAmount,$totalPaidAmount){
+            if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))
+            {
+                return 'color:#2333eb !important;';
+            }
+            else if(($totalPaidAmount > 0) && ($totalAmount == $totalPaidAmount))
+            {
+                return 'color:#62d493 !important;';
+            } 
+            else if(($totalPaidAmount > 0 ) && ($totalAmount < $totalPaidAmount))
+            {
+                return 'color:#55a3f4 !important;';
+            }
+            else if(($totalPaidAmount == 0) && ($totalAmount > 0))
+            {
+                return 'color:#ff4961 !important;';
+            }
+            else if(($totalAmount == 0))
+            {
+                return 'color:#606c72 !important;';
+            }else{
+                return 'color:#727576 !important;';
+            }
+        }
+
+        //before order status, payment status set
         function paymentStatus_hh($totalAmount,$totalPaidAmount)
         {
             if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))

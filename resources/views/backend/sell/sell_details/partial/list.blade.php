@@ -100,7 +100,11 @@
                             </strong>
                         </td>
                         <td style="text-align:center;">
-                            {{$item->sell_type == 1 ? 'Sell' : 'Quotation'}}
+                            @if ($item->sell_type == 1)
+                                <strong>Sell</strong>
+                                @elseif ($item->sell_type == 2)
+                                <small style="color:red;font-size:11px;">Quotation</small>
+                            @endif
                         </td>
                         <td style="text-align:center;">{{$item->totalSellItemAfterRefund()}}</td>
                         <td style="text-align:center;">

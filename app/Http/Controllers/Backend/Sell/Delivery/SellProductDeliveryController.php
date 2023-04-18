@@ -344,6 +344,7 @@ class SellProductDeliveryController extends Controller
     //sell product delivery invoice
     private function sellProductDeliveryInvoiceStore($makeInvoice,$sellInvoice)
     {
+        //product_receiver_name,product_receiver_phone,product_receiver_address
         $sellDeliver = new SellProductDeliveryInvoice();
         $sellDeliver->branch_id = authBranch_hh();
         //$sellDeliver->invoice_no = $makeInvoice; 
