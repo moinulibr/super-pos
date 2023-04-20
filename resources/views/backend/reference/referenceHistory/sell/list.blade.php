@@ -194,7 +194,8 @@
                                     {{$item->total_due_amount}}
                                 </td>
                                 <td>
-                                    {{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}}
+                                    {{-- {{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}} --}}
+                                    {{paymentStatus_hp($item->sell_type,$item->payment_status)}}
                                 </td>
                                 <td>
                                     @if ($item->sell_type == 1)

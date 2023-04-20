@@ -43,6 +43,7 @@
                     <b> Due Amount : </b>{{ number_format($data->due_amount,2,".","") }}{{currencySymbol_hh()}} <br>
                     <b>Payment Status:</b>
                     <span>
+                        {{-- {{paymentStatus_hp($data->sell_type,$data->payment_status)}} --}}
                         {{paymentStatus_hh($data->total_payable_amount,$data->total_paid_amount)}}
                     </span>
                     <br>

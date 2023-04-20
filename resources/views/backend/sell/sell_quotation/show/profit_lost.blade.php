@@ -131,7 +131,7 @@
                                         @else
                                         <span class="badge badge-danger">Due</span>
                                     @endif --}}
-                                    <span class="badge badge-danger">Due</span>
+                                    {{paymentStatus_hp($data->sell_type,$data->payment_status)}}
                             </label>
                         </div>
                     </div>

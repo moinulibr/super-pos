@@ -91,13 +91,15 @@
                         </td>
                         <td style="text-align:center;">
                             @if ($item->sell_type == 1)
-                            <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}">
+                                {{-- <strong style="{{paymentStatusLabelColor_hp($item->total_payable_amount,$item->total_paid_amount)}}"> --}}
+                                <strong style="{{paymentStatusColorOfLabel_hp($item->sell_type,$item->payment_status)}}">
                                 {{$item->customer?$item->customer->name:NULL}}
-                                @elseif ($item->sell_type == 2)
+                                </strong>
+                            @elseif ($item->sell_type == 2)
                                 <strong style="color:#387891">
-                            {{$item->quotation ? $item->quotation->customer_name : NULL}}
+                                {{$item->quotation ? $item->quotation->customer_name : NULL}}
+                                </strong>
                             @endif
-                            </strong>
                         </td>
                         <td style="text-align:center;">
                             @if ($item->sell_type == 1)
@@ -123,7 +125,8 @@
                         </td>
                         
                         <td style="text-align:center;">
-                            {{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}}
+                            {{paymentStatus_hp($item->sell_type,$item->payment_status)}}
+                            {{-- {{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}} --}}
                         </td>
 
                         <td style="text-align:center;">{{$item->createdBy ? $item->createdBy->name : NULL}}</td>

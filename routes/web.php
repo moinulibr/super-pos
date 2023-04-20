@@ -488,6 +488,7 @@ Route::group(['middleware' => ['auth']], function ()
                 
                 //sell update calculation summery
                 Route::get('sell/single/invoice/update/calculation/summery/{id}','SellController@updateSellCalculation')->name('update.sell.calculation');
+                Route::get('update/all/sell/invoice','SellController@updatePreviousSellInvoice')->name('update.sell.invoice');
                 
                 //payment
                 Route::get('sell/receive/payment/','SellController@receiveSingleInvoiceWisePayment')->name('view.single.invoice.receive.payment.modal');

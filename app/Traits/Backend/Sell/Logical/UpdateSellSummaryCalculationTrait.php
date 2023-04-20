@@ -136,7 +136,7 @@ trait UpdateSellSummaryCalculationTrait
     //sell invoice table
     private function updateSellInvoiceCalculation($primaryId) : bool {
         
-        $existingData = SellInvoice::select('id','sell_quantity','total_selling_amount','total_refunded_amount','refundable_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
+        $existingData = SellInvoice::select('sell_type','id','sell_quantity','total_selling_amount','total_refunded_amount','refundable_amount','total_sold_amount','total_selling_purchase_amount','total_refunding_purchase_amount',
         'total_selling_profit','total_invoice_amount','overall_discount_amount','total_refunded_reduced_profit','total_profit_from_product','total_profit','total_purchase_amount','total_quantity','total_refunded_qty',
         'subtotal','total_discount','total_vat','shipping_cost','others_cost','round_amount','total_payable_amount','status','delivery_status','total_delivered_qty',
         'paid_amount','due_amount','total_discount_amount','refund_charge','reference_amount','total_paid_amount','total_due_amount','total_sell_item','total_refunded_item','total_item','payment_status','payment_type'
@@ -256,18 +256,25 @@ trait UpdateSellSummaryCalculationTrait
         //total profit calculation
         
 
-        //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
         $status = $existingData->status;//ordered, here default 2 or 3
-        if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount == 0)){
-            $status = 1;//ordered
+        //sell_type => 1=sell, 2=quotation
+        if($existingData->sell_type == 1){
+            //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
+            if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount == 0)){
+                $status = 1;//ordered
+            }
+            else if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount > 0)){
+                $status = 4;//partial refunded
+            }
+            else if($totalSellingAmount == $totalRefundedAmount && ($totalRefundedAmount > 0)){
+                $status = 5;//refunded
+            }
         }
-        else if($totalSellingAmount > $totalRefundedAmount && ($totalRefundedAmount > 0)){
-            $status = 4;//partial refunded
-        }
-        else if($totalSellingAmount == $totalRefundedAmount && ($totalRefundedAmount > 0)){
-            $status = 5;//refunded
+        else if($existingData->sell_type == 2){
+            $status = 2;
         }
        
+        
         //status => 1= Ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded 
         //payment_status => 1=Full Paid, 2=Partial Paid, 3=Full Due, 4=Partial Refund, 5=Refunded    
         $paymentStatus = $existingData->payment_status;
@@ -287,7 +294,7 @@ trait UpdateSellSummaryCalculationTrait
             } 
         }
         else if($status == 2){
-            $paymentStatus = 3;//
+            $paymentStatus = 6;//quotation
               $payment_type = "Quotation";     
         } 
         else if($status == 3){
@@ -296,7 +303,7 @@ trait UpdateSellSummaryCalculationTrait
         }
         else if($status == 5){
             $paymentStatus = 5;
-              $payment_type = "Refunded";
+            $payment_type = "Refunded";
         }
         $existingData->status = $status;
         $existingData->payment_status = $paymentStatus;

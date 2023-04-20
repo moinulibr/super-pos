@@ -399,59 +399,29 @@ class SellController extends Controller
         return redirect()->route('admin.sell.regular.sell.index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
   
-    public function store(Request $request)
-    {
-        //
+   
+
+    //update previous sell invoice
+    //url : admin/sell/regular/update/all/sell/invoice
+    public function updatePreviousSellInvoice(){
+       
+        ini_set('max_execution_time', 28800);
+        $sellInvoiceIds = SellInvoice::select('id','deleted_at')->whereNull('deleted_at')->pluck('id')->toArray();
+        
+        if(isset($sellInvoiceIds) && is_array($sellInvoiceIds)){
+
+            $arrayChunkBigData =  array_chunk($sellInvoiceIds,100,false);
+
+            foreach($arrayChunkBigData as $arrayChunkLimitedData){
+
+                foreach($arrayChunkLimitedData as $primaryId){
+                    $this->updateSellInvoiceCalculation($primaryId);
+                }
+            }
+        }
+        return "completed";
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

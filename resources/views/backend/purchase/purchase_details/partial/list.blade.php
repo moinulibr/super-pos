@@ -69,7 +69,10 @@
                     <td>{{$item->supplier ? $item->supplier->name : NULL}}</td>
                     <td>{{$item->total_payable_amount}}</td>
                     <td>{{$item->total_discount}}</td>
-                    <td>{{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}}</td>
+                    <td>
+                        {{-- {{paymentStatus_hp($item->sell_type,$item->payment_status)}} --}}
+                        {{paymentStatus_hh($item->total_payable_amount,$item->total_paid_amount)}}
+                    </td>
                     <td>{{$item->total_paid_amount}}</td>
                     <td>{{$item->due_amount}}</td>
                     <td>{{$item->createdBy ? $item->createdBy->name : NULL}}</td>

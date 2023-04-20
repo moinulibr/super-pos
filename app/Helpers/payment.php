@@ -8,54 +8,63 @@ use App\Models\Backend\Payment\Account;
     | Payment status by total amount and paid amount
     |----------------------------------------------------------------------------------------
     */
-        function paymentStatus_hp($totalAmount,$totalPaidAmount)
-        {
-            if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))
-            {
-                echo '<span class="badge badge-info"> Partial Paid </span>';
+        function paymentStatus_hp($sellType,$payment_status){
+
+            //sell type => 1=final sell, 2=quatation , 3=draft, 4=others
+            if($sellType == 1){
+
+                //1=Full Paid, 2=Partial Paid, 3=Full Due, 4=Partial Refund, 5=Refunded
+                if($payment_status == 1){
+                    echo '<span class="badge badge-success"> Full Paid </span>';
+                } else  if($payment_status == 2){
+                    echo '<span class="badge badge-info"> Partial Paid </span>';
+                } else  if($payment_status == 3){
+                    echo '<span class="badge badge-danger"> Unpaid </span>';
+                } else  if($payment_status == 4){
+                    echo '<span class="badge badge-default">Partial Refunded</span>';
+                } else  if($payment_status == 5){
+                    echo '<span class="badge badge-dark">Refunded</span>';
+                }
+                else  if($payment_status == 6){
+                    echo '<span class="badge badge-primary" style="background-color:#9b411c !important"> Quotation </span>';
+                }
             }
-            else if(($totalPaidAmount > 0) && ($totalAmount == $totalPaidAmount))
-            {
-                echo '<span class="badge badge-success"> Full Paid </span>';
-            } 
-            else if(($totalPaidAmount > 0 ) && ($totalAmount < $totalPaidAmount))
-            {
-                echo '<span class="badge badge-primary"> Over Paid </span>';
+            else if($sellType == 2){
+                echo '<span class="badge badge-primary" style="background-color:#9b411c !important"> Quotation </span>';
             }
-            else if(($totalPaidAmount == 0) && ($totalAmount > 0))
-            {
-                echo '<span class="badge badge-danger">Due</span>';
-            }
-            else if(($totalAmount == 0))
-            {
-                echo '<span class="badge badge-dark">Refunded</span>';
-            }else{
-                echo '<span class="badge badge-default"> not processed </span>';
+            else if($sellType == 3){
+                echo '<span class="badge badge-dark"> Draft </span>';
+            }else if($sellType == 4){
+                echo '<span class="badge badge-dark"> Others </span>';
             }
         }
 
-        function paymentStatusColorOfLabel_hp($totalAmount,$totalPaidAmount){
-            if(($totalPaidAmount > 0 ) && ($totalAmount > $totalPaidAmount))
-            {
-                return 'color:#2333eb !important;';
+        function paymentStatusColorOfLabel_hp($sellType,$payment_status){
+
+            //sell type => 1=final sell, 2=quatation , 3=draft, 4=others
+            if($sellType == 1){
+
+                //1=Full Paid, 2=Partial Paid, 3=Full Due, 4=Partial Refund, 5=Refunded
+                if($payment_status == 1){
+                    return 'color:#62d493 !important;';//full paid
+                }
+                else  if($payment_status == 2){
+                    return 'color:#2333eb !important;';// Partial Paid 
+                } else  if($payment_status == 3){
+                    return 'color:#ff4961 !important;';//unpaid
+                } else  if($payment_status == 4){
+                    return 'color:#727576 !important;';//Partial Refunded
+                } else  if($payment_status == 5){
+                    return 'color:#606c72 !important;';//refunded
+                }
             }
-            else if(($totalPaidAmount > 0) && ($totalAmount == $totalPaidAmount))
-            {
-                return 'color:#62d493 !important;';
-            } 
-            else if(($totalPaidAmount > 0 ) && ($totalAmount < $totalPaidAmount))
-            {
-                return 'color:#55a3f4 !important;';
+            else if($sellType == 2){
+                return 'color:#387891 !important;';//quotation
             }
-            else if(($totalPaidAmount == 0) && ($totalAmount > 0))
-            {
-                return 'color:#ff4961 !important;';
-            }
-            else if(($totalAmount == 0))
-            {
-                return 'color:#606c72 !important;';
-            }else{
-                return 'color:#727576 !important;';
+            else if($sellType == 3){
+                return 'color:#606c72 !important;';//Draft
+            }else if($sellType == 4){
+                return 'color:#606c72 !important;';//Others
             }
         }
 

@@ -765,6 +765,27 @@
                 </ul>
             </li> --}}
             <!---Setting--->
+
+            <!---developer setting--->
+            @if (Auth::user()->user_role_id == 1)    
+                <li class="sidenav-item   @if(request()->routeIs(['admin.sell.regular.sell.update.sell.invoice'])) open active @endif ">
+                    <a href="javascript:" class="sidenav-link sidenav-toggle">
+                        <i class="sidenav-icon feather icon-codepen"></i>
+                        <div>Developer Setting</div>
+                        <div class="pl-1 ml-auto">
+                            <!-- <div class="badge badge-danger">Hot</div> -->
+                        </div>
+                    </a>
+                    <ul class="sidenav-menu">
+                        <li class="sidenav-item   @if(request()->routeIs('admin.sell.regular.sell.update.sell.invoice')) active @endif ">
+                            <a href="{{route('admin.sell.regular.sell.update.sell.invoice')}}" class="sidenav-link">
+                                <div><small>Update All Sell Invoice</small> </div>
+                            </a>
+                        </li> 
+                    </ul>
+                </li>
+            @endif
+            <!---developer setting--->
         </ul> 
          <!---left-sidenav-bottom-->
 

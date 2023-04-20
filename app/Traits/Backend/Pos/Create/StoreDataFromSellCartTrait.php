@@ -117,51 +117,52 @@ trait StoreDataFromSellCartTrait
         | customer transaction History
         |-----------------------------------------
         */
-            $sellType = $this->sellCreateFormData['sell_type'];
-            $sellAmount = 0;
-            $paidAmount = 0;
-            $dueAmount = 0;
-            $ctsTypeModule = '';
-            $ctsCdfType = '';
-            $note = "";
-            if($sellType == 1)//final sell
-            {
-                $ctsTypeModule = 'Sell';
-                $ctsCdfType = 'Due';
-                $note = "Create sell";
-                $sellAmount = $sellInvoice->total_payable_amount;
-                $paidAmount = $sellInvoice->total_paid_amount;
-                $dueAmount = $sellInvoice->due_amount;
-            }else{ // quotation
-                $ctsTypeModule = 'Quotation';
-                $ctsCdfType = 'No Change';
-                $note = "Create quotation";
+            if($sellInvoice->customer_id){
+                $sellType = $this->sellCreateFormData['sell_type'];
                 $sellAmount = 0;
                 $paidAmount = 0;
                 $dueAmount = 0;
+                $ctsTypeModule = '';
+                $ctsCdfType = '';
+                $note = "";
+                if($sellType == 1){//final sell
+                    $ctsTypeModule = 'Sell';
+                    $ctsCdfType = 'Due';
+                    $note = "Create sell";
+                    $sellAmount = $sellInvoice->total_payable_amount;
+                    $paidAmount = $sellInvoice->total_paid_amount;
+                    $dueAmount = $sellInvoice->due_amount;
+                }else{ // quotation
+                    $ctsTypeModule = 'Quotation';
+                    $ctsCdfType = 'No Change';
+                    $note = "Create quotation";
+                    $sellAmount = 0;
+                    $paidAmount = 0;
+                    $dueAmount = 0;
+                }
+                $requestCTSData = [];
+                $requestCTSData['amount'] = 0;
+                $requestCTSData['ledger_page_no'] = NULL;
+                $requestCTSData['next_payment_date'] = NULL;
+                $requestCTSData['short_note'] =   $note;
+                $requestCTSData['sell_amount'] = $sellAmount;//$sellInvoice->total_payable_amount;
+                $requestCTSData['sell_paid'] = $paidAmount;
+                $requestCTSData['sell_due'] = $dueAmount;
+                $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
+                $this->amount = $sellInvoice->total_payable_amount;
+                
+                $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp($ctsTypeModule);
+                $this->ctsCustomerId = $sellInvoice->customer_id;
+                $ttModuleInvoics = [
+                    'invoice_no' => $sellInvoice->invoice_no,
+                    'invoice_id' => $sellInvoice->id, 
+                    'tt_main_module_invoice_no' => $sellInvoice->invoice_no,
+                    'tt_main_module_invoice_id' => $sellInvoice->id,
+                ];
+                $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
+                $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp($ctsCdfType);
+                $this->processingOfAllCustomerTransaction();
             }
-            $requestCTSData = [];
-            $requestCTSData['amount'] = 0;
-            $requestCTSData['ledger_page_no'] = NULL;
-            $requestCTSData['next_payment_date'] = NULL;
-            $requestCTSData['short_note'] =   $note;
-            $requestCTSData['sell_amount'] = $sellAmount;//$sellInvoice->total_payable_amount;
-            $requestCTSData['sell_paid'] = $paidAmount;
-            $requestCTSData['sell_due'] = $dueAmount;
-            $this->processingOfAllCustomerTransactionRequestData = customerTransactionRequestDataProcessing_hp($requestCTSData);
-            $this->amount = $sellInvoice->total_payable_amount;
-            
-            $this->ctsTTModuleId = getCTSModuleIdBySingleModuleLebel_hp($ctsTypeModule);
-            $this->ctsCustomerId = $this->sellCreateFormData['customer_id'];
-            $ttModuleInvoics = [
-                'invoice_no' => $sellInvoice->invoice_no,
-                'invoice_id' => $sellInvoice->id, 
-                'tt_main_module_invoice_no' => $sellInvoice->invoice_no,
-                'tt_main_module_invoice_id' => $sellInvoice->id,
-            ];
-            $this->ttModuleInvoicsDataArrayFormated = $ttModuleInvoics;
-            $this->ctsCdsTypeId = getCTSCdfIdBySingleCdfLebel_hp($ctsCdfType);
-            $this->processingOfAllCustomerTransaction();
         /*
         |-----------------------------------------
         | customer transaction History
@@ -242,11 +243,9 @@ trait StoreDataFromSellCartTrait
         $productStock->total_profit_from_product = $totalSoldPrice - $totalPurchasePrice;
         $productStock->total_profit = $totalSoldPrice - $totalPurchasePrice;
 
-        
         $pStock = productStockByProductStockId_hh($product_stock_id);
         $stockId = regularStockId_hh();
-        if($pStock)
-        {
+        if($pStock){
             $availableBaseStock = $pStock->available_base_stock;
             $stockId = $pStock->stock_id;
         }else{
@@ -256,30 +255,26 @@ trait StoreDataFromSellCartTrait
         $productStock->stock_id = $stockId;
 
         $stockProcessLaterQty  = 0;
-        if($availableBaseStock > $qty)
-        {
+        if($availableBaseStock > $qty){
             //instantly processed all qty
             $instantlyProcessedQty = $qty;
             $stockProcessLaterDate = ""; 
             $stockProcessLaterQty  = 0;
         }
-        else if($availableBaseStock == $qty)
-        {
+        else if($availableBaseStock == $qty){
             //instantly processed all qty
             $instantlyProcessedQty = $qty;
             $stockProcessLaterDate = ""; 
             $stockProcessLaterQty  = 0;
         }
-        else if($availableBaseStock < $qty)
-        {
+        else if($availableBaseStock < $qty){
             //instantly processed all qty
             $overStock = $qty - $availableBaseStock;
             $instantlyProcessedQty = $qty - $overStock;
             $stockProcessLaterDate = date('Y-m-d',strtotime('+'.$process_duration.' day')); 
             $stockProcessLaterQty  = $overStock;
         }
-        else 
-        {   
+        else {   
             //instantly processed qty
            $overStock = $qty - $availableBaseStock;
            $instantlyProcessedQty = $qty - $overStock;
@@ -441,13 +436,11 @@ trait StoreDataFromSellCartTrait
         $totalInvoiceAmount = $sellInvoiceSummeryCart['lineInvoiceSubTotal'] + $sellInvoiceSummeryCart['totalShippingCost'] + $sellInvoiceSummeryCart['invoiceOtherCostAmount'];
 
         $sign = "";
-        if($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'] >=  $sellInvoiceSummeryCart['lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal'])
-        {
+        if($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'] >=  $sellInvoiceSummeryCart['lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal']){
             $sign = "+";
             $totalInvoiceAmount = $totalInvoiceAmount + $sellInvoice->round_amount;
         }
-        else if($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'] <  $sellInvoiceSummeryCart['lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal'])
-        {
+        else if($sellInvoiceSummeryCart['lineInvoicePayableAmountWithRounding'] <  $sellInvoiceSummeryCart['lineAfterOtherCostShippingCostDiscountAndVatWithInvoiceSubTotal']){
             $sign = "-";
             $totalInvoiceAmount = $totalInvoiceAmount - $sellInvoice->round_amount;
         }else{
@@ -478,18 +471,23 @@ trait StoreDataFromSellCartTrait
 
         $paymentStatus = "";
         $payment_type = "";
-        if($totalPayableAmount == $totalPaidAmount)
-        {
-            $paymentStatus = 1;//Full Paid
-            $payment_type = "Full Payment";
+        if($this->sellCreateFormData['sell_type'] == 1){
+            if($totalPayableAmount == $totalPaidAmount){
+                $paymentStatus = 1;//Full Paid
+                $payment_type = "Full Payment";
+            }
+            else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount > 0){
+                $paymentStatus = 2;//Parital Paid
+                $payment_type = "Partial Payment";
+            }
+            else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount == 0){
+                $paymentStatus = 3;//Not Paid
+                $payment_type = "Not Paid";
+            }
         }
-        else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount > 0){
-            $paymentStatus = 2;//Parital Paid
-            $payment_type = "Partial Payment";
-        }
-        else if($totalPayableAmount > $totalPaidAmount &&  $totalPaidAmount == 0){
-            $paymentStatus = 3;//Not Paid
-            $payment_type = "Not Paid";
+        else if($this->sellCreateFormData['sell_type'] == 2){
+            $paymentStatus = 6;//Quotation
+            $payment_type = "Quotation";
         }
         $sellInvoice->payment_status = $paymentStatus;
         $sellInvoice->payment_type	 = $payment_type;
@@ -497,8 +495,7 @@ trait StoreDataFromSellCartTrait
 
         //$customerId = $sellInvoiceSummeryCart['invoice_customer_id'];
         $customerId = $this->sellCreateFormData['customer_id'];
-        if(count($shippingCart) > 0)
-        {
+        if(count($shippingCart) > 0){
             $sellInvoice->customer_id = $shippingCart['customer_id'];
             $customerId = $shippingCart['customer_id'];
             $sellInvoice->reference_id = $this->sellCreateFormData['reference_id'];
@@ -512,27 +509,30 @@ trait StoreDataFromSellCartTrait
         }
 
         $customer = Customer::select('customer_type_id','phone')->where('id',$customerId)->first();
-        if($customer)
-        {
+        if($customer){
             $sellInvoice->customer_type_id = $customer->customer_type_id;  
             //$sellInvoice->customer_phone = $customer->phone;  
         }else{
             $sellInvoice->customer_type_id = 2;  //temporary
         }
-        if( $this->sellCreateFormData['sell_type'] == 1) 
-        {
+        if( $this->sellCreateFormData['sell_type'] == 1) {
             $sellInvoice->sell_date = date('Y-m-d h:i:s');
         }
         $sellInvoice->status = $this->sellCreateFormData['sell_type'] == 1 ? 1 : 2; //1=ordered, 2=Quotation, 3=Cancel, 4=Partial Refund, 5=Refunded
         $sellInvoice->delivery_status = 3; //1=Full Delivered, 2=Partial Delivered, 3=Not Delivery, 4=Partial Refund, 5=Refunded
         $sellInvoice->created_by = authId_hh();
 
+        //!isset($this->sellCreateFormData['customer_id']) && 
+        if(isset($sellInvoiceSummeryCart['invoice_customer_id']) && 
+            $this->sellCreateFormData['sell_type'] == 2){
+            $sellInvoice->customer_id = $sellInvoiceSummeryCart['invoice_customer_id'];
+        }
         $sellInvoice->save();
+
         $sellInvoice->invoice_no = sprintf("%'.08d", $sellInvoice->id);
         $sellInvoice->save();
 
-        if( $this->sellCreateFormData['sell_type'] == 2) 
-        {
+        if( $this->sellCreateFormData['sell_type'] == 2) {
             $quotation = new SellQuotation();
             $quotation->sell_invoice_id  = $sellInvoice->id;
             $quotation->invoice_no       = $sellInvoice->invoice_no;
