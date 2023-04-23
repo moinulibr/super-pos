@@ -309,7 +309,7 @@
                                     <table class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th colspan="5" style="text-align:center">Stock History</th>
+                                                <th colspan="7" style="text-align:center">Stock History</th>
                                             </tr>
                                             <tr>
                                                 <th style="">
@@ -318,8 +318,10 @@
                                                 <th style="">
                                                     Quantity
                                                 </th>
-                                                <th>Stock Changing Type</th>                                            
+                                                <th>Module</th>                                            
+                                                <th><small>Module Invoice</small></th>                                            
                                                 <th>Created Time</th>                                            
+                                                <th>Changing Time</th>                                            
                                                 <th>Created By</th>
                                             </tr>
                                         </thead>
@@ -344,7 +346,13 @@
                                                         </label>
                                                         @endif
                                                     </td>
-                                                    <td> {{date('d-m-Y h:i:s A',strtotime($stockHistory->created_at))}}</td>
+                                                    <td>{{$stockHistory->main_module_invoice_no}}</td>
+                                                    <td>
+                                                        @if ($stockHistory->main_module_invoice_created_date) 
+                                                        {{date('d-m-Y',strtotime($stockHistory->main_module_invoice_created_date))}}
+                                                        @endif
+                                                    </td>
+                                                    <td>{{date('d-m-Y',strtotime($stockHistory->created_at))}}</td>
                                                     <td>{{$stockHistory->createdBY ? $stockHistory->createdBY->name : NULL}}</td>
                                                 </tr>
                                             @endforeach
@@ -367,7 +375,7 @@
         
         
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
         </div>
     </div>
 </div>
